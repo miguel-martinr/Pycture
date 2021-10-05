@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 pyqt5 = "*"
 pyqt5-tools = "*"
+numpy = "*"
 
 [dev-packages]
 autopep8 = "*"

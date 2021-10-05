@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QHBoxLayout, QWidget
 
 from cmd_btn import CmdBtn
-from command import Command, OpenFile
+from classes.commands import OpenFile
 
 
 class ControlBar:

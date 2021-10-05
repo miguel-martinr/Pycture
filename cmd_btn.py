@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import QPushButton
-
-from command import Command
+from classes.commands import Command
 
 
 class CmdBtn:
