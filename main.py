@@ -7,6 +7,7 @@ window = QWidget()
 layout = QGridLayout()
 window.setLayout(layout)
 controlBar = ControlsBar(window, layout)
+window.setWindowTitle("Pycture")
 
 window.show()
 app.exec()
