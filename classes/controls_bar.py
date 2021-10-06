@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QGridLayout, QMenuBar, QWidget
+from classes.cmd_menus import FileMenu
 from classes.commands import OpenFile
 
 
@@ -12,7 +13,6 @@ class ControlsBar(QMenuBar):
     def setUI(self, layout):
         
         layout.addWidget(self, 0, 0)
-        actionFile = self.addMenu("File")
-        actionFile.addAction(OpenFile(self))
-        actionFile.addSeparator()
+        fileMenu = FileMenu(self)
+        self.addMenu(fileMenu)
 
