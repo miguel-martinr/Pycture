@@ -16,9 +16,3 @@ class ControlsBar(QMenuBar):
         actionFile.addAction(OpenFile(self))
         actionFile.addSeparator()
 
-
-
-        # self.controls = []
-        # buttons = [CmdBtn(text="Open", cmd=OpenFile())]
-        # for btn in buttons:
-        #     layout.addWidget(btn.getButton())
