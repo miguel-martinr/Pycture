@@ -5,7 +5,7 @@ from classes.commands import Command, file_cmds, edit_cmds
 class CmdMenu(QMenu):
   def __init__(self, parent: QWidget):
     super(QMenu, self).__init__(parent)
-    self.setStyleSheet("background-color: gray;")
+
     
 
 
