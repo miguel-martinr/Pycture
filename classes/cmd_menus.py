@@ -7,9 +7,6 @@ class CmdMenu(QMenu):
     super(QMenu, self).__init__(parent)
 
     
-
-
-
 def setMenuCmds(self: CmdMenu, cmds: List[Command]):
   for cmd in cmds:
     self.addAction(cmd(self))
