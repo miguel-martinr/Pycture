@@ -11,7 +11,7 @@ class Command(QAction):
 class OpenFile(Command):
     def __init__(self, parent: QWidget) -> None:
         super(Command, self).__init__(parent)
-        self.setText("Abrir")
+        self.setText("Open")
         self.triggered.connect(self.run)
 
     def run(self):
