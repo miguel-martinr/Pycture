@@ -4,23 +4,22 @@ from classes.commands import Command, file_cmds, edit_cmds
 
 class CmdMenu(QMenu):
   def __init__(self, parent: QWidget):
-    super(QMenu, self).__init__(parent)
+    super().__init__(parent)
 
-    
-def setMenuCmds(self: CmdMenu, cmds: List[Command]):
-  for cmd in cmds:
-    self.addAction(cmd(self))
+  def setMenuCmds(self, cmds: List[Command]):
+    for cmd in cmds:
+      self.addAction(cmd(self))
 
 class FileMenu(CmdMenu):
   def __init__(self, parent: QWidget):
-      super(CmdMenu, self).__init__(parent)
+      super().__init__(parent)
       self.setTitle("File")
-      setMenuCmds(self, file_cmds) # Issues when adding it as CmdMenu method
+      self.setMenuCmds(file_cmds)
       
 class EditMenu(CmdMenu):
   def __init__(self, parent: QWidget):
-      super(CmdMenu, self).__init__(parent)
+      super().__init__(parent)
       self.setTitle("Edit")
-      setMenuCmds(self, edit_cmds) # Issues when adding it as CmdMenu method
+      self.setMenuCmds(edit_cmds)
   
 menus = [FileMenu, EditMenu]

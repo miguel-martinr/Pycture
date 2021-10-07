@@ -7,7 +7,6 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Pycture")
         self.setMenuBar(ControlsBar(self))
-        self.setGeometry(100, 100, 100, 100)
 
 app = QApplication(argv)
 window = MainWindow()
