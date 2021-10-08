@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QMenuBar, QWidget 
-from classes.cmd_menus import menus
+from PyQt5.QtCore import QCoreApplication
+from classes.command_menus import menus
 
 class ControlsBar(QMenuBar):
     def __init__(self, parent: QWidget) -> None:
@@ -7,6 +8,8 @@ class ControlsBar(QMenuBar):
         self.setStyleSheet("background-color: darkgray")
         self.setup_menus()
         
+    def customEvent(self, event):
+        QCoreApplication.sendEvent(self.parent(), event)
 
     def setup_menus(self):
         for menu in menus:

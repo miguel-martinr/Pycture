@@ -1,6 +1,7 @@
-from PyQt5.QtWidgets import QAction, QWidget, QLabel, QFileDialog, QDockWidget
+from PyQt5.QtWidgets import QAction, QWidget
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import QEvent
+from PyQt5.QtCore import QCoreApplication
+from classes.events import OpenFileEvent
 
 
 class Command(QAction):
@@ -14,11 +15,7 @@ class OpenFile(Command):
         self.triggered.connect(self.run)
 
     def run(self):
-        filename, _ = QFileDialog.getOpenFileName(None, "Open an image", "", "Images (*.png *.jpg *.jpeg *.bmp)")
-        label = QLabel()
-        label.setPixmap(QPixmap(filename))
-        print(label)
-        # dock = QDockWidget("AAAAh", self.parent)
+        QCoreApplication.sendEvent(self.parent(), OpenFileEvent())
 
 class SaveFile(Command):
     def __init__(self, parent: QWidget) -> None:
@@ -28,7 +25,7 @@ class SaveFile(Command):
     def run(self):
         print("Saves File")
 
-file_cmds = [OpenFile, SaveFile]
+file_commands = [OpenFile, SaveFile]
 
 
 
@@ -41,4 +38,4 @@ class EditBright(Command):
         print("Edits bright")
 
 
-edit_cmds = [EditBright]
+edit_commands = [EditBright]
