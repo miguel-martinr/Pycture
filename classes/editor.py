@@ -1,6 +1,8 @@
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QCoreApplication
 from PyQt5.QtGui import QPixmap, QCloseEvent, QMouseEvent
 from PyQt5.QtWidgets import QDockWidget, QWidget, QMessageBox, QLabel
+
+from classes.events import DeleteEditorEvent, ChangeFocusedEditorEvent
 
 class Editor(QDockWidget):
     def __init__(self, parent: QWidget, image: QPixmap, image_name: str):
@@ -26,11 +28,17 @@ class Editor(QDockWidget):
         answer = close_dialog.exec()
 
         if (answer == Yes):
-            #Delete Editor Event
+            QCoreApplication.sendEvent(
+                self.parent(),
+                DeleteEditorEvent(self.windowTitle())
+            )
             event.accept()
         else:
             event.ignore()
   
     def mousePressEvent(self, event: QMouseEvent):
-        print("mouse pressed")
-        #ChangeFocusEvent
+        QCoreApplication.sendEvent(
+            self.parent(),
+            ChangeFocusedEditorEvent(self.windowTitle())
+        )
+        

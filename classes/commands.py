@@ -1,8 +1,10 @@
+from os import path
+
 from PyQt5.QtWidgets import QAction, QWidget, QFileDialog 
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QCoreApplication
-from classes.events import NewEditorEvent
 
+from classes.events import NewEditorEvent
 
 class Command(QAction):
     def __init__(self, text: str, parent: QWidget) -> None:
@@ -15,8 +17,9 @@ class OpenFile(Command):
         self.triggered.connect(self.run)
 
     def run(self):
-        path, _ = QFileDialog.getOpenFileName(None, "Open an image", "/home", "Images (*.png *.jpg *.jpeg *.bmp)")
-        QCoreApplication.sendEvent(self.parent(), NewEditorEvent(QPixmap(path), path))
+        file_path, _ = QFileDialog.getOpenFileName(None, "Open an image", "/home", "Images (*.png *.jpg *.jpeg *.bmp)")
+        (_, filename) = path.split(file_path)
+        QCoreApplication.sendEvent(self.parent(), NewEditorEvent(QPixmap(file_path), filename))
 
 class SaveFile(Command):
     def __init__(self, parent: QWidget) -> None:
