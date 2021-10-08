@@ -3,9 +3,9 @@ from PyQt5.QtGui import QPixmap, QCloseEvent, QMouseEvent
 from PyQt5.QtWidgets import QDockWidget, QWidget, QMessageBox, QLabel
 
 class Editor(QDockWidget):
-    def __init__(self, parent: QWidget, image: QPixmap, image_path: str):
+    def __init__(self, parent: QWidget, image: QPixmap, image_name: str):
         super().__init__(parent)
-        self.setWindowTitle(image_path)
+        self.setWindowTitle(image_name)
         self.setup_image(image)
         self.setAllowedAreas(Qt.DockWidgetArea.AllDockWidgetAreas)
         parent.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self)
@@ -18,13 +18,15 @@ class Editor(QDockWidget):
     def closeEvent(self, event: QCloseEvent):
         close_dialog = QMessageBox()
         close_dialog.setText("Are you sure?")
-        close_dialog.setStandardButtons(QMessageBox.StandardButtons(
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.Cancel
-        ))
+        Yes = QMessageBox.StandardButton.Yes 
+        Cancel = QMessageBox.StandardButton.Cancel
+        close_dialog.setStandardButtons(
+            QMessageBox.StandardButtons(Yes | Cancel)
+        )
         answer = close_dialog.exec()
 
         if (answer == Yes):
-            Context.deleteEditor(self.index)
+            #Delete Editor Event
             event.accept()
         else:
             event.ignore()

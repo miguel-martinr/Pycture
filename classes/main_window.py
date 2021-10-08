@@ -1,5 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QWidget, QGridLayout
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QMainWindow, QWidget, QGridLayout
 from classes.controls_bar import ControlsBar
 from classes.editor import Editor
 
@@ -15,5 +14,4 @@ class MainWindow(QMainWindow):
         self.activeEditor = None
     
     def customEvent(self, event):
-        path, _ = QFileDialog.getOpenFileName(None, "Open an image", "/home", "Images (*.png *.jpg *.jpeg *.bmp)")
-        self.editors.append(Editor(self, QPixmap(path), path))
+        self.editors.append(Editor(self, event.image, event.image_name))
