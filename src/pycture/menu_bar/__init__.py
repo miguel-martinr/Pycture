@@ -1,8 +1,8 @@
 from PyQt5.QtWidgets import QMenuBar, QWidget 
 from PyQt5.QtCore import QCoreApplication, QEvent
-from classes.command_menus import menus
+from .command_menus import menus
 
-class ControlsBar(QMenuBar):
+class MenuBar(QMenuBar):
     def __init__(self, parent: QWidget):
         super().__init__(parent)  
         self.setStyleSheet("background-color: darkgray")

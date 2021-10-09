@@ -2,7 +2,7 @@ from PyQt5.QtCore import Qt, QCoreApplication
 from PyQt5.QtGui import QPixmap, QCloseEvent, QMouseEvent
 from PyQt5.QtWidgets import QDockWidget, QWidget, QMessageBox, QLabel
 
-from classes.events import DeleteEditorEvent, ChangeActiveEditorEvent
+from .events import DeleteEditorEvent, ChangeActiveEditorEvent
 
 class Editor(QDockWidget):
     def __init__(self, parent: QWidget, image: QPixmap, image_name: str):

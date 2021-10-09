@@ -1,7 +1,7 @@
 from typing import List
 from PyQt5.QtWidgets import QMenu, QWidget
 from PyQt5.QtCore import QCoreApplication
-from classes.commands import Command, file_commands, edit_commands
+from ..commands import Command, file_commands, edit_commands
 
 class CommandMenu(QMenu):
     def __init__(self, parent: QWidget):

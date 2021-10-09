@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QAction, QWidget, QFileDialog, QMainWindow
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QCoreApplication
 
-from classes.events import NewEditorEvent
+from .events import NewEditorEvent
 
 class Command(QAction):
     def __init__(self, text: str, parent: QWidget):

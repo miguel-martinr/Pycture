@@ -15,4 +15,4 @@ autopep8 = "*"
 python_version = "3.9"
 
 [scripts]
-start = "python ./main.py"
+start = "python src/main.py"
