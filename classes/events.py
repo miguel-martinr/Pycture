@@ -1,22 +1,22 @@
 from PyQt5.QtCore import QEvent
 from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QAction
 
 NewEditorEventType = QEvent.registerEventType()
 DeleteEditorEventType = QEvent.registerEventType()
-ChangeFocusedEditorEventType = QEvent.registerEventType()
+ChangeActiveEditorEventType = QEvent.registerEventType()
 
 class NewEditorEvent(QEvent):
-    def __init__(self, image: QPixmap, image_name: str):
+    def __init__(self, command: QAction):
         super().__init__(NewEditorEventType)
-        self.image = image
-        self.image_name = image_name
+        self.command = command
 
 class DeleteEditorEvent(QEvent):
     def __init__(self, editor_name: str):
         super().__init__(DeleteEditorEventType)
         self.editor_name = editor_name
 
-class ChangedFocusedEditorEvent(QEvent):
+class ChangeActiveEditorEvent(QEvent):
     def __init__(self, editor_name: str):
-        super().__init__(ChangeFocusedEditorEventType)
+        super().__init__(ChangeActiveEditorEventType)
         self.editor_name = editor_name

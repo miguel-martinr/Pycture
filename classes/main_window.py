@@ -6,7 +6,7 @@ from PyQt5.QtCore import QEvent
 
 from classes.controls_bar import ControlsBar
 from classes.editor import Editor
-from classes.events import NewEditorEvent, DeleteEditorEvent, ChangeFocusedEditorEvent
+from classes.events import NewEditorEvent, DeleteEditorEvent, ChangeActiveEditorEvent
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -21,7 +21,7 @@ class MainWindow(QMainWindow):
     
     def customEvent(self, event: QEvent):
         if type(event) == NewEditorEvent:
-            self.addEditor(event.image, event.image_name)
+            event.command.execute(self)
         elif type(event) == DeleteEditorEvent:
             self.editors.pop(event.editor_name)
         elif type(event) == ChangeFocusedEditorEvent:
