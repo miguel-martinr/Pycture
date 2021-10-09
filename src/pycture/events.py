@@ -2,13 +2,13 @@ from PyQt5.QtCore import QEvent
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QAction
 
-NewEditorEventType = QEvent.registerEventType()
+ExecuteCommandEventType = QEvent.registerEventType()
 DeleteEditorEventType = QEvent.registerEventType()
 ChangeActiveEditorEventType = QEvent.registerEventType()
 
-class NewEditorEvent(QEvent):
+class ExecuteCommandEvent(QEvent):
     def __init__(self, command: QAction):
-        super().__init__(NewEditorEventType)
+        super().__init__(ExecuteCommandEventType)
         self.command = command
 
 class DeleteEditorEvent(QEvent):
