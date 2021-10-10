@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt, QCoreApplication
 from PyQt5.QtGui import QPixmap, QCloseEvent, QMouseEvent
-from PyQt5.QtWidgets import QDockWidget, QWidget, QMessageBox, QLabel
+from PyQt5.QtWidgets import QDockWidget, QWidget, QMessageBox
 
 from ..events import DeleteEditorEvent, ChangeActiveEditorEvent
 from .image import Image
@@ -9,7 +9,7 @@ class Editor(QDockWidget):
     def __init__(self, parent: QWidget, image: QPixmap, image_name: str):
         super().__init__(parent)
         self.setWindowTitle(image_name)
-        self.setWidget(Image(image))
+        self.setWidget(Image(self, image))
         self.setAllowedAreas(Qt.DockWidgetArea.AllDockWidgetAreas)
         parent.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self)
         
