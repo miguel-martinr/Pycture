@@ -5,18 +5,18 @@ class Image(QLabel):
     def __init__(self, parent: QWidget, image: QPixmap):
         super().__init__(parent)
         self.setPixmap(image)
-        self.histogram = self.getHistogram()
+        self.setup_histogram_data()
         
-    def getHistogram(self) -> [float]:
+    def setup_histogram_data(self) -> [float]:
         image = self.pixmap().toImage()
         histogram = [0] * 256
+        self.mean = 0
         for x in range(image.width()):
           for y in range(image.height()):
             red_value = (0x00ffffff & image.pixel(x, y)) >> 16
             histogram[red_value] += 1
-        return histogram
-        print(histogram)
+            self.mean += red_value
         total_pixels = image.width() * image.height()
-        print(total_pixels)
-        return list(map(lambda x: x / total_pixels, histogram))
+        self.histogram =  list(map(lambda x: x / total_pixels, histogram))
+        self.mean /= total_pixels 
 

@@ -1,7 +1,11 @@
+from io import BytesIO
+
 from PyQt5.QtWidgets import QWidget, QMainWindow
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtChart import QChart, QChartView, QBarSet, QBarSeries, QValueAxis
+from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtCore import Qt
+import matplotlib.pyplot as plt
+from PIL.ImageQt import ImageQt
+from PIL import Image
 
 from .command import Command
 
@@ -10,31 +14,25 @@ class ViewHistogramCommand(Command):
         super().__init__("Histogram", parent)
 
     def execute(self, main_window: QMainWindow):
-        activeEditor = main_window.getActiveEditor()
-        if activeEditor == None:
+        active_editor = main_window.getActiveEditor()
+        if active_editor == None:
             return # TODO: Notify the user (can't create histogram if there isn't an active editor)
-        histogram = activeEditor.widget().histogram
+        histogram = active_editor.widget().histogram
 
-        chart = QChart()
-        chart.legend().hide()
-        chart.setTitle("Histogram")
+        figure = plt.figure()
+        bars = plt.bar(list(range(256)), histogram)
+        for index, bar in enumerate(bars):
+            bar.set_color((index / 255, 0, 0))
 
-        bars = QBarSet("")
-        for val in histogram[:50]:
-            bars.append(val)
-        series = QBarSeries()
-        series.append(bars)
-        chart.addSeries(series)
+        mean = active_editor.widget().mean
+        plt.axvline(mean)
+        plt.title(f"Mean: {mean:.2f}")
 
-        x_axis = QValueAxis()
-        x_axis.setRange(0, 255)
-        x_axis.setTickCount(2)
-        x_axis.setLabelFormat("%d")
-        chart.addAxis(x_axis, Qt.AlignmentFlag.AlignBottom)
+        buffer = BytesIO()
+        figure.savefig(buffer)
+        plt.close()
 
-        y_axis = QValueAxis()
-        # y_axis.setRange(0, 1)
-        chart.addAxis(y_axis, Qt.AlignmentFlag.AlignLeft)
-
-        chart_view = QChartView(chart)
-        main_window.addEditor(chart_view.grab(), main_window.activeEditor + ".hist")
+        main_window.addEditor(
+            QPixmap.fromImage(ImageQt(Image.open(buffer))),
+            active_editor.windowTitle() + ".hist"
+        )
