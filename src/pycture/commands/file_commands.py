@@ -1,24 +1,11 @@
 from os import path
 
-from PyQt5.QtWidgets import QAction, QWidget, QFileDialog, QMainWindow
+from PyQt5.QtWidgets import QWidget, QFileDialog, QMainWindow
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import QCoreApplication
 
-from .events import ExecuteCommandEvent
+from .command import Command
 
-class Command(QAction):
-    def __init__(self, text: str, parent: QWidget):
-        super().__init__(parent)
-        self.setText(text)
-        self.triggered.connect(self.clicked)
-    
-    def clicked(self):
-        QCoreApplication.sendEvent(self.parent(), ExecuteCommandEvent(self))
-    
-    def execute(self, main_window: QMainWindow):
-        print("Executing base command")
-
-class OpenFile(Command):
+class OpenFileCommand(Command):
     def __init__(self, parent: QWidget):
         super().__init__("Open", parent)
 
@@ -27,7 +14,7 @@ class OpenFile(Command):
         (_, filename) = path.split(file_path)
         main_window.addEditor(QPixmap(file_path), filename)
 
-class SaveFile(Command):
+class SaveFileCommand(Command):
     def __init__(self, parent: QWidget):
         super().__init__("Save", parent)
 
@@ -43,17 +30,3 @@ class SaveFile(Command):
             return # TODO: Notify the user about the supported formats
         pixmap = activeEditor.widget().pixmap()
         pixmap.save(file_path, extension[1:])
-
-file_commands = [OpenFile, SaveFile]
-
-
-
-class EditBright(Command):
-    def __init__(self, parent: QWidget):
-        super().__init__("Bright", parent)
-
-    def execute(self, main_window: QMainWindow):
-        print("Edits bright")
-
-
-edit_commands = [EditBright]
