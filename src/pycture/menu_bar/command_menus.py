@@ -1,6 +1,8 @@
 from typing import List
 from PyQt5.QtWidgets import QMenu, QWidget
 from PyQt5.QtCore import QCoreApplication
+
+from pycture.commands.view_commands import ViewBlueHistogram, ViewGreenHistogram, ViewRedHistogram
 from ..commands import (Command, file_commands_list, edit_commands_list,
     red_view_commands_list, green_view_commands_list, blue_view_commands_list,
     gray_view_commands_list)
@@ -42,31 +44,7 @@ class HistogramMenu(CommandMenu):
     def __init__(self, parent: QWidget):
         super().__init__(parent)
         self.setTitle("Histogram")
-        self.setMenuCommands([])
+        self.setMenuCommands([ViewRedHistogram, ViewGreenHistogram, ViewBlueHistogram])
 
-# class RedViewMenu(CommandMenu):
-#     def __init__(self, parent: QWidget):
-#         super().__init__(parent)
-#         self.setTitle("Red")
-#         self.setMenuCommands([])
 
-# class GreenViewMenu(CommandMenu):
-#     def __init__(self, parent: QWidget):
-#         super().__init__(parent)
-#         self.setTitle("Green")
-#         self.setMenuCommands([])
-
-# class BlueViewMenu(CommandMenu):
-#     def __init__(self, parent: QWidget):
-#         super().__init__(parent)
-#         self.setTitle("Blue")
-#         self.setMenuCommands([])
-
-# class GrayViewMenu(CommandMenu):
-#     def __init__(self, parent: QWidget):
-#         super().__init__(parent)
-#         self.setTitle("Gray scale")
-#         self.setMenuCommands([  ])
-
-# view_submenus_list = [RedViewMenu, GreenViewMenu, BlueViewMenu, GrayViewMenu]
 menus = [FileMenu, EditMenu, ViewMenu]
