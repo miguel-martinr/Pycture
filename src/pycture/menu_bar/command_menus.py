@@ -36,32 +36,37 @@ class ViewMenu(CommandMenu):
     def __init__(self, parent: QWidget):
         super().__init__(parent)
         self.setTitle("View")
-        self.setMenuSubmenus(view_submenus_list)
+        self.setMenuSubmenus([HistogramMenu])
 
-  
-class RedViewMenu(CommandMenu):
+class HistogramMenu(CommandMenu):
     def __init__(self, parent: QWidget):
         super().__init__(parent)
-        self.setTitle("Red")
+        self.setTitle("Histogram")
         self.setMenuCommands([])
 
-class GreenViewMenu(CommandMenu):
-    def __init__(self, parent: QWidget):
-        super().__init__(parent)
-        self.setTitle("Green")
-        self.setMenuCommands([])
+# class RedViewMenu(CommandMenu):
+#     def __init__(self, parent: QWidget):
+#         super().__init__(parent)
+#         self.setTitle("Red")
+#         self.setMenuCommands([])
 
-class BlueViewMenu(CommandMenu):
-    def __init__(self, parent: QWidget):
-        super().__init__(parent)
-        self.setTitle("Blue")
-        self.setMenuCommands([])
+# class GreenViewMenu(CommandMenu):
+#     def __init__(self, parent: QWidget):
+#         super().__init__(parent)
+#         self.setTitle("Green")
+#         self.setMenuCommands([])
 
-class GrayViewMenu(CommandMenu):
-    def __init__(self, parent: QWidget):
-        super().__init__(parent)
-        self.setTitle("Gray scale")
-        self.setMenuCommands([  ])
+# class BlueViewMenu(CommandMenu):
+#     def __init__(self, parent: QWidget):
+#         super().__init__(parent)
+#         self.setTitle("Blue")
+#         self.setMenuCommands([])
 
-view_submenus_list = [RedViewMenu, GreenViewMenu, BlueViewMenu, GrayViewMenu]
+# class GrayViewMenu(CommandMenu):
+#     def __init__(self, parent: QWidget):
+#         super().__init__(parent)
+#         self.setTitle("Gray scale")
+#         self.setMenuCommands([  ])
+
+# view_submenus_list = [RedViewMenu, GreenViewMenu, BlueViewMenu, GrayViewMenu]
 menus = [FileMenu, EditMenu, ViewMenu]
