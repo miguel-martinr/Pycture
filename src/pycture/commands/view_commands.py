@@ -28,7 +28,7 @@ class ViewHistogramCommand(Command):
         pixmap = save_figure_to_pixmap(figure)
         main_window.addEditor(pixmap, title + ".hist")
     
-    def get_active_image(main_window: QMainWindow)
+    def get_active_image(main_window: QMainWindow):  
         active_editor = main_window.getActiveEditor()
         if active_editor:
             return (active_editor.widget(), active_editor.windowTitle())
