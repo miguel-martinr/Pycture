@@ -6,4 +6,7 @@ from .command import Command
 
 file_commands_list = [OpenFileCommand, SaveFileCommand]
 edit_commands_list = [EditBrightnessCommand]
-view_commands_list = [ViewHistogramCommand]
+red_view_commands_list = [ViewHistogramCommand]
+green_view_commands_list = [ViewHistogramCommand]
+blue_view_commands_list = [ViewHistogramCommand]
+gray_view_commands_list = [ViewHistogramCommand]

@@ -8,12 +8,13 @@ class MenuBar(QMenuBar):
         self.setStyleSheet("background-color: darkgray")
         self.setup_menus()
         
-    def customEvent(self, event: QEvent):
-        QCoreApplication.sendEvent(self.parent(), event)
-
     def setup_menus(self):
         for menu in menus:
           someMenu = menu(self)
           self.addMenu(someMenu)
+
+    def customEvent(self, event: QEvent):
+        QCoreApplication.sendEvent(self.parent(), event)
+
         
 
