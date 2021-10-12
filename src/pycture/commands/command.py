@@ -4,7 +4,7 @@ from PyQt5.QtCore import QCoreApplication
 from ..events import ExecuteCommandEvent
 
 class Command(QAction):
-    def __init__(self, text: str, parent: QWidget):
+    def __init__(self, parent: QWidget, text: str):
         super().__init__(parent)
         self.setText(text)
         self.triggered.connect(self.clicked)

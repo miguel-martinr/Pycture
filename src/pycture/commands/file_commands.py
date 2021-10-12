@@ -7,7 +7,7 @@ from .command import Command
 
 class OpenFileCommand(Command):
     def __init__(self, parent: QWidget):
-        super().__init__("Open", parent)
+        super().__init__(parent, "Open")
 
     def execute(self, main_window: QMainWindow):
         file_path, _ = QFileDialog.getOpenFileName(None, "Open an image", "/home", "Images (*.png *.jpg *.jpeg *.bmp)")
@@ -16,7 +16,7 @@ class OpenFileCommand(Command):
 
 class SaveFileCommand(Command):
     def __init__(self, parent: QWidget):
-        super().__init__("Save", parent)
+        super().__init__(parent, "Save")
 
     def execute(self, main_window: QMainWindow):
         activeEditor = main_window.getActiveEditor()
