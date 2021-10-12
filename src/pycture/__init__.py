@@ -17,7 +17,7 @@ class MainWindow(QMainWindow):
         placeholder_widget.setLayout(QGridLayout())
         self.setCentralWidget(placeholder_widget)
         self.editors = {}
-        self.activeEditor = None
+        self.active_editor = None
     
     def customEvent(self, event: QEvent):
         if type(event) == ExecuteCommandEvent:
@@ -25,7 +25,7 @@ class MainWindow(QMainWindow):
         elif type(event) == DeleteEditorEvent:
             self.editors.pop(event.editor_name)
         elif type(event) == ChangeActiveEditorEvent:
-            self.activeEditor = event.editor_name
+            self.active_editor = event.editor_name
         else:
             event.ignore()
             
@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
             (name, extension) = path.splitext(name)
             name = name + "+" + extension
         self.editors[name] = Editor(self, image, name)
-        self.activeEditor = name
+        self.active_editor = name
         
     def getActiveEditor(self) -> Editor:
-        return self.editors.get(self.activeEditor)
+        return self.editors.get(self.active_editor)
