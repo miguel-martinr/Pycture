@@ -8,17 +8,18 @@ import matplotlib.pyplot as plt
 from PIL.ImageQt import ImageQt
 from PIL import Image
 
-from .command import Command, InsiderCommand
+from .command import Command
 from ..editor.image import Color
 
 
 
-class ViewHistogramCommand(InsiderCommand):
+class ViewHistogramCommand(Command):
     def __init__(self, parent: QWidget, color: str):
         super().__init__(parent, color)
 
     def execute(self, main_window: QMainWindow):
-        image, title = self.get_active_image_with_title(main_window)
+        image = self.get_active_image(main_window)
+        title = self.get_active_title(main_window)
         if image == None:
             print("Can't create histogram if there is not an active editor")
             return # TODO: Notify the user (can't create histogram if there isn't an active editor)
@@ -48,65 +49,43 @@ class ViewHistogramCommand(InsiderCommand):
         pass
 
     def get_histogram(self, image: QLabel) -> List[int]:
-        pass
+        return image.get_histogram(self.color)
 
     def get_mean(self, image: QLabel) -> float:
-        pass
+        return image.get_mean(self.color)
 
 
 class ViewRedHistogram(ViewHistogramCommand):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Red")
+        self.color = Color.Red
 
     def get_bar_color(self, val: int) -> List[float]:
         return (val / 255, 0, 0)
 
-    def get_histogram(self, image: QLabel) -> List[int]:
-        return image.get_histogram(Color.Red)
-
-    def get_mean(self, image: QLabel) -> float:
-        return image.get_mean(Color.Red)
-
 class ViewGreenHistogram(ViewHistogramCommand):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Green")
+        self.color = Color.Green
 
     def get_bar_color(self, val: int) -> List[float]:
         return (0, val / 255, 0)
 
-    def get_histogram(self, image: QLabel) -> List[int]:
-        return image.get_histogram(Color.Green)
-
-    def get_mean(self, image: QLabel) -> float:
-        return image.get_mean(Color.Green)
-
 class ViewBlueHistogram(ViewHistogramCommand):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Blue")
+        self.color = Color.Blue
 
     def get_bar_color(self, val: int) -> List[float]:
         return (0, 0, val / 255)
 
-    def get_histogram(self, image: QLabel) -> List[int]:
-        return image.get_histogram(Color.Blue)
-
-    def get_mean(self, image: QLabel) -> float:
-        return image.get_mean(Color.Blue)
-
-
 class ViewGrayScaleHistogram(ViewHistogramCommand):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Gray Scale (NTSC)")
+        self.color = Color.Gray
 
     def get_bar_color(self, val: int) -> List[float]:
-        return (val / 255, 0, val / 255) # So the whity values can be seen in the histogram
-
+        val = val / 255 * 200 / 255 # This is made so the values don't reach pure white and can be seen
+        return (val, val, val) 
   
-    def get_histogram(self, image: QLabel) -> List[int]:
-        return image.get_histogram(3) # Gray isn't included in the Color enum to avoid breaking de loops based on such enum
-
-    def get_mean(self, image: QLabel) -> float:
-        return image.get_mean(3) # Gray sn't included in the Color enum to avoid breaking de loops based on such enum
-
-        
 

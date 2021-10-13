@@ -15,11 +15,12 @@ class Command(QAction):
     def execute(self, main_window: QMainWindow):
         print("Executing base command")
 
-class InsiderCommand(Command):
-  """It access to current image with title"""
-  def get_active_image_with_title(self, main_window: QMainWindow):  
-      active_editor = main_window.getActiveEditor()
-      if active_editor:
-          return (active_editor.widget(), active_editor.windowTitle())
-      else:
-          return (None, None)
+    def get_active_image(self, main_window: QMainWindow):  
+        active_editor = main_window.getActiveEditor()
+        if active_editor:
+            return active_editor.widget()
+
+    def get_active_title(self, main_window: QMainWindow):  
+        active_editor = main_window.getActiveEditor()
+        if active_editor:
+            return active_editor.windowTitle()
