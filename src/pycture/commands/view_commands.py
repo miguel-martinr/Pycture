@@ -49,7 +49,7 @@ class ViewHistogramCommand(Command):
         figure.savefig(buffer)
         return QPixmap.fromImage(ImageQt(Image.open(buffer)))
 
-    def get_bar_color(self, val: int) -> (float, float, float):
+    def get_bar_color(self, val: int) -> List[float]:
         pass
 
     def get_histogram(self, image: QLabel) -> List[int]:
@@ -63,7 +63,7 @@ class ViewRedHistogram(ViewHistogramCommand):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Red")
 
-    def get_bar_color(self, val: int) -> (float, float, float):
+    def get_bar_color(self, val: int) -> List[float]:
         return (val / 255, 0, 0)
 
     def get_histogram(self, image: QLabel) -> List[int]:
@@ -76,7 +76,7 @@ class ViewGreenHistogram(ViewHistogramCommand):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Green")
 
-    def get_bar_color(self, val: int) -> (float, float, float):
+    def get_bar_color(self, val: int) -> List[float]:
         return (0, val / 255, 0)
 
     def get_histogram(self, image: QLabel) -> List[int]:
@@ -89,7 +89,7 @@ class ViewBlueHistogram(ViewHistogramCommand):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Blue")
 
-    def get_bar_color(self, val: int) -> (float, float, float):
+    def get_bar_color(self, val: int) -> List[float]:
         return (0, 0, val / 255)
 
     def get_histogram(self, image: QLabel) -> List[int]:
