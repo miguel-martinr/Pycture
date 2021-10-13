@@ -11,6 +11,8 @@ class OpenFileCommand(Command):
 
     def execute(self, main_window: QMainWindow):
         file_path, _ = QFileDialog.getOpenFileName(None, "Open an image", "/home", "Images (*.png *.jpg *.jpeg *.bmp)")
+        if not file_path:
+            return
         (_, filename) = path.split(file_path)
         main_window.addEditor(QPixmap(file_path), filename)
 
@@ -23,7 +25,9 @@ class SaveFileCommand(Command):
         if activeEditor == None:
             return # TODO: Notify the user (can't save if there isn't images)
         file_path, _ = QFileDialog.getSaveFileName(None, "Save an image", "/home", "Images (*.png *.jpg *.jpeg *.bmp)")
-        (_, extension) = path.splitext(file_path)
+        if not file_path:
+            return
+        _, extension = path.splitext(file_path)
         if not extension:
             extension = ".png"
         elif extension not in [".png", ".jpg", ".jpeg", ".bmp"]:
