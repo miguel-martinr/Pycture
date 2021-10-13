@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QMenu, QWidget
 from PyQt5.QtCore import QCoreApplication
 
 from pycture.commands.view_commands import ViewBlueHistogram, ViewGrayScaleHistogram, ViewGreenHistogram, ViewRedHistogram
+from pycture.commands.edit_commands import ToGrayScale
 from ..commands import (Command, file_commands_list, edit_commands_list,
     red_view_commands_list, green_view_commands_list, blue_view_commands_list,
     gray_view_commands_list)
@@ -33,7 +34,7 @@ class EditMenu(CommandMenu):
         super().__init__(parent)
         self.setTitle("Edit")
         self.setMenuCommands(edit_commands_list)
-
+        self.setMenuSubmenus([TransformMenu])
 class ViewMenu(CommandMenu):
     def __init__(self, parent: QWidget):
         super().__init__(parent)
@@ -46,5 +47,10 @@ class HistogramMenu(CommandMenu):
         self.setTitle("Histogram")
         self.setMenuCommands([ViewRedHistogram, ViewGreenHistogram, ViewBlueHistogram, ViewGrayScaleHistogram])
 
+class TransformMenu(CommandMenu):
+    def __init__(self, parent: QWidget):
+      super().__init__(parent)
+      self.setTitle("Transform")
+      self.setMenuCommands([ToGrayScale])
 
 menus = [FileMenu, EditMenu, ViewMenu]

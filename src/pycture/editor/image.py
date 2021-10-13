@@ -61,7 +61,32 @@ class Image(QLabel):
           return self.histograms[3]
         return self.histograms[color.value]
 
-    
+    def get_gray_scaled_image(self, system = GrayScale["NTSC"]):
+        image = self.pixmap().toImage()
+        width = image.width()
+        heigth = image.height()
+
+        gray_scaled = QPixmap(width, heigth).toImage()
+
+        for x in range(width):
+          for y in range(heigth):
+              color_value = image.pixel(x, y)
+              red_comp = self.get_red_value(color_value) * system[0]
+              green_comp = self.get_green_value(color_value) * system[1]
+              blue_comp = self.get_blue_value(color_value) * system[2]
+              
+              gray_value = int(red_comp + green_comp + blue_comp)
+              gray_value = 0x000000ff & gray_value
+              for i in [0, 1]:
+                  gray_value = gray_value | (gray_value << 8)
+
+              
+              # Alpha correction
+              gray_value = gray_value | (color_value & 0xff000000)
+              gray_scaled.setPixel(x, y, gray_value)
+        return gray_scaled 
+              
+
 
     def get_mean(self, color: Color):
       if (color == 3): # Gray scale temp fix
