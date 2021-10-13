@@ -57,11 +57,15 @@ class Image(QLabel):
         return pixel & 0x000000ff 
 
     def get_histogram(self, color: Color):
+        if (color == 3): # Gray scale temp fix
+          return self.histograms[3]
         return self.histograms[color.value]
 
     
 
     def get_mean(self, color: Color):
-        return self.means[color.value]
+      if (color == 3): # Gray scale temp fix
+        return self.means[3]
+      return self.means[color.value]
 
 

@@ -104,8 +104,9 @@ class ViewGrayScaleHistogram(ViewHistogramCommand):
         super().__init__(parent, "Gray Scale (NTSC)")
 
     def get_bar_color(self, val: int) -> List[float]:
-        return (val / 255, val / 255, val / 255)
+        return (val / 255, 0, val / 255) # So the whity values can be seen in the histogram
 
+  
     def get_histogram(self, image: QLabel) -> List[int]:
         return image.get_histogram(3) # Gray isn't included in the Color enum to avoid breaking de loops based on such enum
 
