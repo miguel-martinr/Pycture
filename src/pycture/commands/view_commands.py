@@ -8,10 +8,12 @@ import matplotlib.pyplot as plt
 from PIL.ImageQt import ImageQt
 from PIL import Image
 
-from .command import Command
+from .command import Command, InsiderCommand
 from ..editor.image import Color
 
-class ViewHistogramCommand(Command):
+
+
+class ViewHistogramCommand(InsiderCommand):
     def __init__(self, parent: QWidget, color: str):
         super().__init__(parent, color)
 
@@ -32,13 +34,6 @@ class ViewHistogramCommand(Command):
         self.write_mean(mean)
         pixmap = self.save_figure_to_pixmap(figure)
         main_window.addEditor(pixmap, title + "." + self.text() + "-hist")
-
-    def get_active_image_with_title(self, main_window: QMainWindow):  
-        active_editor = main_window.getActiveEditor()
-        if active_editor:
-            return (active_editor.widget(), active_editor.windowTitle())
-        else:
-            return (None, None)
 
     def write_mean(self, mean: float):
         plt.axvline(mean)

@@ -8,3 +8,10 @@ class EditBrightnessCommand(Command):
 
     def execute(self, main_window: QMainWindow):
         print("Edits brightness")
+
+class ToGrayScale(Command):
+  def __init__(self, parent: QWidget):
+      super().__init__(parent, "Gray scale (NTSC)")
+
+  def execute(self, main_window: QMainWindow):
+    pass
