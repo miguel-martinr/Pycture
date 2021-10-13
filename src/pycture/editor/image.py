@@ -36,7 +36,7 @@ class Image(QLabel):
                 gray_value += value * GrayScale["NTSC"][color.value] # PAL available
             gray_value = int(gray_value)  # int(gray_value) or a different rounding?
             histograms[3][gray_value] += 1
-            means[3] += 1        
+            means[3] += gray_value   
 
         total_pixels = image.width() * image.height()
         self.histograms = list(map(lambda histogram:
