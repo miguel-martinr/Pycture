@@ -98,3 +98,19 @@ class ViewBlueHistogram(ViewHistogramCommand):
     def get_mean(self, image: QLabel) -> float:
         return image.get_mean(Color.Blue)
 
+
+class ViewGrayScaleHistogram(ViewHistogramCommand):
+    def __init__(self, parent: QWidget):
+        super().__init__(parent, "Gray Scale (NTSC)")
+
+    def get_bar_color(self, val: int) -> List[float]:
+        return (val / 255, val / 255, val / 255)
+
+    def get_histogram(self, image: QLabel) -> List[int]:
+        return image.get_histogram(3) # Gray isn't included in the Color enum to avoid breaking de loops based on such enum
+
+    def get_mean(self, image: QLabel) -> float:
+        return image.get_mean(3) # Gray sn't included in the Color enum to avoid breaking de loops based on such enum
+
+        
+
