@@ -12,7 +12,6 @@ from .command import Command
 from ..editor.image import Color
 
 
-
 class ViewHistogramCommand(Command):
     def __init__(self, parent: QWidget, color: str):
         super().__init__(parent, color)
@@ -22,8 +21,9 @@ class ViewHistogramCommand(Command):
         title = self.get_active_title(main_window)
         if image == None:
             print("Can't create histogram if there is not an active editor")
-            return # TODO: Notify the user (can't create histogram if there isn't an active editor)
-        
+            # TODO: Notify the user (can't create histogram if there isn't an active editor)
+            return
+
         histogram = self.get_histogram(image)
         mean = self.get_mean(image)
 
@@ -63,6 +63,7 @@ class ViewRedHistogram(ViewHistogramCommand):
     def get_bar_color(self, val: int) -> List[float]:
         return (val / 255, 0, 0)
 
+
 class ViewGreenHistogram(ViewHistogramCommand):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Green")
@@ -70,6 +71,7 @@ class ViewGreenHistogram(ViewHistogramCommand):
 
     def get_bar_color(self, val: int) -> List[float]:
         return (0, val / 255, 0)
+
 
 class ViewBlueHistogram(ViewHistogramCommand):
     def __init__(self, parent: QWidget):
@@ -79,13 +81,22 @@ class ViewBlueHistogram(ViewHistogramCommand):
     def get_bar_color(self, val: int) -> List[float]:
         return (0, 0, val / 255)
 
+
 class ViewGrayScaleHistogram(ViewHistogramCommand):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Gray Scale (NTSC)")
         self.color = Color.Gray
 
     def get_bar_color(self, val: int) -> List[float]:
-        val = val / 255 * 200 / 255 # This is made so the values don't reach pure white and can be seen
-        return (val, val, val) 
-  
+        # This is made so the values don't reach pure white and can be seen
+        val = val / 255 * 200 / 255
+        return (val, val, val)
+
+
+class ViewImageInfo(Command):
+    def __init__(self, parent: QWidget):
+        super().__init__(parent, "Image info")
+    
+    def execute(self, main_window):
+        print(main_window.getActiveEditor().get_info())
 

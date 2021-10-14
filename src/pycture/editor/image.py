@@ -21,10 +21,27 @@ class Image(QLabel):
         super().__init__(parent)
         self.setPixmap(image)
         self.setup_histogram_data()
+        self.setup_info()
+
+    def setup_info(self):
         
+        pixmap = self.pixmap()
+        self.info = {
+            "width": pixmap.width(),
+            "heigth": pixmap.height(),
+            "ranges": self.ranges,
+            "brightness": self.means
+        }
+        print(self.info)
+
+    def get_info(self):
+        return self.info
+
+
     def setup_histogram_data(self) -> List[float]:
         image = self.pixmap().toImage()
         histograms = [[0] * 256, [0] * 256, [0] * 256, [0] * 256]
+        self.ranges = [[255, 0], [255, 0], [255, 0], [255, 0]]
         means = [0] * 4
         for x in range(image.width()):
             for y in range(image.height()):
@@ -36,6 +53,19 @@ class Image(QLabel):
                     histograms[color.value][value] += 1
                     means[color.value] += value
                     gray_value += GrayScaleLUT[color.value][value]
+
+                    # RGB Ranges
+                    if (value < self.ranges[color.value][0]):
+                        self.ranges[color.value][0] = value
+                    if (value > self.ranges[color.value][1]):
+                        self.ranges[color.value][1] = value
+
+                # GrayScale range
+                if (value < self.ranges[Color.Gray.value][0]):
+                    self.ranges[Color.Gray.value][0] = value
+                if (value > self.ranges[Color.Gray.value][1]):
+                    self.ranges[Color.Gray.value][1] = value
+
                 histograms[Color.Gray.value][int(gray_value)] += 1
                 means[Color.Gray.value] += gray_value   
 
