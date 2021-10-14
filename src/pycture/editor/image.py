@@ -2,7 +2,7 @@ from typing import List
 from enum import Enum
 
 from PyQt5.QtWidgets import QLabel, QWidget
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QMouseEvent
 
 class Color(Enum):
     Red = 0
@@ -21,6 +21,7 @@ class Image(QLabel):
         super().__init__(parent)
         self.setPixmap(image)
         self.setup_histogram_data()
+        self.setMouseTracking(True)
         
     def setup_histogram_data(self) -> List[float]:
         image = self.pixmap().toImage()
@@ -87,4 +88,6 @@ class Image(QLabel):
 
         return gray_scaled 
 
+    def mouseMoveEvent(self, event: QMouseEvent):
+        print(self.pixmap().toImage().pixel(event.pos()))
 
