@@ -3,15 +3,19 @@ from PyQt5.QtGui import QPixmap, QCloseEvent, QMouseEvent
 from PyQt5.QtWidgets import QDockWidget, QWidget, QMessageBox
 
 from ..events import DeleteEditorEvent, ChangeActiveEditorEvent
+from .container import Container
 from .image import Image
 
 class Editor(QDockWidget):
     def __init__(self, parent: QWidget, image: QPixmap, image_name: str):
         super().__init__(parent)
         self.setWindowTitle(image_name)
-        self.setWidget(Image(self, image))
+        self.setWidget(Container(self, image))
         self.setAllowedAreas(Qt.DockWidgetArea.AllDockWidgetAreas)
-        parent.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self)
+        parent.addDockWidget(Qt.DockWidgetArea.TopDockWidgetArea, self)
+        
+    def get_image(self):
+        return self.widget().image
         
     def closeEvent(self, event: QCloseEvent):
         close_dialog = QMessageBox()
@@ -37,4 +41,5 @@ class Editor(QDockWidget):
             self.parent(),
             ChangeActiveEditorEvent(self.windowTitle())
         )
+    
         
