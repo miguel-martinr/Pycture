@@ -36,7 +36,7 @@ class Image(QLabel):
                     histograms[color.value][value] += 1
                     means[color.value] += value
                     gray_value += GrayScaleLUT[color.value][value]
-                histograms[Color.Gray.value][int(gray_value)] += 1
+                histograms[Color.Gray.value][round(gray_value)] += 1
                 means[Color.Gray.value] += gray_value   
 
         total_pixels = image.width() * image.height()
@@ -77,7 +77,7 @@ class Image(QLabel):
                 green_comp = GrayScaleLUT[Color.Green.value][self.get_green_value(color_value)]
                 blue_comp = GrayScaleLUT[Color.Blue.value][self.get_blue_value(color_value)]
               
-                gray_value = int(red_comp + green_comp + blue_comp)
+                gray_value = round(red_comp + green_comp + blue_comp)
                 for _ in range(2):
                     gray_value = gray_value | (gray_value << 8)
 
