@@ -102,5 +102,5 @@ class Image(QLabel):
         red_val = self.get_red_value(pixel_val)
         green_val = self.get_green_value(pixel_val)
         blue_val = self.get_blue_value(pixel_val)
-        self.parent().label.setText(f"R: {red_val} G: {green_val} B: {blue_val}")
+        self.parent().data_bar.update_color((red_val, green_val, blue_val))
 
