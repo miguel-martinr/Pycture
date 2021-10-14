@@ -3,6 +3,7 @@ from enum import Enum
 
 from PyQt5.QtWidgets import QLabel, QWidget
 from PyQt5.QtGui import QPixmap, QMouseEvent
+from PyQt5.QtCore import Qt
 
 class Color(Enum):
     Red = 0
@@ -22,6 +23,9 @@ class Image(QLabel):
         self.setPixmap(image)
         self.setup_histogram_data()
         self.setMouseTracking(True)
+        self.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+        self.setMaximumHeight(image.height())
+        self.setMaximumWidth(image.width())
         
     def setup_histogram_data(self) -> List[float]:
         image = self.pixmap().toImage()
@@ -89,5 +93,14 @@ class Image(QLabel):
         return gray_scaled 
 
     def mouseMoveEvent(self, event: QMouseEvent):
-        print(self.pixmap().toImage().pixel(event.pos()))
+        x = event.x()
+        y = event.y()
+        image = self.pixmap().toImage()
+        if x >= image.width() or y >= image.height():
+            return
+        pixel_val = image.pixel(x, y)
+        red_val = self.get_red_value(pixel_val)
+        green_val = self.get_green_value(pixel_val)
+        blue_val = self.get_blue_value(pixel_val)
+        self.parent().label.setText(f"R: {red_val} G: {green_val} B: {blue_val}")
 

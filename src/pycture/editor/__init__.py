@@ -12,10 +12,10 @@ class Editor(QDockWidget):
         self.setWindowTitle(image_name)
         self.setWidget(Container(self, image))
         self.setAllowedAreas(Qt.DockWidgetArea.AllDockWidgetAreas)
-        parent.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self)
+        parent.addDockWidget(Qt.DockWidgetArea.TopDockWidgetArea, self)
         
     def get_image(self):
-        self.widget().image
+        return self.widget().image
         
     def closeEvent(self, event: QCloseEvent):
         close_dialog = QMessageBox()
