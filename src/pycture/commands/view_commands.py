@@ -115,13 +115,13 @@ class ViewImageBrightness(ViewImageInfo):
         super().__init__(parent, "Brightness")
 
     def execute(self, main_window: QMainWindow):
-        image = self.get_active_image(main_window)
-        if image == None:
+        active_image = self.get_active_image(main_window)
+        if active_image == None:
             # TODO: Notify the user
             print("Can't view brightness if there is not an active editor")
             return
 
-        brightness = image.get_brightness()
+        brightness = active_image.get_brightness()
         self.text_label.setText(
             f"R: {brightness[0]:.2f}\nG: {brightness[1]:.2f}\nB: {brightness[2]:.2f}\n\nGray: {brightness[3]:.2f}")
         return super().execute(main_window)
@@ -133,6 +133,10 @@ class ViewImageSize(ViewImageInfo):
 
     def execute(self, main_window: QMainWindow):
         active_image = self.get_active_image(main_window)
+        if active_image == None:
+            # TODO: Notify the user
+            print("Can't view size if there is not an active editor")
+            return
         columns = active_image.get_width()
         rows = active_image.get_height()
         self.text_label.setText(f"Columns: {columns}\nRows: {rows}")
@@ -145,6 +149,10 @@ class ViewImageContrast(ViewImageInfo):
 
     def execute(self, main_window: QMainWindow):
         active_image = self.get_active_image(main_window)
+        if active_image == None:
+            # TODO: Notify the user
+            print("Can't view contrast if there is not an active editor")
+            return        
         contrast = active_image.get_contrast()
         self.text_label.setText(
             f"R: {contrast[0]:.2f}\nG: {contrast[1]:.2f}\nB: {contrast[2]:.2f}\n\nGray: {contrast[3]:.2f}")
@@ -156,7 +164,26 @@ class ViewImageEntropy(ViewImageInfo):
 
     def execute(self, main_window: QMainWindow):
         active_image = self.get_active_image(main_window)
+        if active_image == None:
+            # TODO: Notify the user
+            print("Can't view entropy if there is not an active editor")
+            return        
         entropies = active_image.get_entropies()
         self.text_label.setText(
             f"R: {entropies[0]:.2f}\nG: {entropies[1]:.2f}\nB: {entropies[2]:.2f}\n\nGray: {entropies[3]:.2f}")
+        return super().execute(main_window)
+
+class ViewImageRanges(ViewImageInfo):
+    def __init__(self, parent: QWidget):
+        super().__init__(parent, "Ranges")
+
+    def execute(self, main_window: QMainWindow):
+        active_image = self.get_active_image(main_window)
+        if active_image == None:
+            # TODO: Notify the user
+            print("Can't view ranges if there is not an active editor")
+            return        
+        ranges = active_image.get_ranges()
+        self.text_label.setText(
+            f"R: {ranges[0]}\nG: {ranges[1]}\nB: {ranges[2]}\n\nGray: {ranges[3]}")
         return super().execute(main_window)
