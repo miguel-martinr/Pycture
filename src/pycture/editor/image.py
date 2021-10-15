@@ -118,7 +118,7 @@ class Image(QLabel):
     
     def get_pixel_rgb(self, x, y):
         image = self.pixmap().toImage()
-        if x >= image.width() or y >= image.height():
+        if not image.valid(x, y):
             return None
         pixel_val = image.pixel(x, y)
         red_val = self.get_red_value(pixel_val)
@@ -190,3 +190,21 @@ class Image(QLabel):
         rgb = self.get_pixel_rgb(event.x(), event.y())
         if rgb != None:
             self.parent().data_bar.update_color(rgb)
+    
+    def mousePressEvent(self, event: QMouseEvent):
+        self.press_pos = (event.x(), event.y())
+
+    def mouseReleaseEvent(self, event: QMouseEvent):
+        x_values = [event.x(), self.press_pos[0]]
+        x_values.sort()
+        y_values = [event.y(), self.press_pos[1]]
+        y_values.sort()
+        new_image = self.pixmap().copy(
+            x_values[0],
+            y_values[0],
+            x_values[1] - x_values[0],
+            y_values[1] - y_values[0]
+        )
+        title = self.parent().parent().windowTitle() + "(Selection)"
+        self.parent().parent().parent().add_editor(new_image, title)
+    

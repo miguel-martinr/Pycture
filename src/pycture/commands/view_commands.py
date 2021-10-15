@@ -34,7 +34,7 @@ class ViewHistogramCommand(Command):
 
         self.write_mean(mean)
         pixmap = self.save_figure_to_pixmap(figure)
-        main_window.addEditor(pixmap, title + "." + self.text() + "-hist")
+        main_window.add_editor(pixmap, title + "." + self.text() + "-hist")
 
     def write_mean(self, mean: float):
         plt.axvline(mean)

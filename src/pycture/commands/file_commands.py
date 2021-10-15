@@ -14,7 +14,7 @@ class OpenFileCommand(Command):
         if not file_path:
             return
         (_, filename) = path.split(file_path)
-        main_window.addEditor(QPixmap(file_path), filename)
+        main_window.add_editor(QPixmap(file_path), filename)
 
 class SaveFileCommand(Command):
     def __init__(self, parent: QWidget):

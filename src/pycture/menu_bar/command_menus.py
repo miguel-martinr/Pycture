@@ -12,11 +12,11 @@ class CommandMenu(QMenu):
     def __init__(self, parent: QWidget):
         super().__init__(parent)
 
-    def setMenuCommands(self, commands: List[Command]):
+    def set_menu_commands(self, commands: List[Command]):
         for command in commands:
             self.addAction(command(self))
         
-    def setMenuSubmenus(self, submenus: "List[CommandMenu]"):
+    def set_menu_submenus(self, submenus: "List[CommandMenu]"):
         for submenu in submenus:
             self.addMenu(submenu(self))
         
@@ -27,20 +27,19 @@ class FileMenu(CommandMenu):
     def __init__(self, parent: QWidget):
         super().__init__(parent)
         self.setTitle("File")
-        self.setMenuCommands(file_commands_list)
+        self.set_menu_commands(file_commands_list)
       
 class EditMenu(CommandMenu):
     def __init__(self, parent: QWidget):
         super().__init__(parent)
         self.setTitle("Edit")
-        self.setMenuCommands(edit_commands_list)
-        self.setMenuSubmenus([TransformMenu])
+        self.set_menu_commands(edit_commands_list)
+        self.set_menu_submenus([TransformMenu])
 class ViewMenu(CommandMenu):
     def __init__(self, parent: QWidget):
         super().__init__(parent)
         self.setTitle("View")
-        self.setMenuCommands([])
-        self.setMenuSubmenus([HistogramMenu, ImageInfoMenu])
+        self.set_menu_submenus([HistogramMenu, ImageInfoMenu])
 
 
 # ViewMenu submenus
@@ -48,7 +47,7 @@ class HistogramMenu(CommandMenu):
     def __init__(self, parent: QWidget):
         super().__init__(parent)
         self.setTitle("Histogram")
-        self.setMenuCommands([ViewRedHistogram, ViewGreenHistogram, ViewBlueHistogram, ViewGrayScaleHistogram])
+        self.set_menu_commands([ViewRedHistogram, ViewGreenHistogram, ViewBlueHistogram, ViewGrayScaleHistogram])
 
 class ImageInfoMenu(CommandMenu):
     def __init__(self, parent: QWidget):
@@ -62,8 +61,7 @@ class TransformMenu(CommandMenu):
     def __init__(self, parent: QWidget):
       super().__init__(parent)
       self.setTitle("Transform")
-
-      self.setMenuCommands([ToGrayScale])
+      self.set_menu_commands([ToGrayScale])
 
 
 menus = [FileMenu, EditMenu, ViewMenu]
