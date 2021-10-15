@@ -33,6 +33,7 @@ class Image(QLabel):
         self.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self.setMaximumHeight(image.height())
         self.setMaximumWidth(image.width())
+        
 
     def setup_info(self):
         pixmap = self.pixmap()

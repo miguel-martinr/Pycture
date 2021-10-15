@@ -25,7 +25,8 @@ class MainWindow(QMainWindow):
         elif type(event) == DeleteEditorEvent:
             self.editors.pop(event.editor_name)
         elif type(event) == ChangeActiveEditorEvent:
-            self.active_editor = event.editor_name
+            self.setActiveEditor(event.editor_name)
+            
         else:
             event.ignore()
             
@@ -34,7 +35,14 @@ class MainWindow(QMainWindow):
             (name, extension) = path.splitext(name)
             name = name + "+" + extension
         self.editors[name] = Editor(self, image, name)
-        self.active_editor = name
+        self.setActiveEditor(name)
         
     def getActiveEditor(self) -> Editor:
         return self.editors.get(self.active_editor)
+    
+    def setActiveEditor(self, name: str):
+        if (self.active_editor):
+            self.editors[self.active_editor].set_active(False)
+        self.active_editor = name
+        self.editors[name].set_active(True)
+        
