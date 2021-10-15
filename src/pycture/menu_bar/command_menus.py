@@ -40,18 +40,30 @@ class ViewMenu(CommandMenu):
         super().__init__(parent)
         self.setTitle("View")
         self.setMenuCommands([ViewImageInfo])
-        self.setMenuSubmenus([HistogramMenu])
+        self.setMenuSubmenus([HistogramMenu, ImageInfoMenu])
 
+
+# ViewMenu submenus
 class HistogramMenu(CommandMenu):
     def __init__(self, parent: QWidget):
         super().__init__(parent)
         self.setTitle("Histogram")
         self.setMenuCommands([ViewRedHistogram, ViewGreenHistogram, ViewBlueHistogram, ViewGrayScaleHistogram])
 
+class ImageInfoMenu(CommandMenu):
+    def __init__(self, parent: QWidget):
+        super().__init__(parent)
+        self.setTitle("Info")
+        self.setMenuCommands([])
+
+
+# EditMenu submenus
 class TransformMenu(CommandMenu):
     def __init__(self, parent: QWidget):
       super().__init__(parent)
       self.setTitle("Transform")
+
       self.setMenuCommands([ToGrayScale])
+
 
 menus = [FileMenu, EditMenu, ViewMenu]
