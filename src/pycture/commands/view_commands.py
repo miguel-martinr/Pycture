@@ -105,6 +105,7 @@ class ViewImageInfo(Command):
         img_name = self.get_active_title(main_window)
         info_name = self.container.windowTitle()
         self.container.setWindowTitle(img_name + " - " + info_name)
+        self.text_label.setFixedSize(300, 100)
         self.container.show()
 
 class ViewImageBrightness(ViewImageInfo):
@@ -119,9 +120,15 @@ class ViewImageBrightness(ViewImageInfo):
     
         brightness = image.get_brightness()
         self.text_label.setText(f"R: {brightness[0]:.2f}\nG: {brightness[1]:.2f}\nB: S{brightness[2]:.2f}")
-        self.text_label.setFixedSize(300, 100)
         return super().execute(main_window)
         
-        
-
-
+      
+class ViewImageSize(ViewImageInfo):
+    def __init__(self, parent: QWidget):
+        super().__init__(parent, "Size")
+    def execute(self, main_window: QMainWindow):
+        active_image = self.get_active_image(main_window)
+        columns = active_image.get_width()
+        rows = active_image.get_height()
+        self.text_label.setText(f"Columns: {columns}\nRows: {rows}")
+        return super().execute(main_window)
