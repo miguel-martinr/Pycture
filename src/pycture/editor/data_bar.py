@@ -8,4 +8,4 @@ class DataBar(QLabel):
         self.setAlignment(Qt.AlignLeft | Qt.AlignTop)
 
     def update_color(self, rgb: (int, int, int)):
-        self.setText(f"R: {rgb[0]} G: {rgb[1]} B: {rgb[2]}")
+        self.setText(f"R: {rgb[0]}\tG: {rgb[1]}\tB: {rgb[2]}")

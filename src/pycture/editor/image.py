@@ -114,7 +114,17 @@ class Image(QLabel):
         return (pixel & 0x0000ff00) >> 8
 
     def get_blue_value(self, pixel):
-        return pixel & 0x000000ff
+        return pixel & 0x000000ff 
+    
+    def get_pixel_rgb(self, x, y):
+        image = self.pixmap().toImage()
+        if x >= image.width() or y >= image.height():
+            return None
+        pixel_val = image.pixel(x, y)
+        red_val = self.get_red_value(pixel_val)
+        green_val = self.get_green_value(pixel_val)
+        blue_val = self.get_blue_value(pixel_val)
+        return (red_val, green_val, blue_val)
 
     def get_histogram(self, color: Color):
         if (color == 3):  # Gray scale temp fix
@@ -177,13 +187,6 @@ class Image(QLabel):
         return gray_scaled
 
     def mouseMoveEvent(self, event: QMouseEvent):
-        x = event.x()
-        y = event.y()
-        image = self.pixmap().toImage()
-        if x >= image.width() or y >= image.height():
-            return
-        pixel_val = image.pixel(x, y)
-        red_val = self.get_red_value(pixel_val)
-        green_val = self.get_green_value(pixel_val)
-        blue_val = self.get_blue_value(pixel_val)
-        self.parent().data_bar.update_color((red_val, green_val, blue_val))
+        rgb = self.get_pixel_rgb(event.x(), event.y())
+        if rgb != None:
+            self.parent().data_bar.update_color(rgb)
