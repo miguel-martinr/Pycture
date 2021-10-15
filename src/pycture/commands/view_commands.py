@@ -96,39 +96,56 @@ class ViewGrayScaleHistogram(ViewHistogramCommand):
 class ViewImageInfo(Command):
     def __init__(self, parent: QWidget, info_name: str):
         super().__init__(parent, info_name)
-        self.container = QWidget(parent, Qt.WindowType.Window)
+        self.container = QWidget()
         self.container.setWindowTitle(info_name)
         self.text_label = QLabel(self.container)
         self.text_label.setAlignment(Qt.AlignCenter)
-        
+
     def execute(self, main_window: QMainWindow):
+        self.container.setParent(main_window, Qt.WindowType.Window)
         img_name = self.get_active_title(main_window)
         info_name = self.container.windowTitle()
         self.container.setWindowTitle(img_name + " - " + info_name)
         self.text_label.setFixedSize(300, 100)
         self.container.show()
 
+
 class ViewImageBrightness(ViewImageInfo):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Brightness")
-    
+
     def execute(self, main_window: QMainWindow):
         image = self.get_active_image(main_window)
         if image == None:
-            print("Can't view brightness if there is not an active editor") # TODO: Notify the user
+            # TODO: Notify the user
+            print("Can't view brightness if there is not an active editor")
             return
-    
+
         brightness = image.get_brightness()
-        self.text_label.setText(f"R: {brightness[0]:.2f}\nG: {brightness[1]:.2f}\nB: S{brightness[2]:.2f}")
+        self.text_label.setText(
+            f"R: {brightness[0]:.2f}\nG: {brightness[1]:.2f}\nB: {brightness[2]:.2f}\n\nGray: {brightness[3]:.2f}")
         return super().execute(main_window)
-        
-      
+
+
 class ViewImageSize(ViewImageInfo):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Size")
+
     def execute(self, main_window: QMainWindow):
         active_image = self.get_active_image(main_window)
         columns = active_image.get_width()
         rows = active_image.get_height()
         self.text_label.setText(f"Columns: {columns}\nRows: {rows}")
+        return super().execute(main_window)
+
+
+class ViewImageContrast(ViewImageInfo):
+    def __init__(self, parent: QWidget):
+        super().__init__(parent, "Contrast")
+
+    def execute(self, main_window: QMainWindow):
+        active_image = self.get_active_image(main_window)
+        contrast = active_image.get_contrast()
+        self.text_label.setText(
+            f"R: {contrast[0]:.2f}\nG: {contrast[1]:.2f}\nB: {contrast[2]:.2f}\n\nGray: {contrast[3]:.2f}")
         return super().execute(main_window)

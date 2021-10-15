@@ -1,3 +1,5 @@
+from functools import reduce
+from math import sqrt
 from typing import List
 from enum import Enum
 
@@ -56,6 +58,9 @@ class Image(QLabel):
 
     def get_brightness(self):
         return list(map(lambda color: self.get_mean(color), Color))
+
+    def get_contrast(self):
+        return list(map(lambda color: self.get_sd(color), Color))
 
     def get_info(self):
         return self.info
@@ -117,6 +122,17 @@ class Image(QLabel):
 
     def get_mean(self, color: Color):
         return self.means[color.value]
+
+    def get_sd(self, color: Color):
+        return sqrt(self.get_variance(color))
+
+    def get_variance(self, color: Color):
+        histogram = self.get_histogram(color)
+        mean = self.get_mean(color)
+        variance = 0
+        for i in range(256):
+            variance += histogram[i] * (i - mean) ** 2
+        return variance
 
     def get_gray_scaled_image(self):
         image = self.pixmap().toImage()
