@@ -36,7 +36,7 @@ class Image(QLabel):
         pixmap = self.pixmap()
         self.info = {
             "width": self.get_width(),
-            "heigth": self.height(),
+            "heigth": self.get_height(),
             "ranges": self.get_ranges(),
             "brightness": self.get_brightness(),
         }
