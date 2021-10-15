@@ -4,7 +4,7 @@ from typing import List
 from enum import Enum
 
 from PyQt5.QtWidgets import QLabel, QWidget
-from PyQt5.QtGui import QPixmap, QMouseEvent
+from PyQt5.QtGui import QPixmap, QMouseEvent, QKeyEvent, QGuiApplication
 from PyQt5.QtCore import Qt
 
 
@@ -33,6 +33,7 @@ class Image(QLabel):
         self.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self.setMaximumHeight(image.height())
         self.setMaximumWidth(image.width())
+        self.press_pos = None
         
 
     def setup_info(self):
@@ -192,9 +193,16 @@ class Image(QLabel):
             self.parent().data_bar.update_color(rgb)
     
     def mousePressEvent(self, event: QMouseEvent):
-        self.press_pos = (event.x(), event.y())
+        if (event.button() == Qt.LeftButton and
+            QGuiApplication.keyboardModifiers() == Qt.ControlModifier):
+            self.press_pos = (event.x(), event.y())
+        else:
+            self.press_pos = None
 
     def mouseReleaseEvent(self, event: QMouseEvent):
+        if (event.button() != Qt.LeftButton or not self.press_pos or
+            QGuiApplication.keyboardModifiers() != Qt.ControlModifier):
+            return
         x_values = [event.x(), self.press_pos[0]]
         x_values.sort()
         y_values = [event.y(), self.press_pos[1]]
