@@ -13,5 +13,6 @@ class Container(QWidget):
         layout.addWidget(self.image)
         layout.setSpacing(0)
         self.data_bar = DataBar(self)
+        self.data_bar.setFixedWidth(image.width())
         layout.addWidget(self.data_bar)
         self.setLayout(layout)
