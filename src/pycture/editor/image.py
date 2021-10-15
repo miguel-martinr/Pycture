@@ -1,5 +1,5 @@
 from functools import reduce
-from math import sqrt
+from math import log2, sqrt
 from typing import List
 from enum import Enum
 
@@ -125,6 +125,20 @@ class Image(QLabel):
 
     def get_sd(self, color: Color):
         return sqrt(self.get_variance(color))
+
+    def get_entropy(self, color: Color):
+        histogram = self.get_histogram(color)
+        def prob(i): return histogram[i] / self.get_width() * self.get_height()
+        entropy = 0
+        for i in range(256):
+            p = prob(i)
+            if (p != 0):
+                entropy += p * log2(p)
+            
+        return -entropy
+
+    def get_entropies(self):
+        return list(map(lambda color: self.get_entropy(color), Color))
 
     def get_variance(self, color: Color):
         histogram = self.get_histogram(color)

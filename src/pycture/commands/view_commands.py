@@ -149,3 +149,14 @@ class ViewImageContrast(ViewImageInfo):
         self.text_label.setText(
             f"R: {contrast[0]:.2f}\nG: {contrast[1]:.2f}\nB: {contrast[2]:.2f}\n\nGray: {contrast[3]:.2f}")
         return super().execute(main_window)
+        
+class ViewImageEntropy(ViewImageInfo):
+    def __init__(self, parent: QWidget):
+        super().__init__(parent, "Entropy")
+
+    def execute(self, main_window: QMainWindow):
+        active_image = self.get_active_image(main_window)
+        entropies = active_image.get_entropies()
+        self.text_label.setText(
+            f"R: {entropies[0]:.2f}\nG: {entropies[1]:.2f}\nB: {entropies[2]:.2f}\n\nGray: {entropies[3]:.2f}")
+        return super().execute(main_window)
