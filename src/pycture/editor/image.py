@@ -40,7 +40,6 @@ class Image(QLabel):
             "ranges": self.get_ranges(),
             "brightness": self.get_brightness(),
         }
-        print(self.info)
 
     def get_width(self):
         return self.pixmap().width()
