@@ -2,7 +2,8 @@ from typing import List
 from enum import Enum
 
 from PyQt5.QtWidgets import QLabel, QWidget
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QMouseEvent
+from PyQt5.QtCore import Qt
 
 class Color(Enum):
     Red = 0
@@ -23,8 +24,12 @@ class Image(QLabel):
         self.setup_histogram_data()
         self.setup_info()
 
-    def setup_info(self):
+        self.setMouseTracking(True)
+        self.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+        self.setMaximumHeight(image.height())
+        self.setMaximumWidth(image.width())
         
+    def setup_info(self):
         pixmap = self.pixmap()
         self.info = {
             "width": pixmap.width(),
@@ -60,13 +65,15 @@ class Image(QLabel):
                     if (value > self.ranges[color.value][1]):
                         self.ranges[color.value][1] = value
 
+                gray_value = round(gray_value)
                 # GrayScale range
                 if (value < self.ranges[Color.Gray.value][0]):
                     self.ranges[Color.Gray.value][0] = value
                 if (value > self.ranges[Color.Gray.value][1]):
                     self.ranges[Color.Gray.value][1] = value
-
-                histograms[Color.Gray.value][int(gray_value)] += 1
+                
+                # GrayScale histogram and mean
+                histograms[Color.Gray.value][gray_value] += 1
                 means[Color.Gray.value] += gray_value   
 
         total_pixels = image.width() * image.height()
@@ -107,7 +114,7 @@ class Image(QLabel):
                 green_comp = GrayScaleLUT[Color.Green.value][self.get_green_value(color_value)]
                 blue_comp = GrayScaleLUT[Color.Blue.value][self.get_blue_value(color_value)]
               
-                gray_value = int(red_comp + green_comp + blue_comp)
+                gray_value = round(red_comp + green_comp + blue_comp)
                 for _ in range(2):
                     gray_value = gray_value | (gray_value << 8)
 
@@ -117,4 +124,15 @@ class Image(QLabel):
 
         return gray_scaled 
 
+    def mouseMoveEvent(self, event: QMouseEvent):
+        x = event.x()
+        y = event.y()
+        image = self.pixmap().toImage()
+        if x >= image.width() or y >= image.height():
+            return
+        pixel_val = image.pixel(x, y)
+        red_val = self.get_red_value(pixel_val)
+        green_val = self.get_green_value(pixel_val)
+        blue_val = self.get_blue_value(pixel_val)
+        self.parent().data_bar.update_color((red_val, green_val, blue_val))
 

@@ -18,7 +18,7 @@ class Command(QAction):
     def get_active_image(self, main_window: QMainWindow):  
         active_editor = main_window.getActiveEditor()
         if active_editor:
-            return active_editor.widget()
+            return active_editor.get_image()
 
     def get_active_title(self, main_window: QMainWindow):  
         active_editor = main_window.getActiveEditor()
