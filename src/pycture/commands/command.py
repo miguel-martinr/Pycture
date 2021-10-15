@@ -1,6 +1,8 @@
 from PyQt5.QtWidgets import QAction, QWidget, QMainWindow
 from PyQt5.QtCore import QCoreApplication
 
+from pycture.editor.image import Image
+
 from ..events import ExecuteCommandEvent
 
 class Command(QAction):
@@ -15,7 +17,7 @@ class Command(QAction):
     def execute(self, main_window: QMainWindow):
         print("Executing base command")
 
-    def get_active_image(self, main_window: QMainWindow):  
+    def get_active_image(self, main_window: QMainWindow) -> Image:  
         active_editor = main_window.getActiveEditor()
         if active_editor:
             return active_editor.get_image()

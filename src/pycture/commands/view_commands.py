@@ -1,7 +1,7 @@
 from io import BytesIO
 from typing import List
 
-from PyQt5.QtWidgets import QWidget, QMainWindow, QLabel
+from PyQt5.QtWidgets import QPushButton, QWidget, QMainWindow, QLabel
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtCore import Qt
 import matplotlib.pyplot as plt
@@ -94,9 +94,34 @@ class ViewGrayScaleHistogram(ViewHistogramCommand):
 
 
 class ViewImageInfo(Command):
+    def __init__(self, parent: QWidget, info_name: str):
+        super().__init__(parent, info_name)
+        self.container = QWidget(parent, Qt.WindowType.Window)
+        self.container.setWindowTitle(info_name)
+        self.text_label = QLabel(self.container)
+        self.text_label.setAlignment(Qt.AlignCenter)
+        
+    def execute(self, main_window: QMainWindow):
+        img_name = self.get_active_title(main_window)
+        info_name = self.container.windowTitle()
+        self.container.setWindowTitle(img_name + " - " + info_name)
+        self.container.show()
+
+class ViewImageBrightness(ViewImageInfo):
     def __init__(self, parent: QWidget):
-        super().__init__(parent, "Image info")
+        super().__init__(parent, "Brightness")
     
-    def execute(self, main_window):
-        print(main_window.getActiveEditor().get_info())
+    def execute(self, main_window: QMainWindow):
+        image = self.get_active_image(main_window)
+        if image == None:
+            print("Can't view brightness if there is not an active editor") # TODO: Notify the user
+            return
+    
+        brightness = image.get_brightness()
+        self.text_label.setText(f"R: {brightness[0]:.2f}\nG: {brightness[1]:.2f}\nB: S{brightness[2]:.2f}")
+        self.text_label.setFixedSize(300, 100)
+        return super().execute(main_window)
+        
+        
+
 

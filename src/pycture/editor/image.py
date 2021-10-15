@@ -38,7 +38,7 @@ class Image(QLabel):
             "width": self.get_width(),
             "heigth": self.height(),
             "ranges": self.get_ranges(),
-            "brightness": list(map(lambda color: self.get_mean(color), Color)),
+            "brightness": self.get_brightness(),
         }
         print(self.info)
 
@@ -54,6 +54,9 @@ class Image(QLabel):
         [[min, max], [min, max], [min, max], [min, max]]
         """
         return self.ranges
+
+    def get_brightness(self):
+        return list(map(lambda color: self.get_mean(color), Color))
 
     def get_info(self):
         return self.info
