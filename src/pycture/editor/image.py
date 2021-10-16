@@ -26,7 +26,7 @@ class Image(QLabel):
     def __init__(self, parent: QWidget, image: QPixmap):
         super().__init__(parent)
         self.setPixmap(image)
-        self.setup_histogram_data()
+        self.setup_image_data()
         self.setup_info()
 
         self.setMouseTracking(True)
@@ -67,7 +67,7 @@ class Image(QLabel):
     def get_info(self):
         return self.info
 
-    def setup_histogram_data(self) -> List[float]:
+    def setup_image_data(self) -> List[float]:
         image = self.pixmap().toImage()
         histograms = [[0] * 256, [0] * 256, [0] * 256, [0] * 256]
         self.ranges = [[255, 0], [255, 0], [255, 0], [255, 0]]
@@ -198,6 +198,7 @@ class Image(QLabel):
             self.press_pos = (event.x(), event.y())
         else:
             self.press_pos = None
+        event.ignore()
 
     def mouseReleaseEvent(self, event: QMouseEvent):
         if (event.button() != Qt.LeftButton or not self.press_pos or
@@ -215,4 +216,5 @@ class Image(QLabel):
         )
         title = self.parent().parent().windowTitle() + "(Selection)"
         self.parent().parent().parent().add_editor(new_image, title)
+        event.ignore()
     
