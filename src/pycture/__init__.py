@@ -6,7 +6,7 @@ from PyQt5.QtCore import QEvent
 
 from .menu_bar import MenuBar
 from .editor import Editor
-from .events import ExecuteCommandEvent, DeleteEditorEvent, ChangeActiveEditorEvent
+from .events import ExecuteCommandEvent, DeleteEditorEvent, ChangeActiveEditorEvent, NewEditorEvent
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -23,9 +23,13 @@ class MainWindow(QMainWindow):
         if type(event) == ExecuteCommandEvent:
             event.command.execute(self)
         elif type(event) == DeleteEditorEvent:
+            if event.editor_name == self.active_editor:
+                self.active_editor = None
             self.editors.pop(event.editor_name)
         elif type(event) == ChangeActiveEditorEvent:
             self.set_active_editor(event.editor_name)
+        elif type(event) == NewEditorEvent:
+            self.add_editor(event.image, event.editor_name)
             
         else:
             event.ignore()

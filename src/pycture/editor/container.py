@@ -1,6 +1,6 @@
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QEvent, QCoreApplication
 
 from .image import Image
 from .data_bar import DataBar
@@ -16,3 +16,9 @@ class Container(QWidget):
         self.data_bar.setFixedWidth(image.width())
         layout.addWidget(self.data_bar)
         self.setLayout(layout)
+        
+    def update_data_bar_color(self, rgb: (int, int, int)):
+        self.data_bar.update_color(rgb)        
+
+    def customEvent(self, event: QEvent):
+        QCoreApplication.sendEvent(self.parent(), event)

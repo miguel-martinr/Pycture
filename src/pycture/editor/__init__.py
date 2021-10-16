@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt, QCoreApplication
+from PyQt5.QtCore import Qt, QCoreApplication, QEvent
 from PyQt5.QtGui import QPixmap, QCloseEvent, QMouseEvent
 from PyQt5.QtWidgets import QDockWidget, QGraphicsDropShadowEffect, QWidget, QMessageBox
 
@@ -49,6 +49,9 @@ class Editor(QDockWidget):
             self.parent(),
             ChangeActiveEditorEvent(self.windowTitle())
         )
+
+    def customEvent(self, event: QEvent):
+        QCoreApplication.sendEvent(self.parent(), event)
 
     def set_active(self, active: bool):
         if (active and not self.active):          

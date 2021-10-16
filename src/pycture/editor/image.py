@@ -5,8 +5,9 @@ from enum import Enum
 
 from PyQt5.QtWidgets import QLabel, QWidget
 from PyQt5.QtGui import QPixmap, QMouseEvent, QKeyEvent, QGuiApplication
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QCoreApplication
 
+from ..events import NewEditorEvent
 
 class Color(Enum):
     Red = 0
@@ -190,7 +191,7 @@ class Image(QLabel):
     def mouseMoveEvent(self, event: QMouseEvent):
         rgb = self.get_pixel_rgb(event.x(), event.y())
         if rgb != None:
-            self.parent().data_bar.update_color(rgb)
+            self.parent().update_data_bar_color(rgb)
     
     def mousePressEvent(self, event: QMouseEvent):
         if (event.button() == Qt.LeftButton and
@@ -215,6 +216,6 @@ class Image(QLabel):
             y_values[1] - y_values[0]
         )
         title = self.parent().parent().windowTitle() + "(Selection)"
-        self.parent().parent().parent().add_editor(new_image, title)
+        QCoreApplication.sendEvent(self.parent(), NewEditorEvent(new_image, title))
         event.ignore()
     
