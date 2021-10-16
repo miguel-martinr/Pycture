@@ -4,9 +4,10 @@ from typing import List
 from enum import Enum
 
 from PyQt5.QtWidgets import QLabel, QWidget
-from PyQt5.QtGui import QPixmap, QMouseEvent
-from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap, QMouseEvent, QKeyEvent, QGuiApplication
+from PyQt5.QtCore import Qt, QCoreApplication
 
+from ..events import NewEditorEvent
 
 class Color(Enum):
     Red = 0
@@ -26,13 +27,14 @@ class Image(QLabel):
     def __init__(self, parent: QWidget, image: QPixmap):
         super().__init__(parent)
         self.setPixmap(image)
-        self.setup_histogram_data()
+        self.setup_image_data()
         self.setup_info()
 
         self.setMouseTracking(True)
         self.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self.setMaximumHeight(image.height())
         self.setMaximumWidth(image.width())
+        self.press_pos = None
         
 
     def setup_info(self):
@@ -66,7 +68,7 @@ class Image(QLabel):
     def get_info(self):
         return self.info
 
-    def setup_histogram_data(self) -> List[float]:
+    def setup_image_data(self) -> List[float]:
         image = self.pixmap().toImage()
         histograms = [[0] * 256, [0] * 256, [0] * 256, [0] * 256]
         self.ranges = [[255, 0], [255, 0], [255, 0], [255, 0]]
@@ -114,7 +116,17 @@ class Image(QLabel):
         return (pixel & 0x0000ff00) >> 8
 
     def get_blue_value(self, pixel):
-        return pixel & 0x000000ff
+        return pixel & 0x000000ff 
+    
+    def get_pixel_rgb(self, x, y):
+        image = self.pixmap().toImage()
+        if not image.valid(x, y):
+            return None
+        pixel_val = image.pixel(x, y)
+        red_val = self.get_red_value(pixel_val)
+        green_val = self.get_green_value(pixel_val)
+        blue_val = self.get_blue_value(pixel_val)
+        return (red_val, green_val, blue_val)
 
     def get_histogram(self, color: Color):
         if (color == 3):  # Gray scale temp fix
@@ -177,13 +189,33 @@ class Image(QLabel):
         return gray_scaled
 
     def mouseMoveEvent(self, event: QMouseEvent):
-        x = event.x()
-        y = event.y()
-        image = self.pixmap().toImage()
-        if x >= image.width() or y >= image.height():
+        rgb = self.get_pixel_rgb(event.x(), event.y())
+        if rgb != None:
+            self.parent().update_data_bar_color(rgb)
+    
+    def mousePressEvent(self, event: QMouseEvent):
+        if (event.button() == Qt.LeftButton and
+            QGuiApplication.keyboardModifiers() == Qt.ControlModifier):
+            self.press_pos = (event.x(), event.y())
+        else:
+            self.press_pos = None
+        event.ignore()
+
+    def mouseReleaseEvent(self, event: QMouseEvent):
+        if (event.button() != Qt.LeftButton or not self.press_pos or
+            QGuiApplication.keyboardModifiers() != Qt.ControlModifier):
             return
-        pixel_val = image.pixel(x, y)
-        red_val = self.get_red_value(pixel_val)
-        green_val = self.get_green_value(pixel_val)
-        blue_val = self.get_blue_value(pixel_val)
-        self.parent().data_bar.update_color((red_val, green_val, blue_val))
+        x_values = [event.x(), self.press_pos[0]]
+        x_values.sort()
+        y_values = [event.y(), self.press_pos[1]]
+        y_values.sort()
+        new_image = self.pixmap().copy(
+            x_values[0],
+            y_values[0],
+            x_values[1] - x_values[0],
+            y_values[1] - y_values[0]
+        )
+        title = self.parent().parent().windowTitle() + "(Selection)"
+        QCoreApplication.sendEvent(self.parent(), NewEditorEvent(new_image, title))
+        event.ignore()
+    
