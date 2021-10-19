@@ -24,5 +24,10 @@ class ToGrayScale(Command):
         gray_scaled_image = image.get_gray_scaled_image()
         main_window.add_editor(QPixmap.fromImage(gray_scaled_image), title + "(GrayScaled)")
 
-
+class transform_by_linear_segments(Command):
+    def __init__(self, parent: QWidget):
+       super().__init__(parent, "By linear segments")
+    
+    def execute(self, main_window: QMainWindow):
+        print("Open input dialog")
     
