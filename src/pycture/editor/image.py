@@ -28,36 +28,18 @@ class Image(QLabel):
         super().__init__(parent)
         self.setPixmap(image)
         self.setup_image_data()
-        self.setup_info()
 
         self.setMouseTracking(True)
         self.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self.setMaximumHeight(image.height())
         self.setMaximumWidth(image.width())
         self.press_pos = None
-        
-
-    def setup_info(self):
-        pixmap = self.pixmap()
-        self.info = {
-            "width": self.get_width(),
-            "heigth": self.get_height(),
-            "ranges": self.get_ranges(),
-            "brightness": self.get_brightness(),
-        }
 
     def get_width(self):
         return self.pixmap().width()
 
     def get_height(self):
         return self.pixmap().height()
-
-    def get_ranges(self):
-        """Returns a list with RGB-GrayScale ranges (in that order): 
-             R            G           B         Gray scale
-        [[min, max], [min, max], [min, max], [min, max]]
-        """
-        return self.ranges
 
     def get_brightness(self):
         return list(map(lambda color: self.get_mean(color), Color))
@@ -70,9 +52,9 @@ class Image(QLabel):
 
     def setup_image_data(self) -> List[float]:
         image = self.pixmap().toImage()
-        histograms = [[0] * 256, [0] * 256, [0] * 256, [0] * 256]
+        self.histograms = [[0] * 256, [0] * 256, [0] * 256, [0] * 256]
         self.ranges = [[255, 0], [255, 0], [255, 0], [255, 0]]
-        means = [0] * 4
+        self.means = [0] * 4
         for x in range(image.width()):
             for y in range(image.height()):
                 gray_value = 0
@@ -81,33 +63,20 @@ class Image(QLabel):
                              self.get_green_value, self.get_blue_value]
                 for color in [Color.Red, Color.Green, Color.Blue]:
                     value = get_value[color.value](pixel)
-                    histograms[color.value][value] += 1
-                    means[color.value] += value
+                    self.histograms[color.value][value] += 1
+                    self.means[color.value] += value
                     gray_value += GrayScaleLUT[color.value][value]
 
-                    # RGB Ranges
-                    if (value < self.ranges[color.value][0]):
-                        self.ranges[color.value][0] = value
-                    if (value > self.ranges[color.value][1]):
-                        self.ranges[color.value][1] = value
-
                 gray_value = round(gray_value)
-                # GrayScale range
-                if (value < self.ranges[Color.Gray.value][0]):
-                    self.ranges[Color.Gray.value][0] = value
-                if (value > self.ranges[Color.Gray.value][1]):
-                    self.ranges[Color.Gray.value][1] = value
-
-                # GrayScale histogram and mean
-                histograms[Color.Gray.value][gray_value] += 1
-                means[Color.Gray.value] += gray_value
+                self.histograms[Color.Gray.value][gray_value] += 1
+                self.means[Color.Gray.value] += gray_value
 
         total_pixels = image.width() * image.height()
         self.histograms = list(map(lambda histogram:
                                    list(map(lambda x: x / total_pixels, histogram)),
-                                   histograms
+                                   self.histograms
                                    ))
-        self.means = list(map(lambda mean: mean / total_pixels, means))
+        self.means = list(map(lambda mean: mean / total_pixels, self.means))
 
     def get_red_value(self, pixel):
         return (pixel & 0x00ff0000) >> 16
@@ -129,8 +98,6 @@ class Image(QLabel):
         return (red_val, green_val, blue_val)
 
     def get_histogram(self, color: Color):
-        if (color == 3):  # Gray scale temp fix
-            return self.histograms[3]
         return self.histograms[color.value]
 
     def get_mean(self, color: Color):
@@ -138,6 +105,21 @@ class Image(QLabel):
 
     def get_sd(self, color: Color):
         return sqrt(self.get_variance(color))
+
+    def get_ranges(self, color: Color):
+        histogram = self.histograms[color.value]
+        min = 0
+        max = 255
+        for index, val in enumerate(histogram):
+           if val != 0:
+               min = index 
+               break
+        for index, val in enumerate(reversed(histogram)):
+           if val != 0:
+               max = 255 - index 
+               break
+        return (min, max)
+
 
     def get_entropy(self, color: Color):
         histogram = self.get_histogram(color)

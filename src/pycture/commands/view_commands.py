@@ -182,8 +182,8 @@ class ViewImageRanges(ViewImageInfo):
         if active_image == None:
             # TODO: Notify the user
             print("Can't view ranges if there is not an active editor")
-            return        
-        ranges = active_image.get_ranges()
+            return 
+        ranges = list(map(lambda color: active_image.get_ranges(color), Color))
         self.text_label.setText(
             f"R: {ranges[0]}\nG: {ranges[1]}\nB: {ranges[2]}\n\nGray: {ranges[3]}")
         return super().execute(main_window)
