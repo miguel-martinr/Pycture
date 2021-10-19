@@ -45,7 +45,7 @@ class transform_by_linear_segments(Command):
         num_of_segments = dialog.intValue()
         return  [num_of_segments, ok]
         
-
+    
     def execute(self, main_window: QMainWindow):
         active_image = self.get_active_image(main_window)
         if (not active_image):
@@ -56,4 +56,5 @@ class transform_by_linear_segments(Command):
         if (not ok):
             print("Linear transformation cancelled")
             return
-        print(num_of_segments)
+        
+
