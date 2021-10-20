@@ -42,14 +42,14 @@ class SegmentsInput(QDialog):
         # Preview btn
         preview_btn = QPushButton("Preview")
         preview_btn.setDisabled(True)
-        preview_btn.clicked.connect(lambda: self.previewed.emit(self.get_points()))
+        preview_btn.clicked.connect(lambda: self.previewed.emit(self.get_segments()))
         accept_btn.clicked.connect(lambda: preview_btn.setDisabled(False))
         footer.addWidget(preview_btn, 0, 0)
 
         # Apply btn
         apply_btn = QPushButton("Apply")
         apply_btn.setDisabled(True)
-        apply_btn.clicked.connect(lambda: self.applied.emit(self.get_points()))
+        apply_btn.clicked.connect(lambda: self.applied.emit(self.get_segments()))
         accept_btn.clicked.connect(lambda: apply_btn.setDisabled(False))
         footer.addWidget(apply_btn, 0, 1)
 
@@ -107,6 +107,13 @@ class SegmentsInput(QDialog):
             y = int(y_input.text())
             points.append((x, y))
         return points
+
+    def get_segments(self):
+        points = self.get_points()
+        segments = []
+        for i in range(len(points) - 1):
+            segments.append((points[i], points[i + 1]))
+        return segments
 
 class IntValidator(QValidator):
     def __init__(self, bottom: int, top: int) -> None:
