@@ -6,6 +6,11 @@ from ..events import DeleteEditorEvent, ChangeActiveEditorEvent
 from .container import Container
 from .image import Image
 
+SELECTED_DOCK_CSS = """
+QDockWidget::title {
+    background: #A0B3C3;
+}
+"""
 
 class Editor(QDockWidget):
     def __init__(self, parent: QWidget, image: QPixmap, image_name: str):
@@ -55,8 +60,8 @@ class Editor(QDockWidget):
 
     def set_active(self, active: bool):
         if (active and not self.active):          
-            self.widget().setStyleSheet("border-style: solid; border-width: 5px")
+            self.setStyleSheet(SELECTED_DOCK_CSS)
             self.active = True
         else:
-            self.widget().setStyleSheet(None)
+            self.setStyleSheet(None)
             self.active = False
