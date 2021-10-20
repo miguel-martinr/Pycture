@@ -82,8 +82,8 @@ class SegmentsInput(QDialog):
         form.addRow(accept_btn)
         return accept_btn, num_of_segments_input
 
-    def get_int_input(self, bottom: int, top: int):
-        input = QLineEdit()
+    def get_int_input(self, bottom: int, top: int, default: int = 0):
+        input = QLineEdit(str(default))
         input.setValidator(IntValidator(bottom, top))
         return input
 
