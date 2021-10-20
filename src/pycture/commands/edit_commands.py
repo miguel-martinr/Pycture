@@ -2,6 +2,8 @@ from PIL.ImageQt import QImage, QPixmap
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QInputDialog, QWidget, QMainWindow
 
+from pycture.dialogs.input_dialogs import SegmentsInput
+
 from .command import Command
 
 
@@ -52,9 +54,6 @@ class transform_by_linear_segments(Command):
             print("No image to transform")  # TODO: Notify user
             return
 
-        num_of_segments, ok = self.get_num_of_segments(main_window)
-        if (not ok):
-            print("Linear transformation cancelled")
-            return
+        dialog = SegmentsInput(main_window)
         
 
