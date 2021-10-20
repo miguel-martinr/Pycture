@@ -37,7 +37,11 @@ class SegmentsInput(QDialog):
 
         # Preview btn
         preview_btn = QPushButton("Preview")
+        preview_btn.setDisabled(True)
+        accept_btn.clicked.connect(lambda: preview_btn.setDisabled(False))
+        preview_btn.clicked.connect(lambda: print(self.get_points()))
         footer.addWidget(preview_btn, 0, 0)
+
 
 
     def add_point_input(self):
@@ -49,7 +53,7 @@ class SegmentsInput(QDialog):
         last_point_inputs = self.point_inputs.pop()
         for input in last_point_inputs:
             input.deleteLater()
-        self.points_form.itemAtPosition(len(self.point_inputs), 0).widget().deleteLater()
+        self.points_grid.itemAtPosition(len(self.point_inputs), 0).widget().deleteLater()
         
 
     def update_point_inputs(self, num_of_points: int, grid: QGridLayout):
