@@ -31,8 +31,8 @@ class Image(QLabel):
 
         self.setMouseTracking(True)
         self.setAlignment(Qt.AlignLeft | Qt.AlignTop)
-        self.setMaximumHeight(image.height())
-        self.setMaximumWidth(image.width())
+        self.setFixedHeight(image.height())
+        self.setFixedWidth(image.width())
         self.press_pos = None
 
     def get_width(self):
