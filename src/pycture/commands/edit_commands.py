@@ -55,5 +55,7 @@ class transform_by_linear_segments(Command):
             return
 
         dialog = SegmentsInput(main_window)
+        dialog.previewed.connect(lambda points: print("Previewed: ", points))
+        dialog.applied.connect(lambda points: print("Applied: ", points))
         
 
