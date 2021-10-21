@@ -229,7 +229,7 @@ class Image(QLabel):
         if (len(lut) != 256):
             print("LUT length must be 256")
             return
-        print(lut)
+        
         get_value = [self.get_red_value,
                      self.get_green_value, self.get_blue_value,
                      self.get_blue_value] # Gray
@@ -247,4 +247,4 @@ class Image(QLabel):
                 new_pixel = set_value[color.value](new_value, pixel)
                 img.setPixel(x, y, new_pixel)
         return img
-        # print(f"{self.set_gray_value(0x00000004, 0xffaabbcc):08X}")
+        

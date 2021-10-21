@@ -79,7 +79,7 @@ class SegmentsInput(QDialog):
             return
             
         while (points_len < num_of_points):
-            grid.addWidget(QLabel(f"Punto {points_len}: "), points_len + 1, 0)
+            grid.addWidget(QLabel(f"Point {points_len}: "), points_len + 1, 0)
             inputX = self.get_int_input(0, 255)
             inputY = self.get_int_input(0, 255)
             grid.addWidget(inputX, points_len + 1, 1)
