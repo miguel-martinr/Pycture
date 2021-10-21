@@ -1,29 +1,15 @@
 from functools import reduce
 from math import log2, sqrt
 from typing import List
-from enum import Enum
 from PIL.ImageQt import QImage
 
 from PyQt5.QtWidgets import QLabel, QWidget
 from PyQt5.QtGui import QPixmap, QMouseEvent, QKeyEvent, QGuiApplication
-from PyQt5.QtCore import Qt, QCoreApplication
+from PyQt5.QtCore import Qt, QCoreApplication, QThread
 
-from ..events import NewEditorEvent
-
-
-class Color(Enum):
-    Red = 0
-    Green = 1
-    Blue = 2
-    Gray = 3
-
-
-# LUT stands for LookUpTable
-# These gray scale transformation values correspond to the NTSC method
-GrayScaleLUT = [list(map(lambda r: 0.299 * r, list(range(256)))),
-                list(map(lambda r: 0.587 * r, list(range(256)))),
-                list(map(lambda r: 0.114 * r, list(range(256))))]
-
+from ...events import NewEditorEvent
+from .image_loader import ImageLoader
+from .color import Color
 
 class Image(QLabel):
     def __init__(self, parent: QWidget, image: QPixmap):
@@ -36,6 +22,7 @@ class Image(QLabel):
         self.setFixedHeight(image.height())
         self.setFixedWidth(image.width())
         self.press_pos = None
+        self.load_finished = False
 
     def get_width(self):
         return self.pixmap().width()
@@ -52,33 +39,15 @@ class Image(QLabel):
     def get_info(self):
         return self.info
 
-    def setup_image_data(self) -> List[float]:
-        image = self.pixmap().toImage()
-        self.histograms = [[0] * 256, [0] * 256, [0] * 256, [0] * 256]
-        self.ranges = [[255, 0], [255, 0], [255, 0], [255, 0]]
-        self.means = [0] * 4
-        for x in range(image.width()):
-            for y in range(image.height()):
-                gray_value = 0
-                pixel = image.pixel(x, y)
-                get_value = [self.get_red_value,
-                             self.get_green_value, self.get_blue_value]
-                for color in [Color.Red, Color.Green, Color.Blue]:
-                    value = get_value[color.value](pixel)
-                    self.histograms[color.value][value] += 1
-                    self.means[color.value] += value
-                    gray_value += GrayScaleLUT[color.value][value]
-
-                gray_value = round(gray_value)
-                self.histograms[Color.Gray.value][gray_value] += 1
-                self.means[Color.Gray.value] += gray_value
-
-        total_pixels = image.width() * image.height()
-        self.histograms = list(map(lambda histogram:
-                                   list(map(lambda x: x / total_pixels, histogram)),
-                                   self.histograms
-                                   ))
-        self.means = list(map(lambda mean: mean / total_pixels, self.means))
+    def setup_image_data(self):
+        self.thread = QThread()
+        self.worker = ImageLoader(self)
+        self.worker.moveToThread(self.thread)
+        self.thread.started.connect(self.worker.run)
+        self.worker.finished.connect(self.thread.quit)
+        self.worker.finished.connect(self.worker.deleteLater)
+        self.thread.finished.connect(self.thread.deleteLater)
+        self.thread.start()
 
     def get_red_value(self, pixel):
         return (pixel & 0x00ff0000) >> 16

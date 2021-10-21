@@ -23,6 +23,9 @@ class ViewHistogramCommand(Command):
             print("Can't create histogram if there is not an active editor")
             # TODO: Notify the user (can't create histogram if there isn't an active editor)
             return
+        if image.load_finished == False:
+            print("The image is still loading. Please wait a bit")
+            return  # TODO: Notify the user properly
 
         histogram = self.get_histogram(image)
         mean = self.get_mean(image)
@@ -120,7 +123,9 @@ class ViewImageBrightness(ViewImageInfo):
             # TODO: Notify the user
             print("Can't view brightness if there is not an active editor")
             return
-
+        if active_image.load_finished == False:
+            print("The image is still loading. Please wait a bit")
+            return  # TODO: Notify the user properly
         brightness = active_image.get_brightness()
         self.text_label.setText(
             f"R: {brightness[0]:.2f}\nG: {brightness[1]:.2f}\nB: {brightness[2]:.2f}\n\nGray: {brightness[3]:.2f}")
@@ -137,6 +142,9 @@ class ViewImageSize(ViewImageInfo):
             # TODO: Notify the user
             print("Can't view size if there is not an active editor")
             return
+        if active_image.load_finished == False:
+            print("The image is still loading. Please wait a bit")
+            return  # TODO: Notify the user properly
         columns = active_image.get_width()
         rows = active_image.get_height()
         self.text_label.setText(f"Columns: {columns}\nRows: {rows}")
@@ -153,6 +161,9 @@ class ViewImageContrast(ViewImageInfo):
             # TODO: Notify the user
             print("Can't view contrast if there is not an active editor")
             return        
+        if active_image.load_finished == False:
+            print("The image is still loading. Please wait a bit")
+            return  # TODO: Notify the user properly
         contrast = active_image.get_contrast()
         self.text_label.setText(
             f"R: {contrast[0]:.2f}\nG: {contrast[1]:.2f}\nB: {contrast[2]:.2f}\n\nGray: {contrast[3]:.2f}")
@@ -168,6 +179,9 @@ class ViewImageEntropy(ViewImageInfo):
             # TODO: Notify the user
             print("Can't view entropy if there is not an active editor")
             return        
+        if active_image.load_finished == False:
+            print("The image is still loading. Please wait a bit")
+            return  # TODO: Notify the user properly
         entropies = active_image.get_entropies()
         self.text_label.setText(
             f"R: {entropies[0]:.2f}\nG: {entropies[1]:.2f}\nB: {entropies[2]:.2f}\n\nGray: {entropies[3]:.2f}")
@@ -183,6 +197,9 @@ class ViewImageRanges(ViewImageInfo):
             # TODO: Notify the user
             print("Can't view ranges if there is not an active editor")
             return 
+        if active_image.load_finished == False:
+            print("The image is still loading. Please wait a bit")
+            return  # TODO: Notify the user properly
         ranges = list(map(lambda color: active_image.get_ranges(color), Color))
         self.text_label.setText(
             f"R: {ranges[0]}\nG: {ranges[1]}\nB: {ranges[2]}\n\nGray: {ranges[3]}")

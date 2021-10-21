@@ -65,3 +65,6 @@ class Editor(QDockWidget):
         else:
             self.setStyleSheet(None)
             self.active = False
+
+    def is_fully_loaded(self):
+        return self.get_image().load_finished
