@@ -9,6 +9,7 @@ from pycture.editor import Editor
 from pycture.editor.image import Color, Image
 
 from .command import Command
+from ..dialogs.notification import Notification
 
 
 class EditBrightnessCommand(Command):
@@ -27,11 +28,11 @@ class ToGrayScale(Command):
         image = self.get_active_image(main_window)
         title = self.get_active_title(main_window)
         if image == None:
-            print("Gray scale transformation: No image found")
-            return  # TODO: Notify the user properly
-        if image.load_finished == False:
-            print("The image is still loading. Please wait a bit")
-            return  # TODO: Notify the user properly
+            notification = Notification("There isn't an active editor!").exec()
+            return
+        if not image.load_finished:
+            notification = Notification("The image is still loading. Please wait a bit").exec()
+            return
 
         gray_scaled_image = image.get_gray_scaled_image()
         main_window.add_editor(QPixmap.fromImage(
@@ -99,16 +100,15 @@ class transform_by_linear_segments(Command):
         transformed_img = active_img.apply_LUT(lut, Color.Gray) # temp
         main_window.add_editor(QPixmap.fromImage(
             transformed_img), title + "-LT")
-        # main_window.add_editor(Editor(main_window, QPixmap.fromImage(transformed_img), "-LT"))
 
     def execute(self, main_window: QMainWindow):
         active_image = self.get_active_image(main_window)
-        if (not active_image):
-            print("No image to transform")  # TODO: Notify user
+        if image == None:
+            notification = Notification("There isn't an active editor!").exec()
             return
-        if image.load_finished == False:
-            print("The image is still loading. Please wait a bit")
-            return  # TODO: Notify the user properly
+        if not image.load_finished:
+            notification = Notification("The image is still loading. Please wait a bit").exec()
+            return
 
         dialog = SegmentsInput(main_window)
         dialog.previewed.connect(
