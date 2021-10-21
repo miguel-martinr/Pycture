@@ -102,7 +102,23 @@ class Image(QLabel):
     def set_red_value(self, red_value: int, pixel_value: int) -> int:
         red_value &= 0x000000ff 
         red_value <<= 16
-        return (red_value | pixel_value)
+        return (red_value | (pixel_value & 0xff00ffff))
+
+    def set_green_value(self, green_value: int, pixel_value: int) -> int:
+        green_value &= 0x000000ff 
+        green_value <<= 8
+        return (green_value | (pixel_value & 0xffff00ff))
+    
+    def set_blue_value(self, blue_value: int, pixel_value: int) -> int:
+        blue_value &= 0x000000ff 
+        return (blue_value | (pixel_value & 0xffffff00))
+
+    def set_gray_value(self, gray_value: int, pixel_value: int) -> int:
+        gray_value &= 0x000000ff 
+        for _ in range(2):
+             gray_value = gray_value | (gray_value << 8)
+        return gray_value | (pixel_value & 0xff000000)
+        
 
     def get_histogram(self, color: Color):
         return self.histograms[color.value]
@@ -210,15 +226,25 @@ class Image(QLabel):
     
 
     def apply_LUT(self, lut: List[int], color: Color) -> QImage:
-        # if (len(lut) != 255):
-        #     print("LUT length must be 255")
-        #     return
+        if (len(lut) != 256):
+            print("LUT length must be 256")
+            return
+        print(lut)
+        get_value = [self.get_red_value,
+                     self.get_green_value, self.get_blue_value,
+                     self.get_blue_value] # Gray
 
-        # get_value = [self.get_red_value,
-        #              self.get_green_value, self.get_blue_value]
-        
-        # img = self.pixmap().toImage()
-        # for x in range(img.width()):
-        #     for y in range(img.height()):
-        #         pass
-        print(f"{self.set_red_value(0x00000004, 0xffaabbcc)}:08X")
+        set_value = [self.set_red_value,
+                     self.set_green_value, self.set_blue_value,
+                     self.set_gray_value]
+
+        img = self.pixmap().toImage()
+        for x in range(img.width()):
+            for y in range(img.height()):
+                pixel = img.pixel(x, y)
+                color_value = get_value[color.value](pixel)
+                new_value = lut[color_value]
+                new_pixel = set_value[color.value](new_value, pixel)
+                img.setPixel(x, y, new_pixel)
+        return img
+        # print(f"{self.set_gray_value(0x00000004, 0xffaabbcc):08X}")
