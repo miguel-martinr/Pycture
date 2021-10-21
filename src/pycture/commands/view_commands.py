@@ -1,7 +1,7 @@
 from io import BytesIO
 from typing import List
 
-from PyQt5.QtWidgets import QPushButton, QWidget, QMainWindow, QLabel
+from PyQt5.QtWidgets import QPushButton, QWidget, QMainWindow, QLabel, QMessageBox
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtCore import Qt
 import matplotlib.pyplot as plt
@@ -9,6 +9,7 @@ from PIL.ImageQt import ImageQt
 from PIL import Image
 
 from .command import Command
+from ..dialogs.notification import Notification
 from ..editor.image import Color
 
 
@@ -20,13 +21,11 @@ class ViewHistogramCommand(Command):
         image = self.get_active_image(main_window)
         title = self.get_active_title(main_window)
         if image == None:
-            print("Can't create histogram if there is not an active editor")
-            # TODO: Notify the user (can't create histogram if there isn't an active editor)
+            notification = Notification("There isn't an active editor!").exec()
             return
-        if image.load_finished == False:
-            print("The image is still loading. Please wait a bit")
-            return  # TODO: Notify the user properly
-
+        if not image.load_finished:
+            notification = Notification("The image is still loading. Please wait a bit").exec()
+            return
         histogram = self.get_histogram(image)
         mean = self.get_mean(image)
 
@@ -105,102 +104,68 @@ class ViewImageInfo(Command):
         self.text_label.setAlignment(Qt.AlignCenter)
 
     def execute(self, main_window: QMainWindow):
+        active_image = self.get_active_image(main_window)
+        if image == None:
+            Notification("There isn't an active editor!").exec()
+            return
+        if not image.load_finished:
+            notification = Notification("The image is still loading. Please wait a bit").exec()
+            return
         self.container.setParent(main_window, Qt.WindowType.Window)
         img_name = self.get_active_title(main_window)
         info_name = self.container.windowTitle()
         self.container.setWindowTitle(img_name + " - " + info_name)
         self.text_label.setFixedSize(300, 100)
+        self.text_label.setText(self.get_information())
         self.container.show()
+
+    def get_information(self, active_image) -> str:
+        pass
 
 
 class ViewImageBrightness(ViewImageInfo):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Brightness")
 
-    def execute(self, main_window: QMainWindow):
-        active_image = self.get_active_image(main_window)
-        if active_image == None:
-            # TODO: Notify the user
-            print("Can't view brightness if there is not an active editor")
-            return
-        if active_image.load_finished == False:
-            print("The image is still loading. Please wait a bit")
-            return  # TODO: Notify the user properly
+    def get_information(self, active_image) -> str:
         brightness = active_image.get_brightness()
-        self.text_label.setText(
-            f"R: {brightness[0]:.2f}\nG: {brightness[1]:.2f}\nB: {brightness[2]:.2f}\n\nGray: {brightness[3]:.2f}")
-        return super().execute(main_window)
+        return (f"R: {brightness[0]:.2f}\nG: {brightness[1]:.2f}\n" +
+            f"B: {brightness[2]:.2f}\n\nGray: {brightness[3]:.2f}")
 
 
 class ViewImageSize(ViewImageInfo):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Size")
 
-    def execute(self, main_window: QMainWindow):
-        active_image = self.get_active_image(main_window)
-        if active_image == None:
-            # TODO: Notify the user
-            print("Can't view size if there is not an active editor")
-            return
-        if active_image.load_finished == False:
-            print("The image is still loading. Please wait a bit")
-            return  # TODO: Notify the user properly
+    def get_information(self, active_image) -> str:
         columns = active_image.get_width()
         rows = active_image.get_height()
-        self.text_label.setText(f"Columns: {columns}\nRows: {rows}")
-        return super().execute(main_window)
+        return f"Columns: {columns}\nRows: {rows}"
 
 
 class ViewImageContrast(ViewImageInfo):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Contrast")
 
-    def execute(self, main_window: QMainWindow):
-        active_image = self.get_active_image(main_window)
-        if active_image == None:
-            # TODO: Notify the user
-            print("Can't view contrast if there is not an active editor")
-            return        
-        if active_image.load_finished == False:
-            print("The image is still loading. Please wait a bit")
-            return  # TODO: Notify the user properly
+    def get_information(self, active_image) -> str:
         contrast = active_image.get_contrast()
-        self.text_label.setText(
-            f"R: {contrast[0]:.2f}\nG: {contrast[1]:.2f}\nB: {contrast[2]:.2f}\n\nGray: {contrast[3]:.2f}")
-        return super().execute(main_window)
+        return (f"R: {contrast[0]:.2f}\nG: {contrast[1]:.2f}\n" +
+            f"B: {contrast[2]:.2f}\n\nGray: {contrast[3]:.2f}")
         
 class ViewImageEntropy(ViewImageInfo):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Entropy")
 
-    def execute(self, main_window: QMainWindow):
-        active_image = self.get_active_image(main_window)
-        if active_image == None:
-            # TODO: Notify the user
-            print("Can't view entropy if there is not an active editor")
-            return        
-        if active_image.load_finished == False:
-            print("The image is still loading. Please wait a bit")
-            return  # TODO: Notify the user properly
+    def get_information(self, active_image) -> str:
         entropies = active_image.get_entropies()
-        self.text_label.setText(
-            f"R: {entropies[0]:.2f}\nG: {entropies[1]:.2f}\nB: {entropies[2]:.2f}\n\nGray: {entropies[3]:.2f}")
-        return super().execute(main_window)
+        return (f"R: {entropies[0]:.2f}\nG: {entropies[1]:.2f}\n" +
+            f"B: {entropies[2]:.2f}\n\nGray: {entropies[3]:.2f}")
 
 class ViewImageRanges(ViewImageInfo):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Ranges")
 
-    def execute(self, main_window: QMainWindow):
-        active_image = self.get_active_image(main_window)
-        if active_image == None:
-            # TODO: Notify the user
-            print("Can't view ranges if there is not an active editor")
-            return 
-        if active_image.load_finished == False:
-            print("The image is still loading. Please wait a bit")
-            return  # TODO: Notify the user properly
+    def get_information(self, active_image) -> str:
         ranges = list(map(lambda color: active_image.get_ranges(color), Color))
-        self.text_label.setText(
-            f"R: {ranges[0]}\nG: {ranges[1]}\nB: {ranges[2]}\n\nGray: {ranges[3]}")
-        return super().execute(main_window)
+        return (f"R: {ranges[0]}\nG: {ranges[1]}\n" +
+            f"B: {ranges[2]}\n\nGray: {ranges[3]}")
