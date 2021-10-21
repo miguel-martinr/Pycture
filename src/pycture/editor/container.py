@@ -17,8 +17,8 @@ class Container(QWidget):
         self.setFixedHeight(self.image.height() + DATA_BAR_HEIGHT * 2)
         self.setLayout(layout)
         
-    def update_data_bar_color(self, rgb: (int, int, int)):
-        self.data_bar.update_color(rgb)        
+    def update_data_bar(self, pos: (int, int), rgb: (int, int, int)):
+        self.data_bar.update_data(pos, rgb)        
 
     def customEvent(self, event: QEvent):
         QCoreApplication.sendEvent(self.parent(), event)

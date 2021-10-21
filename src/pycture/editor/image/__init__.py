@@ -162,9 +162,10 @@ class Image(QLabel):
         return gray_scaled
 
     def mouseMoveEvent(self, event: QMouseEvent):
-        rgb = self.get_pixel_rgb(event.x(), event.y())
+        pos = (event.x(), event.y())
+        rgb = self.get_pixel_rgb(pos[0], pos[1])
         if rgb != None:
-            self.parent().update_data_bar_color(rgb)
+            self.parent().update_data_bar(pos, rgb)
 
     def mousePressEvent(self, event: QMouseEvent):
         if (event.button() == Qt.LeftButton and
