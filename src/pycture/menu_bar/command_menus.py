@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QMenu, QWidget
 from PyQt5.QtCore import QCoreApplication
 
 from pycture.commands.view_commands import ViewBlueHistogram, ViewGrayScaleHistogram, ViewGreenHistogram, ViewImageBrightness, ViewImageContrast, ViewImageEntropy, ViewImageRanges, ViewImageSize, ViewRedHistogram, ViewImageInfo
-from pycture.commands.edit_commands import ToGrayScale
+from pycture.commands.edit_commands import ToGrayScale, transform_by_linear_segments
 from ..commands import (Command, file_command_list, edit_command_list,
     histogram_command_list, info_command_list)
 
@@ -61,7 +61,7 @@ class TransformMenu(CommandMenu):
     def __init__(self, parent: QWidget):
       super().__init__(parent)
       self.setTitle("Transform")
-      self.set_menu_commands([ToGrayScale])
+      self.set_menu_commands([ToGrayScale, transform_by_linear_segments])
 
 
 menus = [FileMenu, EditMenu, ViewMenu]

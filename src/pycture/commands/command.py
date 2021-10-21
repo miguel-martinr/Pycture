@@ -17,7 +17,7 @@ class Command(QAction):
     def execute(self, main_window: QMainWindow):
         print("Executing base command")
 
-    def get_active_image(self, main_window: QMainWindow):  
+    def get_active_image(self, main_window: QMainWindow) -> Image:  
         active_editor = main_window.get_active_editor()
         if active_editor:
             return active_editor.get_image()
