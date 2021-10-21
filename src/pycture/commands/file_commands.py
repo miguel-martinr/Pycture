@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QWidget, QFileDialog, QMainWindow
 from PyQt5.QtGui import QPixmap
 
 from .command import Command
+from ..dialogs.notification import Notification
 
 class OpenFileCommand(Command):
     def __init__(self, parent: QWidget):
@@ -23,7 +24,8 @@ class SaveFileCommand(Command):
     def execute(self, main_window: QMainWindow):
         image = self.get_active_image(main_window)
         if image == None:
-            return # TODO: Notify the user (can't save if there isn't images)
+            notification = Notification("There isn't an active editor!").exec()
+            return 
         file_path, _ = QFileDialog.getSaveFileName(None, "Save an image", "/home", "Images (*.png *.jpg *.jpeg *.bmp)")
         if not file_path:
             return
@@ -31,5 +33,6 @@ class SaveFileCommand(Command):
         if not extension:
             extension = ".png"
         elif extension not in [".png", ".jpg", ".jpeg", ".bmp"]:
-            return # TODO: Notify the user about the supported formats
+            notification = Notification("Supported extensions are .png, .jpg, .jpeg and .bmp").exec()
+            return 
         image.pixmap().save(file_path, extension[1:])
