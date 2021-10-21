@@ -2,12 +2,14 @@ from functools import reduce
 from math import log2, sqrt
 from typing import List
 from enum import Enum
+from PIL.ImageQt import QImage
 
 from PyQt5.QtWidgets import QLabel, QWidget
 from PyQt5.QtGui import QPixmap, QMouseEvent, QKeyEvent, QGuiApplication
 from PyQt5.QtCore import Qt, QCoreApplication
 
 from ..events import NewEditorEvent
+
 
 class Color(Enum):
     Red = 0
@@ -85,8 +87,8 @@ class Image(QLabel):
         return (pixel & 0x0000ff00) >> 8
 
     def get_blue_value(self, pixel):
-        return pixel & 0x000000ff 
-    
+        return pixel & 0x000000ff
+
     def get_pixel_rgb(self, x, y):
         image = self.pixmap().toImage()
         if not image.valid(x, y):
@@ -96,6 +98,11 @@ class Image(QLabel):
         green_val = self.get_green_value(pixel_val)
         blue_val = self.get_blue_value(pixel_val)
         return (red_val, green_val, blue_val)
+
+    def set_red_value(self, red_value: int, pixel_value: int) -> int:
+        red_value &= 0x000000ff 
+        red_value <<= 16
+        return (red_value | pixel_value)
 
     def get_histogram(self, color: Color):
         return self.histograms[color.value]
@@ -111,15 +118,14 @@ class Image(QLabel):
         min = 0
         max = 255
         for index, val in enumerate(histogram):
-           if val != 0:
-               min = index 
-               break
+            if val != 0:
+                min = index
+                break
         for index, val in enumerate(reversed(histogram)):
-           if val != 0:
-               max = 255 - index 
-               break
+            if val != 0:
+                max = 255 - index
+                break
         return (min, max)
-
 
     def get_entropy(self, color: Color):
         histogram = self.get_histogram(color)
@@ -129,7 +135,7 @@ class Image(QLabel):
             p = prob(i)
             if (p != 0):
                 entropy += p * log2(p)
-            
+
         return -entropy
 
     def get_entropies(self):
@@ -143,7 +149,7 @@ class Image(QLabel):
             variance += histogram[i] * (i - mean) ** 2
         return variance
 
-    def get_gray_scaled_image(self):
+    def get_gray_scaled_image(self) -> QImage:
         image = self.pixmap().toImage()
         width = image.width()
         heigth = image.height()
@@ -174,10 +180,10 @@ class Image(QLabel):
         rgb = self.get_pixel_rgb(event.x(), event.y())
         if rgb != None:
             self.parent().update_data_bar_color(rgb)
-    
+
     def mousePressEvent(self, event: QMouseEvent):
         if (event.button() == Qt.LeftButton and
-            QGuiApplication.keyboardModifiers() == Qt.ControlModifier):
+                QGuiApplication.keyboardModifiers() == Qt.ControlModifier):
             self.press_pos = (event.x(), event.y())
         else:
             self.press_pos = None
@@ -185,7 +191,7 @@ class Image(QLabel):
 
     def mouseReleaseEvent(self, event: QMouseEvent):
         if (event.button() != Qt.LeftButton or not self.press_pos or
-            QGuiApplication.keyboardModifiers() != Qt.ControlModifier):
+                QGuiApplication.keyboardModifiers() != Qt.ControlModifier):
             return
         x_values = [event.x(), self.press_pos[0]]
         x_values.sort()
@@ -198,6 +204,21 @@ class Image(QLabel):
             y_values[1] - y_values[0]
         )
         title = self.parent().parent().windowTitle() + "(Selection)"
-        QCoreApplication.sendEvent(self.parent(), NewEditorEvent(new_image, title))
+        QCoreApplication.sendEvent(
+            self.parent(), NewEditorEvent(new_image, title))
         event.ignore()
     
+
+    def apply_LUT(self, lut: List[int], color: Color) -> QImage:
+        # if (len(lut) != 255):
+        #     print("LUT length must be 255")
+        #     return
+
+        # get_value = [self.get_red_value,
+        #              self.get_green_value, self.get_blue_value]
+        
+        # img = self.pixmap().toImage()
+        # for x in range(img.width()):
+        #     for y in range(img.height()):
+        #         pass
+        print(f"{self.set_red_value(0x00000004, 0xffaabbcc)}:08X")
