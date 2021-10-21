@@ -29,6 +29,9 @@ class ToGrayScale(Command):
         if image == None:
             print("Gray scale transformation: No image found")
             return  # TODO: Notify the user properly
+        if image.load_finished == False:
+            print("The image is still loading. Please wait a bit")
+            return  # TODO: Notify the user properly
 
         gray_scaled_image = image.get_gray_scaled_image()
         main_window.add_editor(QPixmap.fromImage(
@@ -103,6 +106,9 @@ class transform_by_linear_segments(Command):
         if (not active_image):
             print("No image to transform")  # TODO: Notify user
             return
+        if image.load_finished == False:
+            print("The image is still loading. Please wait a bit")
+            return  # TODO: Notify the user properly
 
         dialog = SegmentsInput(main_window)
         dialog.previewed.connect(
