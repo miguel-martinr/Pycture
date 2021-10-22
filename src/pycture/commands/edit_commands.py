@@ -103,10 +103,10 @@ class transform_by_linear_segments(Command):
 
     def execute(self, main_window: QMainWindow):
         active_image = self.get_active_image(main_window)
-        if image == None:
+        if active_image == None:
             notification = Notification("There isn't an active editor!").exec()
             return
-        if not image.load_finished:
+        if not active_image.load_finished:
             notification = Notification("The image is still loading. Please wait a bit").exec()
             return
 
