@@ -3,12 +3,14 @@ from PyQt5.QtWidgets import QLabel
 
 from .color import Color, GrayScaleLUT
 
+
 class ImageLoader(QObject):
     finished = Signal()
+
     def __init__(self, image: QLabel):
         super().__init__()
         self.image = image
-    
+
     def run(self):
         image = self.image
         pixmap = image.pixmap().toImage()
@@ -33,9 +35,10 @@ class ImageLoader(QObject):
 
         total_pixels = pixmap.width() * pixmap.height()
         image.histograms = list(map(lambda histogram:
-                                   list(map(lambda x: x / total_pixels, histogram)),
-                                   image.histograms
-                                   ))
+                                    list(
+                                        map(lambda x: x / total_pixels, histogram)),
+                                    image.histograms
+                                    ))
         image.means = list(map(lambda mean: mean / total_pixels, image.means))
         self.finished.emit()
         image.load_finished = True

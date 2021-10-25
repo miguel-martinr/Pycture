@@ -8,10 +8,10 @@ HELP_MESSAGE = """
 • You can also open a smaller selection of an image pressing CTRL and dragging over an editor.
 """
 
+
 class HelpCommand(Command):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Show help")
 
     def execute(self, main_window: QMainWindow):
         Notification(HELP_MESSAGE).exec()
-

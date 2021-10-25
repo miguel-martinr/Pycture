@@ -8,6 +8,7 @@ from .menu_bar import MenuBar
 from .editor import Editor
 from .events import ExecuteCommandEvent, DeleteEditorEvent, ChangeActiveEditorEvent, NewEditorEvent
 
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -18,29 +19,29 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(placeholder_widget)
         self.editors = {}
         self.active_editor = None
-    
+
     def customEvent(self, event: QEvent):
-        if type(event) == ExecuteCommandEvent:
+        if isinstance(event, ExecuteCommandEvent):
             event.command.execute(self)
-        elif type(event) == DeleteEditorEvent:
+        elif isinstance(event, DeleteEditorEvent):
             if event.editor_name == self.active_editor:
                 self.active_editor = None
             self.editors.pop(event.editor_name)
-        elif type(event) == ChangeActiveEditorEvent:
+        elif isinstance(event, ChangeActiveEditorEvent):
             self.set_active_editor(event.editor_name)
-        elif type(event) == NewEditorEvent:
+        elif isinstance(event, NewEditorEvent):
             self.add_editor(event.image, event.editor_name)
-            
+
         else:
             event.ignore()
-            
+
     def add_editor(self, image: QPixmap, name: str):
         while self.editors.get(name):
             (name, extension) = path.splitext(name)
             name = name + "+" + extension
         self.editors[name] = Editor(self, image, name)
         self.set_active_editor(name)
-        
+
     def get_active_editor(self) -> Editor:
         return self.editors.get(self.active_editor)
 

@@ -12,12 +12,13 @@ QDockWidget::title {
 }
 """
 
+
 class Editor(QDockWidget):
     def __init__(self, parent: QWidget, image: QPixmap, image_name: str):
         super().__init__(parent)
         self.setWindowTitle(image_name)
         self.setWidget(Container(self, image))
-        
+
         self.setAllowedAreas(Qt.DockWidgetArea.AllDockWidgetAreas)
         parent.addDockWidget(Qt.DockWidgetArea.TopDockWidgetArea, self)
         self.active = False
@@ -59,7 +60,7 @@ class Editor(QDockWidget):
         QCoreApplication.sendEvent(self.parent(), event)
 
     def set_active(self, active: bool):
-        if (active and not self.active):          
+        if (active and not self.active):
             self.setStyleSheet(SELECTED_DOCK_CSS)
             self.active = True
         else:

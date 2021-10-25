@@ -1,10 +1,12 @@
 from enum import Enum
 
+
 class Color(Enum):
     Red = 0
     Green = 1
     Blue = 2
     Gray = 3
+
 
 # LUT stands for LookUpTable
 # These gray scale transformation values correspond to the NTSC method

@@ -20,11 +20,12 @@ class ViewHistogramCommand(Command):
     def execute(self, main_window: QMainWindow):
         image = self.get_active_image(main_window)
         title = self.get_active_title(main_window)
-        if image == None:
+        if image is None:
             notification = Notification("There isn't an active editor!").exec()
             return
         if not image.load_finished:
-            notification = Notification("The image is still loading. Please wait a bit").exec()
+            notification = Notification(
+                "The image is still loading. Please wait a bit").exec()
             return
         histogram = self.get_histogram(image)
         mean = self.get_mean(image)
@@ -105,11 +106,12 @@ class ViewImageInfo(Command):
 
     def execute(self, main_window: QMainWindow):
         active_image = self.get_active_image(main_window)
-        if image == None:
+        if image is None:
             Notification("There isn't an active editor!").exec()
             return
         if not image.load_finished:
-            notification = Notification("The image is still loading. Please wait a bit").exec()
+            notification = Notification(
+                "The image is still loading. Please wait a bit").exec()
             return
         self.container.setParent(main_window, Qt.WindowType.Window)
         img_name = self.get_active_title(main_window)
@@ -130,7 +132,7 @@ class ViewImageBrightness(ViewImageInfo):
     def get_information(self, active_image) -> str:
         brightness = active_image.get_brightness()
         return (f"R: {brightness[0]:.2f}\nG: {brightness[1]:.2f}\n" +
-            f"B: {brightness[2]:.2f}\n\nGray: {brightness[3]:.2f}")
+                f"B: {brightness[2]:.2f}\n\nGray: {brightness[3]:.2f}")
 
 
 class ViewImageSize(ViewImageInfo):
@@ -150,8 +152,9 @@ class ViewImageContrast(ViewImageInfo):
     def get_information(self, active_image) -> str:
         contrast = active_image.get_contrast()
         return (f"R: {contrast[0]:.2f}\nG: {contrast[1]:.2f}\n" +
-            f"B: {contrast[2]:.2f}\n\nGray: {contrast[3]:.2f}")
-        
+                f"B: {contrast[2]:.2f}\n\nGray: {contrast[3]:.2f}")
+
+
 class ViewImageEntropy(ViewImageInfo):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Entropy")
@@ -159,7 +162,8 @@ class ViewImageEntropy(ViewImageInfo):
     def get_information(self, active_image) -> str:
         entropies = active_image.get_entropies()
         return (f"R: {entropies[0]:.2f}\nG: {entropies[1]:.2f}\n" +
-            f"B: {entropies[2]:.2f}\n\nGray: {entropies[3]:.2f}")
+                f"B: {entropies[2]:.2f}\n\nGray: {entropies[3]:.2f}")
+
 
 class ViewImageRanges(ViewImageInfo):
     def __init__(self, parent: QWidget):
@@ -168,4 +172,4 @@ class ViewImageRanges(ViewImageInfo):
     def get_information(self, active_image) -> str:
         ranges = list(map(lambda color: active_image.get_ranges(color), Color))
         return (f"R: {ranges[0]}\nG: {ranges[1]}\n" +
-            f"B: {ranges[2]}\n\nGray: {ranges[3]}")
+                f"B: {ranges[2]}\n\nGray: {ranges[3]}")

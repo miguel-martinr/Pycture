@@ -16,3 +16,4 @@ python_version = "3.9"
 
 [scripts]
 start = "python src/main.py"
+fmt = "autopep8 -i -a -r src"

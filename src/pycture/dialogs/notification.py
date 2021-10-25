@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QMessageBox
 
+
 class Notification(QMessageBox):
     def __init__(self, message: str):
         super().__init__()

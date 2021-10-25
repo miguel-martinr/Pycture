@@ -24,17 +24,20 @@ class SegmentsInput(QDialog):
         # Input and accept btn
         self.num_of_segments_form = QFormLayout()
         layout.addLayout(self.num_of_segments_form)
-        accept_btn, segments_num_input = self.set_segments_num_input(self.num_of_segments_form)
-        
+        accept_btn, segments_num_input = self.set_segments_num_input(
+            self.num_of_segments_form)
+
         # Point inputs
         self.points_grid = QGridLayout()
-        self.points_grid.addWidget(QLabel("X"), 0, 1, Qt.AlignmentFlag.AlignCenter)
-        self.points_grid.addWidget(QLabel("Y"), 0, 2, Qt.AlignmentFlag.AlignCenter)
+        self.points_grid.addWidget(
+            QLabel("X"), 0, 1, Qt.AlignmentFlag.AlignCenter)
+        self.points_grid.addWidget(
+            QLabel("Y"), 0, 2, Qt.AlignmentFlag.AlignCenter)
         layout.addLayout(self.points_grid)
-        
+
         accept_btn.clicked.connect(lambda: self.update_point_inputs(
             int(segments_num_input.text()) + 1, self.points_grid))
-        
+
         # To place preview and apply buttons
         footer = QGridLayout()
         layout.addLayout(footer)
@@ -42,49 +45,49 @@ class SegmentsInput(QDialog):
         # Preview btn
         preview_btn = QPushButton("Preview")
         preview_btn.setDisabled(True)
-        preview_btn.clicked.connect(lambda: self.previewed.emit(self.get_segments()))
+        preview_btn.clicked.connect(
+            lambda: self.previewed.emit(
+                self.get_segments()))
         accept_btn.clicked.connect(lambda: preview_btn.setDisabled(False))
         footer.addWidget(preview_btn, 0, 0)
 
         # Apply btn
         apply_btn = QPushButton("Apply")
         apply_btn.setDisabled(True)
-        apply_btn.clicked.connect(lambda: self.applied.emit(self.get_segments()))
+        apply_btn.clicked.connect(
+            lambda: self.applied.emit(
+                self.get_segments()))
         accept_btn.clicked.connect(lambda: apply_btn.setDisabled(False))
         footer.addWidget(apply_btn, 0, 1)
-
-        
-         
-
-
 
     def add_point_input(self):
         input = self.get_int_input(0, 255)
         self.point_inputs.append(input)
         return input
- 
+
     def remove_last_point_inputs(self):
         last_point_inputs = self.point_inputs.pop()
         for input in last_point_inputs:
             input.deleteLater()
-        self.points_grid.itemAtPosition(len(self.point_inputs), 0).widget().deleteLater()
+        self.points_grid.itemAtPosition(
+            len(self.point_inputs), 0).widget().deleteLater()
 
     def update_point_inputs(self, num_of_points: int, grid: QGridLayout):
         points_len = len(self.point_inputs)
-        
+
         if (points_len > num_of_points):
             while (points_len > num_of_points):
                 self.remove_last_point_inputs()
                 points_len -= 1
             return
-            
+
         while (points_len < num_of_points):
             grid.addWidget(QLabel(f"Point {points_len}: "), points_len + 1, 0)
             inputX = self.get_int_input(0, 255)
             inputY = self.get_int_input(0, 255)
             grid.addWidget(inputX, points_len + 1, 1)
             grid.addWidget(inputY, points_len + 1, 2)
-            
+
             self.point_inputs.append((inputX, inputY))
             points_len += 1
 
@@ -114,6 +117,7 @@ class SegmentsInput(QDialog):
         for i in range(len(points) - 1):
             segments.append((points[i], points[i + 1]))
         return segments
+
 
 class IntValidator(QValidator):
     def __init__(self, bottom: int, top: int) -> None:

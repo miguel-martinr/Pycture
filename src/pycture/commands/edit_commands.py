@@ -27,11 +27,12 @@ class ToGrayScale(Command):
     def execute(self, main_window: QMainWindow):
         image = self.get_active_image(main_window)
         title = self.get_active_title(main_window)
-        if image == None:
+        if image is None:
             notification = Notification("There isn't an active editor!").exec()
             return
         if not image.load_finished:
-            notification = Notification("The image is still loading. Please wait a bit").exec()
+            notification = Notification(
+                "The image is still loading. Please wait a bit").exec()
             return
 
         gray_scaled_image = image.get_gray_scaled_image()
@@ -71,9 +72,9 @@ class transform_by_linear_segments(Command):
             while (j < num_of_segments):
                 s = segments[j]
                 if (s[0][0] <= i <= s[1][0]):
-                  break
-                j += 1 # :(
-                  
+                    break
+                j += 1  # :(
+
             if (j < num_of_segments):
                 ecuation = ecuations[j]
                 lut[i] = round(ecuation(i))
@@ -97,20 +98,23 @@ class transform_by_linear_segments(Command):
         active_img = self.get_active_image(main_window)
         title = self.get_active_title(main_window)
 
-        transformed_img = active_img.apply_LUT(lut, Color.Gray) # temp
+        transformed_img = active_img.apply_LUT(lut, Color.Gray)  # temp
         main_window.add_editor(QPixmap.fromImage(
             transformed_img), title + "-LT")
 
     def execute(self, main_window: QMainWindow):
         active_image = self.get_active_image(main_window)
-        if active_image == None:
+        if active_image is None:
             notification = Notification("There isn't an active editor!").exec()
             return
         if not active_image.load_finished:
-            notification = Notification("The image is still loading. Please wait a bit").exec()
+            notification = Notification(
+                "The image is still loading. Please wait a bit").exec()
             return
 
         dialog = SegmentsInput(main_window)
         dialog.previewed.connect(
             lambda s: self.preview_transformation(dialog.get_points()))
-        dialog.applied.connect(lambda s: self.apply_transformation(main_window, s))
+        dialog.applied.connect(
+            lambda s: self.apply_transformation(
+                main_window, s))
