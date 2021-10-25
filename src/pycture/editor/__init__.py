@@ -5,11 +5,12 @@ from PyQt5.QtWidgets import QDockWidget, QGraphicsDropShadowEffect, QWidget, QMe
 from ..events import DeleteEditorEvent, ChangeActiveEditorEvent
 from .container import Container
 from .image import Image
+from ..css import LIGHT_GRAY
 
-SELECTED_DOCK_CSS = """
-QDockWidget::title {
-    background: #A0B3C3;
-}
+SELECTED_DOCK_CSS = f"""
+QDockWidget::title {{
+    background: {LIGHT_GRAY};
+}}
 """
 
 
