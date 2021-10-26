@@ -6,6 +6,7 @@ from .image import Image
 from .data_bar import DataBar, DATA_BAR_HEIGHT
 from ..events import UpdateMousePositionEvent, NewSelectionEvent
 
+
 class Container(QWidget):
     def __init__(self, parent: QWidget, image: QPixmap):
         super().__init__(parent)
@@ -23,7 +24,7 @@ class Container(QWidget):
 
     def update_data_bar(self, x: int, y: int, r: int, g: int, b: int):
         self.data_bar.update_data((x, y), (r, g, b))
-        
+
     def throw_new_selection_event(self, image: QPixmap):
         QCoreApplication.sendEvent(self.parent(), NewSelectionEvent(image))
 

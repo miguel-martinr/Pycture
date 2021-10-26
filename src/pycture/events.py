@@ -32,6 +32,7 @@ class NewSelectionEvent(QEvent):
         super().__init__(NewSelectionEventType)
         self.image = image
 
+
 class UpdateMousePositionEvent(QEvent):
     def __init__(self, pos: (int, int), rgb: (int, int, int)):
         super().__init__(UpdateMousePositionEventType)
