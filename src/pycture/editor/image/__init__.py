@@ -22,7 +22,6 @@ class Image(QLabel):
         self.setup_image_data()
 
         self.setMouseTracking(True)
-        self.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self.setFixedHeight(image.height())
         self.setFixedWidth(image.width())
         self.press_pos = None
@@ -183,8 +182,7 @@ class Image(QLabel):
                 QGuiApplication.keyboardModifiers() != Qt.ControlModifier):
             return
         x_values = sorted([event.x(), self.press_pos[0]])
-        y_values = [event.y(), self.press_pos[1]]
-        y_values.sort()
+        y_values = sorted([event.y(), self.press_pos[1]])
         new_image = self.pixmap().copy(
             x_values[0],
             y_values[0],
