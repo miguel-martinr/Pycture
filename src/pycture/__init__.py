@@ -1,12 +1,12 @@
 from os import path
 
 from PyQt5.QtWidgets import QMainWindow, QWidget, QGridLayout
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QGuiApplication
 from PyQt5.QtCore import QEvent
 
 from .menu_bar import MenuBar
 from .editor import Editor
-from .events import ExecuteCommandEvent, DeleteEditorEvent, ChangeActiveEditorEvent, NewEditorEvent
+from .events import ExecuteCommandEvent, DeleteEditorEvent, ChangeActiveEditorEvent, NewSelectionEvent
 
 
 class MainWindow(QMainWindow):
@@ -15,8 +15,10 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Pycture")
         self.setMenuBar(MenuBar(self))
         placeholder_widget = QWidget()
-        placeholder_widget.setLayout(QGridLayout())
         self.setCentralWidget(placeholder_widget)
+        desktop_size = QGuiApplication.screens()[0].size()
+        self.setMaximumWidth(desktop_size.width())
+        self.setMaximumHeight(desktop_size.height())
         self.editors = {}
         self.active_editor = None
 
@@ -29,8 +31,9 @@ class MainWindow(QMainWindow):
             self.editors.pop(event.editor_name)
         elif isinstance(event, ChangeActiveEditorEvent):
             self.set_active_editor(event.editor_name)
-        elif isinstance(event, NewEditorEvent):
-            self.add_editor(event.image, event.editor_name)
+        elif isinstance(event, NewSelectionEvent):
+            title = self.get_active_editor().windowTitle() + "(Selection)"
+            self.add_editor(event.image, title)
 
         else:
             event.ignore()
