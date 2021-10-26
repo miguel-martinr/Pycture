@@ -5,21 +5,23 @@ from PIL.ImageQt import QImage
 
 from PyQt5.QtWidgets import QLabel, QWidget
 from PyQt5.QtGui import QPixmap, QMouseEvent, QKeyEvent, QGuiApplication
-from PyQt5.QtCore import Qt, QCoreApplication, QThread
+from PyQt5.QtCore import Qt, QCoreApplication, QThread, Signal
 
-from ...events import NewEditorEvent
+from ...events import UpdateMousePositionEvent
 from .image_loader import ImageLoader
 from .color import Color
 
 
 class Image(QLabel):
+    mouse_position_updated = Signal(int, int, int, int, int)
+    new_selection = Signal(QPixmap)
+
     def __init__(self, parent: QWidget, image: QPixmap):
         super().__init__(parent)
         self.setPixmap(image)
         self.setup_image_data()
 
         self.setMouseTracking(True)
-        self.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self.setFixedHeight(image.height())
         self.setFixedWidth(image.width())
         self.press_pos = None
@@ -165,7 +167,7 @@ class Image(QLabel):
         pos = (event.x(), event.y())
         rgb = self.get_pixel_rgb(pos[0], pos[1])
         if rgb is not None:
-            self.parent().update_data_bar(pos, rgb)
+            self.mouse_position_updated.emit(*pos, *rgb)
 
     def mousePressEvent(self, event: QMouseEvent):
         if (event.button() == Qt.LeftButton and
@@ -180,17 +182,14 @@ class Image(QLabel):
                 QGuiApplication.keyboardModifiers() != Qt.ControlModifier):
             return
         x_values = sorted([event.x(), self.press_pos[0]])
-        y_values = [event.y(), self.press_pos[1]]
-        y_values.sort()
+        y_values = sorted([event.y(), self.press_pos[1]])
         new_image = self.pixmap().copy(
             x_values[0],
             y_values[0],
             x_values[1] - x_values[0],
             y_values[1] - y_values[0]
         )
-        title = self.parent().parent().windowTitle() + "(Selection)"
-        QCoreApplication.sendEvent(
-            self.parent(), NewEditorEvent(new_image, title))
+        self.new_selection.emit(new_image)
         event.ignore()
 
     def apply_LUT(self, lut: List[int], color: Color) -> QImage:

@@ -40,5 +40,5 @@ class ImageLoader(QObject):
                                     image.histograms
                                     ))
         image.means = list(map(lambda mean: mean / total_pixels, image.means))
-        self.finished.emit()
         image.load_finished = True
+        self.finished.emit()
