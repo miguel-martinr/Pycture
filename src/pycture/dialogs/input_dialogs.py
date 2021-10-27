@@ -70,7 +70,7 @@ class SegmentsInput(QDialog):
         for input in last_point_inputs:
             input.deleteLater()
         self.points_grid.itemAtPosition(
-            len(self.point_inputs), 0).widget().deleteLater()
+            len(self.point_inputs) + 1, 0).widget().deleteLater()
 
     def update_point_inputs(self, num_of_points: int, grid: QGridLayout):
         points_len = len(self.point_inputs)

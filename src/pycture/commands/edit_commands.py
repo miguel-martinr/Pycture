@@ -98,7 +98,7 @@ class transform_by_linear_segments(Command):
         active_img = self.get_active_image(main_window)
         title = self.get_active_title(main_window)
 
-        transformed_img = active_img.apply_LUT(lut, Color.Gray)  # temp
+        transformed_img = active_img.apply_LUT(lut, (Color.Red,))  # temp
         main_window.add_editor(QPixmap.fromImage(
             transformed_img), title + "-LT")
 
