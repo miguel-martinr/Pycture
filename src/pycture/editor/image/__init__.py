@@ -9,7 +9,7 @@ from PyQt5.QtCore import Qt, QCoreApplication, QThread, Signal
 
 from ...events import UpdateMousePositionEvent
 from .image_loader import ImageLoader
-from .color import Color
+from .color import Color, GrayScaleLUT
 
 
 class Image(QLabel):
