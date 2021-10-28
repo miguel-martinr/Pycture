@@ -1,6 +1,6 @@
 from functools import reduce
 from math import log2, sqrt
-from typing import List
+from typing import List, Tuple
 from PIL.ImageQt import QImage
 
 from PyQt5.QtWidgets import QLabel, QWidget
@@ -9,7 +9,7 @@ from PyQt5.QtCore import Qt, QCoreApplication, QThread, Signal
 
 from ...events import UpdateMousePositionEvent
 from .image_loader import ImageLoader
-from .color import Color
+from .color import Color, GrayScaleLUT
 
 
 class Image(QLabel):
@@ -192,7 +192,7 @@ class Image(QLabel):
         self.new_selection.emit(new_image)
         event.ignore()
 
-    def apply_LUT(self, lut: List[int], color: Color) -> QImage:
+    def apply_LUT(self, lut: List[int], colors: Tuple[Color]) -> QImage:
         if (len(lut) != 256):
             print("LUT length must be 256")
             return
@@ -208,9 +208,10 @@ class Image(QLabel):
         img = self.pixmap().toImage()
         for x in range(img.width()):
             for y in range(img.height()):
-                pixel = img.pixel(x, y)
-                color_value = get_value[color.value](pixel)
-                new_value = lut[color_value]
-                new_pixel = set_value[color.value](new_value, pixel)
+                new_pixel = img.pixel(x, y)
+                for color in colors:
+                  color_value = get_value[color.value](new_pixel)
+                  new_value = lut[color_value]
+                  new_pixel = set_value[color.value](new_value, new_pixel)
                 img.setPixel(x, y, new_pixel)
         return img

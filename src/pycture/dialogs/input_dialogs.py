@@ -1,7 +1,9 @@
 from typing import List, Tuple
 from PyQt5.QtGui import QValidator
-from PyQt5.QtWidgets import QDialog, QFormLayout, QGridLayout, QHBoxLayout, QInputDialog, QLabel, QLayout, QLayoutItem, QLineEdit, QMainWindow, QPushButton, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QCheckBox, QDialog, QFormLayout, QGridLayout, QHBoxLayout, QInputDialog, QLabel, QLayout, QLayoutItem, QLineEdit, QMainWindow, QPushButton, QVBoxLayout, QWidget
 from PyQt5.QtCore import Qt, pyqtSignal
+
+from pycture.editor.image.color import Color
 
 
 class SegmentsInput(QDialog):
@@ -20,6 +22,18 @@ class SegmentsInput(QDialog):
 
         layout = QVBoxLayout()
         self.setLayout(layout)
+
+        # Colors checkboxes
+        self.checkboxes = []
+        my_layout = QHBoxLayout()
+        color_opts = ["Red", "Green", "Blue", "All"]
+        for i, color in enumerate(color_opts):
+            checkbox = QCheckBox(color, self)
+            self.checkboxes.append(checkbox)
+            my_layout.addWidget(checkbox)
+
+        self.checkboxes[-1].stateChanged.connect(self.set_all_checkboxes)
+        layout.addLayout(my_layout)
 
         # Input and accept btn
         self.num_of_segments_form = QFormLayout()
@@ -70,7 +84,7 @@ class SegmentsInput(QDialog):
         for input in last_point_inputs:
             input.deleteLater()
         self.points_grid.itemAtPosition(
-            len(self.point_inputs), 0).widget().deleteLater()
+            len(self.point_inputs) + 1, 0).widget().deleteLater()
 
     def update_point_inputs(self, num_of_points: int, grid: QGridLayout):
         points_len = len(self.point_inputs)
@@ -108,9 +122,17 @@ class SegmentsInput(QDialog):
         for x_input, y_input in self.point_inputs:
             x = int(x_input.text())
             y = int(y_input.text())
-            points.append((x, y))
+            points.append([x, y])
+        self._sanitize_points_(points)
         return points
 
+    def _sanitize_points_(self, points):
+        for i in range(1, len(points)):
+            if (points[i - 1][0] >= points[i][0]):                
+                points[i-1][0] = points[i][0] + 1
+        
+
+        
     def get_segments(self):
         points = self.get_points()
         segments = []
@@ -118,7 +140,18 @@ class SegmentsInput(QDialog):
             segments.append((points[i], points[i + 1]))
         return segments
 
+    def set_all_checkboxes(self, state: Qt.CheckState):
+        if (state != Qt.CheckState.Checked):
+            return
+        for checkbox in self.checkboxes:
+            checkbox.setCheckState(state)
 
+    def get_color_opts(self) -> List[Color]:
+        opts = []
+        for i, checkbox in enumerate(self.checkboxes):
+            if (checkbox.isChecked()):
+                opts.append(Color._value2member_map_[i])
+        return opts
 class IntValidator(QValidator):
     def __init__(self, bottom: int, top: int) -> None:
         super().__init__()
