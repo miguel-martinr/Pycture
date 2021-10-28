@@ -56,7 +56,7 @@ class transform_by_linear_segments(Command):
         num_of_segments = dialog.intValue()
         return [num_of_segments, ok]
 
-    def get_ecuation(self, segment: List[int]) -> Tuple:
+    def get_equation(self, segment: List[int]) -> Tuple:
         s = segment
         m = (s[1][1] - s[0][1]) / (s[1][0] - s[0][0])
         n = s[0][1] - m * s[0][0]
@@ -65,7 +65,7 @@ class transform_by_linear_segments(Command):
     def get_LUT(self, segments: List):
         lut = list(range(256))
         num_of_segments = len(segments)
-        ecuations = list(map(self.get_ecuation, segments))
+        equations = list(map(self.get_equation, segments))
         for i in range(256):
             j = 0
             s = segments[j]
@@ -76,8 +76,8 @@ class transform_by_linear_segments(Command):
                 j += 1  # :(
 
             if (j < num_of_segments):
-                ecuation = ecuations[j]
-                lut[i] = round(ecuation(i))
+                equation = equations[j]
+                lut[i] = round(equation(i))
         return lut
 
     def preview_transformation(self, points: List):
