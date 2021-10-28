@@ -18,22 +18,12 @@ class SegmentsInput(QDialog):
     def setup(self):
         self.setWindowTitle("Linear transformation by segments")
         self.point_inputs = []
-        self.initialized = False
 
         layout = QVBoxLayout()
         self.setLayout(layout)
 
         # Colors checkboxes
-        self.checkboxes = []
-        my_layout = QHBoxLayout()
-        color_opts = ["Red", "Green", "Blue", "All"]
-        for i, color in enumerate(color_opts):
-            checkbox = QCheckBox(color, self)
-            self.checkboxes.append(checkbox)
-            my_layout.addWidget(checkbox)
-
-        self.checkboxes[-1].stateChanged.connect(self.set_all_checkboxes)
-        layout.addLayout(my_layout)
+        self.set_color_opts()
 
         # Input and accept btn
         self.num_of_segments_form = QFormLayout()
@@ -73,6 +63,18 @@ class SegmentsInput(QDialog):
                 self.get_segments()))
         accept_btn.clicked.connect(lambda: apply_btn.setDisabled(False))
         footer.addWidget(apply_btn, 0, 1)
+
+    def set_color_opts(self):
+        # Colors checkboxes
+        self.checkboxes = []
+        my_layout = QHBoxLayout()
+        color_opts = ["Red", "Green", "Blue", "All"]
+        for i, color in enumerate(color_opts):
+            checkbox = QCheckBox(color, self)
+            self.checkboxes.append(checkbox)
+            my_layout.addWidget(checkbox)
+        self.checkboxes[-1].stateChanged.connect(self.set_all_checkboxes)
+        self.layout().addLayout(my_layout)
 
     def add_point_input(self):
         input = self.get_int_input(0, 255)
