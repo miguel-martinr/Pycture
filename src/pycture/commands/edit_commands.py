@@ -87,6 +87,7 @@ class transform_by_linear_segments(Command):
             x.append(p[0])
             y.append(p[1])
         plt.clf()
+        plt.style.use('dark_background')
         plt.plot(x, y)
         plt.xlabel("Vin")
         plt.ylabel("Vout")

@@ -30,10 +30,14 @@ class ViewHistogramCommand(Command):
         histogram = self.get_histogram(image)
         mean = self.get_mean(image)
 
+        plt.style.use('dark_background')
         figure = plt.figure()
         bars = plt.bar(list(range(256)), histogram)
         for index, bar in enumerate(bars):
-            bar.set_color(self.get_bar_color(index))
+            color = self.get_bar_color(index)
+            # This scaling is made so the values don't reach pure black and can be seen
+            color = list(map(lambda val: 0 if val == 0 else (val * 240 + 15) / 255, color))
+            bar.set_color(color)
 
         self.write_mean(mean)
         pixmap = self.save_figure_to_pixmap(figure)
@@ -91,8 +95,7 @@ class ViewGrayScaleHistogram(ViewHistogramCommand):
         self.color = Color.Gray
 
     def get_bar_color(self, val: int) -> List[float]:
-        # This is made so the values don't reach pure white and can be seen
-        val = val / 255 * 200 / 255
+        val = val / 255
         return (val, val, val)
 
 
