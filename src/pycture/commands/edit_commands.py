@@ -9,7 +9,7 @@ from pycture.editor import Editor
 from pycture.editor.image import Color, Image
 
 from .command import Command
-from ..dialogs.notification import Notification
+from ..dialogs import Notification
 
 
 class EditBrightnessCommand(Command):
@@ -28,10 +28,10 @@ class ToGrayScale(Command):
         image = self.get_active_image(main_window)
         title = self.get_active_title(main_window)
         if image is None:
-            notification = Notification("There isn't an active editor!").exec()
+            notification = Notification(main_window, "There isn't an active editor!").exec()
             return
         if not image.load_finished:
-            notification = Notification(
+            notification = Notification(main_window,
                 "The image is still loading. Please wait a bit").exec()
             return
 
@@ -97,10 +97,10 @@ class transform_by_linear_segments(Command):
             self, main_window: QMainWindow, segments: List, opts: List[Color]):
         active_image = self.get_active_image(main_window)
         if active_image is None:
-            notification = Notification("There isn't an active editor!").exec()
+            notification = Notification(main_window, "There isn't an active editor!").exec()
             return
         if not active_image.load_finished:
-            notification = Notification(
+            notification = Notification(main_window,
                 "The image is still loading. Please wait a bit").exec()
             return
 
@@ -114,10 +114,10 @@ class transform_by_linear_segments(Command):
     def execute(self, main_window: QMainWindow):
         active_image = self.get_active_image(main_window)
         if active_image is None:
-            notification = Notification("There isn't an active editor!").exec()
+            notification = Notification(main_window, "There isn't an active editor!").exec()
             return
         if not active_image.load_finished:
-            notification = Notification(
+            notification = Notification(main_window,
                 "The image is still loading. Please wait a bit").exec()
             return
 

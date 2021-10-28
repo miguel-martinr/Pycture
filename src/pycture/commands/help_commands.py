@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QMainWindow
 
 from .command import Command
-from ..dialogs.notification import Notification
+from ..dialogs import Notification
 
 HELP_MESSAGE = """
 • You can apply different operations to the selected editor with the menus in the top bar.
@@ -14,4 +14,4 @@ class HelpCommand(Command):
         super().__init__(parent, "Show help")
 
     def execute(self, main_window: QMainWindow):
-        Notification(HELP_MESSAGE).exec()
+        Notification(main_window, HELP_MESSAGE).exec()

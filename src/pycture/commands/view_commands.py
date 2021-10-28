@@ -9,7 +9,7 @@ from PIL.ImageQt import ImageQt
 from PIL import Image
 
 from .command import Command
-from ..dialogs.notification import Notification
+from ..dialogs import Notification
 from ..editor.image import Color
 
 
@@ -21,10 +21,10 @@ class ViewHistogramCommand(Command):
         image = self.get_active_image(main_window)
         title = self.get_active_title(main_window)
         if image is None:
-            notification = Notification("There isn't an active editor!").exec()
+            notification = Notification(main_window, "There isn't an active editor!").exec()
             return
         if not image.load_finished:
-            notification = Notification(
+            notification = Notification(main_window,
                 "The image is still loading. Please wait a bit").exec()
             return
         histogram = self.get_histogram(image)
@@ -105,12 +105,12 @@ class ViewImageInfo(Command):
         self.text_label.setAlignment(Qt.AlignCenter)
 
     def execute(self, main_window: QMainWindow):
-        active_image = self.get_active_image(main_window)
+        image = self.get_active_image(main_window)
         if image is None:
-            Notification("There isn't an active editor!").exec()
+            Notification(main_window, "There isn't an active editor!").exec()
             return
         if not image.load_finished:
-            notification = Notification(
+            notification = Notification(main_window,
                 "The image is still loading. Please wait a bit").exec()
             return
         self.container.setParent(main_window, Qt.WindowType.Window)
@@ -118,7 +118,7 @@ class ViewImageInfo(Command):
         info_name = self.container.windowTitle()
         self.container.setWindowTitle(img_name + " - " + info_name)
         self.text_label.setFixedSize(300, 100)
-        self.text_label.setText(self.get_information())
+        self.text_label.setText(self.get_information(image))
         self.container.show()
 
     def get_information(self, active_image) -> str:
