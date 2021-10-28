@@ -154,12 +154,7 @@ class Image(QLabel):
                     color_value)]
 
                 gray_value = round(red_comp + green_comp + blue_comp)
-                for _ in range(2):
-                    gray_value = gray_value | (gray_value << 8)
-
-                # Alpha correction
-                gray_value = gray_value | (color_value & 0xff000000)
-                gray_scaled.setPixel(x, y, gray_value)
+                gray_scaled.setPixel(x, y, self.set_gray_value(gray_value, color_value))
 
         return gray_scaled
 
