@@ -89,7 +89,7 @@ class Image(QLabel):
         gray_value &= 0x000000ff
         for _ in range(2):
             gray_value = gray_value | (gray_value << 8)
-        return gray_value | (pixel_value & 0xff000000)
+        return (gray_value | (pixel_value & 0xff000000))
 
     def get_histogram(self, color: Color):
         return self.histograms[color.value]
