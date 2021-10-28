@@ -154,7 +154,9 @@ class Image(QLabel):
                     color_value)]
 
                 gray_value = round(red_comp + green_comp + blue_comp)
-                gray_scaled.setPixel(x, y, self.set_gray_value(gray_value, color_value))
+                gray_scaled.setPixel(
+                    x, y, self.set_gray_value(
+                        gray_value, color_value))
 
         return gray_scaled
 
@@ -189,7 +191,8 @@ class Image(QLabel):
 
     # Color.Gray shouldn't be passed as a color since it's represented as the
     # (Color.Red ,Color.Green, Color.Blue) tuple
-    def apply_LUT(self, lut: List[int], colors: Tuple[Color] = (Color.Red, Color.Green, Color.Blue)) -> QImage:
+    def apply_LUT(self, lut: List[int], colors: Tuple[Color] = (
+            Color.Red, Color.Green, Color.Blue)) -> QImage:
 
         if (len(lut) != 256):
             print("LUT length must be 256")
