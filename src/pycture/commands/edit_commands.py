@@ -45,18 +45,6 @@ class transform_by_linear_segments(Command):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "By linear segments")
 
-    def get_num_of_segments(self, main_window: QMainWindow) -> QWidget:
-        dialog = QInputDialog(main_window)
-        dialog.setInputMode(QInputDialog.InputMode.IntInput)
-        dialog.setIntMinimum(1)
-        dialog.setIntMaximum(5)
-        dialog.setWindowTitle("Linear segments transformation")
-        dialog.setLabelText("Number of segments:")
-        dialog.resize(300, 300)
-        ok = dialog.exec()
-        num_of_segments = dialog.intValue()
-        return [num_of_segments, ok]
-
     def get_equation(self, segment: List[int]) -> Tuple:
         s = segment
         m = (s[1][1] - s[0][1]) / (s[1][0] - s[0][0])
