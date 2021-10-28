@@ -1,5 +1,5 @@
-ULTRA_DARK_GRAY = "rgb(14, 16, 17)" 
-DARK_GRAY = "rgb(24, 26, 27)" 
+ULTRA_DARK_GRAY = "rgb(14, 16, 17)"
+DARK_GRAY = "rgb(24, 26, 27)"
 MEDIUM_GRAY = "rgb(36, 38, 40)"
 LIGHT_GRAY = "rgb(45, 48, 49)"
 DARK_WHITE = "rgb(200, 195, 188)"
