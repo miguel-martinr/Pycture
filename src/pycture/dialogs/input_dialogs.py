@@ -129,7 +129,7 @@ class SegmentsInput(QDialog):
     def _sanitize_points_(self, points):
         for i in range(1, len(points)):
             if (points[i - 1][0] >= points[i][0]):
-                points[i - 1][0] = points[i][0] + 1
+                points[i][0] = points[i - 1][0] + 1
 
     def get_segments(self):
         points = self.get_points()
@@ -147,7 +147,7 @@ class SegmentsInput(QDialog):
     def get_color_opts(self) -> List[Color]:
         opts = []
         for i, checkbox in enumerate(self.checkboxes):
-            if (checkbox.isChecked()):
+            if (checkbox.isChecked() and i < 3):
                 opts.append(Color._value2member_map_[i])
         return opts
 

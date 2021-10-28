@@ -192,18 +192,19 @@ class Image(QLabel):
         self.new_selection.emit(new_image)
         event.ignore()
 
-    def apply_LUT(self, lut: List[int], colors: Tuple[Color]) -> QImage:
+    # Color.Gray shouldn't be passed as a color since it's represented as the
+    # (Color.Red ,Color.Green, Color.Blue) tuple
+    def apply_LUT(self, lut: List[int], colors: Tuple[Color] = (Color.Red, Color.Green, Color.Blue)) -> QImage:
+
         if (len(lut) != 256):
             print("LUT length must be 256")
             return
 
         get_value = [self.get_red_value,
-                     self.get_green_value, self.get_blue_value,
-                     self.get_blue_value]  # Gray
+                     self.get_green_value, self.get_blue_value]
 
         set_value = [self.set_red_value,
-                     self.set_green_value, self.set_blue_value,
-                     self.set_gray_value]
+                     self.set_green_value, self.set_blue_value]
 
         img = self.pixmap().toImage()
         for x in range(img.width()):
