@@ -27,7 +27,8 @@ class SaveFileCommand(Command):
     def execute(self, main_window: QMainWindow):
         image = self.get_active_image(main_window)
         if image is None:
-            notification = Notification(main_window, "There isn't an active editor!").exec()
+            notification = Notification(
+                main_window, "There isn't an active editor!").exec()
             return
         file_path, _ = QFileDialog.getSaveFileName(
             None, "Save an image", "/home", "Images (*.png *.jpg *.jpeg *.bmp)")
@@ -38,6 +39,6 @@ class SaveFileCommand(Command):
             extension = ".png"
         elif extension not in [".png", ".jpg", ".jpeg", ".bmp"]:
             notification = Notification(main_window,
-                "Supported extensions are .png, .jpg, .jpeg and .bmp").exec()
+                                        "Supported extensions are .png, .jpg, .jpeg and .bmp").exec()
             return
         image.pixmap().save(file_path, extension[1:])

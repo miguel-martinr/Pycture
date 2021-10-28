@@ -28,11 +28,12 @@ class ToGrayScale(Command):
         image = self.get_active_image(main_window)
         title = self.get_active_title(main_window)
         if image is None:
-            notification = Notification(main_window, "There isn't an active editor!").exec()
+            notification = Notification(
+                main_window, "There isn't an active editor!").exec()
             return
         if not image.load_finished:
             notification = Notification(main_window,
-                "The image is still loading. Please wait a bit").exec()
+                                        "The image is still loading. Please wait a bit").exec()
             return
 
         gray_scaled_image = image.get_gray_scaled_image()
@@ -56,7 +57,7 @@ class transform_by_linear_segments(Command):
         num_of_segments = dialog.intValue()
         return [num_of_segments, ok]
 
-    def get_ecuation(self, segment: List[int]) -> Tuple:
+    def get_equation(self, segment: List[int]) -> Tuple:
         s = segment
         m = (s[1][1] - s[0][1]) / (s[1][0] - s[0][0])
         n = s[0][1] - m * s[0][0]
@@ -65,7 +66,7 @@ class transform_by_linear_segments(Command):
     def get_LUT(self, segments: List):
         lut = list(range(256))
         num_of_segments = len(segments)
-        ecuations = list(map(self.get_ecuation, segments))
+        equations = list(map(self.get_equation, segments))
         for i in range(256):
             j = 0
             s = segments[j]
@@ -76,8 +77,8 @@ class transform_by_linear_segments(Command):
                 j += 1  # :(
 
             if (j < num_of_segments):
-                ecuation = ecuations[j]
-                lut[i] = round(ecuation(i))
+                equation = equations[j]
+                lut[i] = round(equation(i))
         return lut
 
     def preview_transformation(self, points: List):
@@ -98,11 +99,12 @@ class transform_by_linear_segments(Command):
             self, main_window: QMainWindow, segments: List, opts: List[Color]):
         active_image = self.get_active_image(main_window)
         if active_image is None:
-            notification = Notification(main_window, "There isn't an active editor!").exec()
+            notification = Notification(
+                main_window, "There isn't an active editor!").exec()
             return
         if not active_image.load_finished:
             notification = Notification(main_window,
-                "The image is still loading. Please wait a bit").exec()
+                                        "The image is still loading. Please wait a bit").exec()
             return
 
         lut = self.get_LUT(segments)
@@ -115,11 +117,12 @@ class transform_by_linear_segments(Command):
     def execute(self, main_window: QMainWindow):
         active_image = self.get_active_image(main_window)
         if active_image is None:
-            notification = Notification(main_window, "There isn't an active editor!").exec()
+            notification = Notification(
+                main_window, "There isn't an active editor!").exec()
             return
         if not active_image.load_finished:
             notification = Notification(main_window,
-                "The image is still loading. Please wait a bit").exec()
+                                        "The image is still loading. Please wait a bit").exec()
             return
 
         dialog = SegmentsInput(main_window)

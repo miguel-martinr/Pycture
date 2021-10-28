@@ -147,7 +147,7 @@ class SegmentsInput(QDialog):
     def get_color_opts(self) -> List[Color]:
         opts = []
         for i, checkbox in enumerate(self.checkboxes):
-            if (checkbox.isChecked()):
+            if (checkbox.isChecked() and i < 3):
                 opts.append(Color._value2member_map_[i])
         return opts
 

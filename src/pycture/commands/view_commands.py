@@ -21,11 +21,12 @@ class ViewHistogramCommand(Command):
         image = self.get_active_image(main_window)
         title = self.get_active_title(main_window)
         if image is None:
-            notification = Notification(main_window, "There isn't an active editor!").exec()
+            notification = Notification(
+                main_window, "There isn't an active editor!").exec()
             return
         if not image.load_finished:
             notification = Notification(main_window,
-                "The image is still loading. Please wait a bit").exec()
+                                        "The image is still loading. Please wait a bit").exec()
             return
         histogram = self.get_histogram(image)
         mean = self.get_mean(image)
@@ -35,8 +36,10 @@ class ViewHistogramCommand(Command):
         bars = plt.bar(list(range(256)), histogram)
         for index, bar in enumerate(bars):
             color = self.get_bar_color(index)
-            # This scaling is made so the values don't reach pure black and can be seen
-            color = list(map(lambda val: 0 if val == 0 else (val * 240 + 15) / 255, color))
+            # This scaling is made so the values don't reach pure black and can
+            # be seen
+            color = list(map(lambda val: 0 if val ==
+                         0 else (val * 240 + 15) / 255, color))
             bar.set_color(color)
 
         self.write_mean(mean)
@@ -114,7 +117,7 @@ class ViewImageInfo(Command):
             return
         if not image.load_finished:
             notification = Notification(main_window,
-                "The image is still loading. Please wait a bit").exec()
+                                        "The image is still loading. Please wait a bit").exec()
             return
         self.container.setParent(main_window, Qt.WindowType.Window)
         img_name = self.get_active_title(main_window)
