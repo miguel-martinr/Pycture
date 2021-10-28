@@ -210,8 +210,8 @@ class Image(QLabel):
             for y in range(img.height()):
                 new_pixel = img.pixel(x, y)
                 for color in colors:
-                  color_value = get_value[color.value](new_pixel)
-                  new_value = lut[color_value]
-                  new_pixel = set_value[color.value](new_value, new_pixel)
+                    color_value = get_value[color.value](new_pixel)
+                    new_value = lut[color_value]
+                    new_pixel = set_value[color.value](new_value, new_pixel)
                 img.setPixel(x, y, new_pixel)
         return img

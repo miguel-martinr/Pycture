@@ -93,12 +93,21 @@ class transform_by_linear_segments(Command):
         plt.title("Linear transformation")
         plt.show()
 
-    def apply_transformation(self, main_window: QMainWindow, segments: List, opts: List[Color]):
+    def apply_transformation(
+            self, main_window: QMainWindow, segments: List, opts: List[Color]):
+        active_image = self.get_active_image(main_window)
+        if active_image is None:
+            notification = Notification("There isn't an active editor!").exec()
+            return
+        if not active_image.load_finished:
+            notification = Notification(
+                "The image is still loading. Please wait a bit").exec()
+            return
+
         lut = self.get_LUT(segments)
-        active_img = self.get_active_image(main_window)
         title = self.get_active_title(main_window)
-        
-        transformed_img = active_img.apply_LUT(lut, opts)  # temp
+
+        transformed_img = active_image.apply_LUT(lut, opts)  # temp
         main_window.add_editor(QPixmap.fromImage(
             transformed_img), title + "-LT")
 

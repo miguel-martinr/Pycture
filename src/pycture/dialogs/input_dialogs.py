@@ -128,11 +128,9 @@ class SegmentsInput(QDialog):
 
     def _sanitize_points_(self, points):
         for i in range(1, len(points)):
-            if (points[i - 1][0] >= points[i][0]):                
-                points[i-1][0] = points[i][0] + 1
-        
+            if (points[i - 1][0] >= points[i][0]):
+                points[i - 1][0] = points[i][0] + 1
 
-        
     def get_segments(self):
         points = self.get_points()
         segments = []
@@ -152,6 +150,8 @@ class SegmentsInput(QDialog):
             if (checkbox.isChecked()):
                 opts.append(Color._value2member_map_[i])
         return opts
+
+
 class IntValidator(QValidator):
     def __init__(self, bottom: int, top: int) -> None:
         super().__init__()
