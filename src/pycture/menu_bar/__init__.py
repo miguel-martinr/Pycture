@@ -6,7 +6,6 @@ from .command_menus import menus
 class MenuBar(QMenuBar):
     def __init__(self, parent: QWidget):
         super().__init__(parent)
-        self.setStyleSheet("background-color: darkgray")
         self.setup_menus()
 
     def setup_menus(self):

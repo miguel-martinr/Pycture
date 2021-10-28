@@ -5,11 +5,13 @@ from PyQt5.QtWidgets import QDockWidget, QGraphicsDropShadowEffect, QWidget, QMe
 from ..events import DeleteEditorEvent, ChangeActiveEditorEvent
 from .container import Container
 from .image import Image
+from ..css import LIGHT_GRAY
+from ..dialogs import YesCancelNotification
 
-SELECTED_DOCK_CSS = """
-QDockWidget::title {
-    background: #A0B3C3;
-}
+SELECTED_DOCK_CSS = f"""
+QDockWidget::title {{
+    background: {LIGHT_GRAY};
+}}
 """
 
 
@@ -32,16 +34,8 @@ class Editor(QDockWidget):
         return self.widget().image
 
     def closeEvent(self, event: QCloseEvent):
-        close_dialog = QMessageBox()
-        close_dialog.setText("Are you sure?")
-        Yes = QMessageBox.StandardButton.Yes
-        Cancel = QMessageBox.StandardButton.Cancel
-        close_dialog.setStandardButtons(
-            QMessageBox.StandardButtons(Yes | Cancel)
-        )
-        answer = close_dialog.exec()
-
-        if (answer == Yes):
+        close_dialog = YesCancelNotification(self, "Are you sure?")
+        if (close_dialog.exec()):
             QCoreApplication.sendEvent(
                 self.parent(),
                 DeleteEditorEvent(self.windowTitle())

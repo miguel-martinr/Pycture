@@ -7,12 +7,14 @@ from PyQt5.QtCore import QEvent
 from .menu_bar import MenuBar
 from .editor import Editor
 from .events import ExecuteCommandEvent, DeleteEditorEvent, ChangeActiveEditorEvent, NewSelectionEvent
+from .css import PYCTURE_CSS
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Pycture")
+        self.setStyleSheet(PYCTURE_CSS)
         self.setMenuBar(MenuBar(self))
         placeholder_widget = QWidget()
         self.setCentralWidget(placeholder_widget)
