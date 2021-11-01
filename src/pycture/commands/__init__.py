@@ -1,4 +1,4 @@
-from .edit_commands import EditBrightnessCommand
+from .edit_commands import EditBrightness
 from .file_commands import OpenFileCommand, SaveFileCommand
 from .view_commands import (ViewRedHistogram, ViewGreenHistogram, ViewBlueHistogram,
                             ViewGrayScaleHistogram, ViewImageBrightness, ViewImageSize, ViewImageContrast,
@@ -8,7 +8,7 @@ from .command import Command
 
 
 file_command_list = [OpenFileCommand, SaveFileCommand]
-edit_command_list = [EditBrightnessCommand]
+edit_command_list = [EditBrightness]
 histogram_command_list = [
     ViewRedHistogram,
     ViewGreenHistogram,

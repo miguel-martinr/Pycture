@@ -2,11 +2,11 @@ from PyQt5.QtCore import Qt, QCoreApplication, QEvent
 from PyQt5.QtGui import QPixmap, QCloseEvent, QMouseEvent
 from PyQt5.QtWidgets import QDockWidget, QGraphicsDropShadowEffect, QWidget, QMessageBox
 
-from ..events import DeleteEditorEvent, ChangeActiveEditorEvent
+from pycture.events import DeleteEditorEvent, ChangeActiveEditorEvent
+from pycture.css import LIGHT_GRAY
+from pycture.dialogs import YesCancelNotification
 from .container import Container
 from .image import Image
-from ..css import LIGHT_GRAY
-from ..dialogs import YesCancelNotification
 
 SELECTED_DOCK_CSS = f"""
 QDockWidget::title {{

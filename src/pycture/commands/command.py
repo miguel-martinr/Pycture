@@ -3,7 +3,7 @@ from PyQt5.QtCore import QCoreApplication
 
 from pycture.editor.image import Image
 
-from ..events import ExecuteCommandEvent
+from pycture.events import ExecuteCommandEvent
 
 
 class Command(QAction):

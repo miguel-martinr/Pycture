@@ -1,13 +1,11 @@
-from functools import reduce
 from math import log2, sqrt
 from typing import List, Tuple
 from PIL.ImageQt import QImage
 
 from PyQt5.QtWidgets import QLabel, QWidget
-from PyQt5.QtGui import QPixmap, QMouseEvent, QKeyEvent, QGuiApplication
-from PyQt5.QtCore import Qt, QCoreApplication, QThread, Signal
+from PyQt5.QtGui import QPixmap, QMouseEvent, QGuiApplication
+from PyQt5.QtCore import Signal, Qt, QThread
 
-from ...events import UpdateMousePositionEvent
 from .image_loader import ImageLoader
 from .color import Color, GrayScaleLUT
 
