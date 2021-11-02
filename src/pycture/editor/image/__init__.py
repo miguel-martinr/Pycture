@@ -54,10 +54,9 @@ class Image(QImage):
 
     def get_entropy(self, color: Color):
         histogram = self.get_histogram(color)
-        def prob(i): return histogram[i] / self.width() * self.height()
         entropy = 0
         for i in range(256):
-            p = prob(i)
+            p = histogram[i]
             if (p != 0):
                 entropy += p * log2(p)
 
