@@ -1,6 +1,7 @@
 from typing import Tuple
 from PyQt5.QtWidgets import QWidget, QMainWindow
 from pycture.dialogs import Notification
+from pycture.dialogs.edit_brightness import EditBrightnessDialog
 from pycture.editor.image.color import Color
 from ..command import Command
 
@@ -46,20 +47,20 @@ class EditBrightness(Command):
                                         "The image is still loading. Please wait a bit").exec()
             return
 
-        old_brightness = active_image.get_brightness()[2]
-        old_contrast = active_image.get_contrast()[2]
-        new_brightness = 170
-        new_contrast = 7
+        # old_brightness = active_image.get_brightness()[2]
+        # old_contrast = active_image.get_contrast()[2]
+        # new_brightness = 170
+        # new_contrast = 7
         
-        lut = self.get_LUT((old_brightness, new_brightness), (old_contrast, new_contrast))
-        new_image = active_image.apply_LUT(lut, (Color.Blue,))
+        # lut = self.get_LUT((old_brightness, new_brightness), (old_contrast, new_contrast))
+        # new_image = active_image.apply_LUT(lut, (Color.Blue,))
         
-        main_window.add_editor(new_image, title + "-BrCo")
+        # main_window.add_editor(new_image, title + "-BrCo")
         
-        print("lut:" ,lut)
-        print(f"Brightness: {active_image.get_brightness()[2]}")
-        print(f"Contrast: {active_image.get_contrast()[2]}")
+        # print("lut:" ,lut)
+        # print(f"Brightness: {active_image.get_brightness()[2]}")
+        # print(f"Contrast: {active_image.get_contrast()[2]}")
 
-
+        dialog = EditBrightnessDialog(main_window, active_image.get_brightness(), active_image.get_contrast())
 
 
