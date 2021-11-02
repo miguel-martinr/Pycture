@@ -35,11 +35,9 @@ class Image(QImage):
         return self.histograms[color.value]
 
     def get_cumulative_histogram(self, color: Color):
-        return self.convert_histogram_to_cumulative(
-            self.histograms[color.value])
-
-    def convert_histogram_to_cumulative(
-            self, histogram: List[float]) -> List[float]:
+        return self.convert_histogram_to_cumulative(self.histograms[color.value])
+    
+    def convert_histogram_to_cumulative(self, histogram: List[float]) -> List[float]:
         accumulator = 0
         cumulative = []
         for val in histogram:
