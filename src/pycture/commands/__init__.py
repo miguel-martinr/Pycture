@@ -1,4 +1,8 @@
-from .edit_commands import EditBrightness, ConvertToGrayScale, TransformByLinearSegments
+from .edit_commands import (
+    EditBrightness,
+    ConvertToGrayScale,
+    TransformByLinearSegments,
+    Equalize)
 from .file_commands import OpenFile, SaveFile
 from .view_commands import (ViewRedHistogram, ViewGreenHistogram, ViewBlueHistogram,
                             ViewGrayScaleHistogram, ViewCumulativeRedHistogram,
@@ -15,7 +19,7 @@ file_command_list = [OpenFile, SaveFile]
 edit_command_list = [
     EditBrightness,
     ConvertToGrayScale,
-    TransformByLinearSegments]
+    TransformByLinearSegments, Equalize]
 histogram_command_list = [
     ViewRedHistogram,
     ViewGreenHistogram,
