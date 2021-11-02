@@ -1,12 +1,11 @@
 from PyQt5.QtCore import Qt, QCoreApplication, QEvent
-from PyQt5.QtGui import QPixmap, QCloseEvent, QMouseEvent
-from PyQt5.QtWidgets import QDockWidget, QGraphicsDropShadowEffect, QWidget, QMessageBox
+from PyQt5.QtGui import QImage, QCloseEvent, QMouseEvent
+from PyQt5.QtWidgets import QDockWidget, QGraphicsDropShadowEffect, QWidget 
 
 from pycture.events import DeleteEditorEvent, ChangeActiveEditorEvent
 from pycture.css import LIGHT_GRAY
 from pycture.dialogs import YesCancelNotification
 from .container import Container
-from .image import Image
 
 SELECTED_DOCK_CSS = f"""
 QDockWidget::title {{
@@ -16,7 +15,7 @@ QDockWidget::title {{
 
 
 class Editor(QDockWidget):
-    def __init__(self, parent: QWidget, image: QPixmap, image_name: str):
+    def __init__(self, parent: QWidget, image: QImage, image_name: str):
         super().__init__(parent)
         self.setWindowTitle(image_name)
         self.setWidget(Container(self, image))
@@ -31,7 +30,7 @@ class Editor(QDockWidget):
         return active_effect
 
     def get_image(self):
-        return self.widget().image
+        return self.widget().get_image()
 
     def closeEvent(self, event: QCloseEvent):
         close_dialog = YesCancelNotification(self, "Are you sure?")

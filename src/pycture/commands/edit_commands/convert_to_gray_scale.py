@@ -22,5 +22,4 @@ class ConvertToGrayScale(Command):
             return
 
         gray_scaled_image = image.get_gray_scaled_image()
-        main_window.add_editor(QPixmap.fromImage(
-            gray_scaled_image), title + "(GrayScaled)")
+        main_window.add_editor(gray_scaled_image, title + "(GrayScaled)")
