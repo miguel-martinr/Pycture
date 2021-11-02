@@ -7,7 +7,7 @@ from .command import Command
 from ..dialogs import Notification
 
 
-class OpenFileCommand(Command):
+class OpenFile(Command):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Open")
 
@@ -20,7 +20,7 @@ class OpenFileCommand(Command):
         main_window.add_editor(QPixmap(file_path), filename)
 
 
-class SaveFileCommand(Command):
+class SaveFile(Command):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Save")
 
