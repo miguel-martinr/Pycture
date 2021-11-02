@@ -2,7 +2,6 @@ from typing import List
 from PyQt5.QtWidgets import QMenu, QWidget
 from PyQt5.QtCore import QCoreApplication
 
-from pycture.commands.view_commands import ViewBlueHistogram, ViewGrayScaleHistogram, ViewGreenHistogram, ViewImageBrightness, ViewImageContrast, ViewImageEntropy, ViewImageRanges, ViewImageSize, ViewRedHistogram, ViewImageInfo
 from pycture.commands.edit_commands import ConvertToGrayScale, TransformByLinearSegments
 from pycture.commands import (Command, file_command_list, edit_command_list,
                               histogram_command_list, info_command_list, help_command_list)
@@ -36,7 +35,6 @@ class EditMenu(CommandMenu):
         super().__init__(parent)
         self.setTitle("Edit")
         self.set_menu_commands(edit_command_list)
-        self.set_menu_submenus([TransformMenu])
 
 
 class ViewMenu(CommandMenu):
@@ -66,14 +64,6 @@ class ImageInfoMenu(CommandMenu):
         super().__init__(parent)
         self.setTitle("Info")
         self.set_menu_commands(info_command_list)
-
-
-# EditMenu submenus
-class TransformMenu(CommandMenu):
-    def __init__(self, parent: QWidget):
-        super().__init__(parent)
-        self.setTitle("Transform")
-        self.set_menu_commands([ConvertToGrayScale, TransformByLinearSegments])
 
 
 menus = [FileMenu, EditMenu, ViewMenu, HelpMenu]
