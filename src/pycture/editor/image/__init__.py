@@ -5,7 +5,7 @@ from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import QThread, QSize
 
 from .image_loader import ImageLoader
-from .color import Color, GrayScaleLUT
+from .color import Color, RGBColor, GrayScaleLUT
 
 class Image(QImage):
     def __init__(self, image: QImage):
@@ -73,10 +73,10 @@ class Image(QImage):
             variance += histogram[i] * (i - mean) ** 2
         return variance
 
-    def get_color_from_pixel(self, pixel: int, color: Color) -> int:
-        if color == Color.Red:
+    def get_color_from_pixel(self, pixel: int, color: RGBColor) -> int:
+        if color == RGBColor.Red:
             return (pixel & 0x00ff0000) >> 16
-        elif color == Color.Green:
+        elif color == RGBColor.Green:
             return (pixel & 0x0000ff00) >> 8
         else:
             return pixel & 0x000000ff
@@ -128,7 +128,7 @@ class Image(QImage):
             for y in range(heigth):
                 pixel = self.pixel(x, y)
                 gray_value = 0
-                for color in (Color.Red, Color.Green, Color.Blue):
+                for color in RGBColor:
                     value = self.get_color_from_pixel(pixel, color)
                     gray_value += GrayScaleLUT[color.value][value]
 
@@ -137,10 +137,7 @@ class Image(QImage):
 
         return gray_scaled
 
-    # Color.Gray shouldn't be passed as a color since it's represented as the
-    # (Color.Red ,Color.Green, Color.Blue) tuple
-    def apply_LUT(self, lut: List[int], colors: Tuple[Color] = (
-            Color.Red, Color.Green, Color.Blue)) -> QImage:
+    def apply_LUT(self, lut: List[int], colors: (bool, bool, bool) = (True, True, True)) -> QImage:
 
         if (len(lut) != 256):
             print("LUT length must be 256")
@@ -152,7 +149,9 @@ class Image(QImage):
         for x in range(self.width()):
             for y in range(self.height()):
                 new_pixel = self.pixel(x, y)
-                for color in colors:
+                for color in RGBColor:
+                    if  not colors[color.value]:
+                        continue
                     color_value = self.get_color_from_pixel(new_pixel, color)
                     new_value = lut[color_value]
                     new_pixel = set_value[color.value](new_value, new_pixel)

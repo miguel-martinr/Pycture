@@ -147,11 +147,8 @@ class SegmentsInput(QDialog):
             checkbox.setCheckState(state)
 
     def get_color_opts(self) -> List[Color]:
-        opts = []
-        for i, checkbox in enumerate(self.checkboxes):
-            if (checkbox.isChecked() and i < 3):
-                opts.append(Color._value2member_map_[i])
-        return opts
+        checkboxes = self.checkboxes[0:3]
+        return tuple(map(lambda checkbox: checkbox.isChecked(), checkboxes))
 
 
 class IntValidator(QValidator):
