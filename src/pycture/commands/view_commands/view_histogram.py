@@ -36,7 +36,7 @@ class ViewHistogramCommand(Command):
         pixmap = self.save_figure_to_pixmap(figure)
         main_window.add_editor(pixmap, title + "." + self.text() + "-hist")
 
-    def draw_histogram(histogram: List[int], mean: float) -> plt.figure:
+    def draw_histogram(self, histogram: List[int], mean: float) -> plt.figure:
         plt.style.use('dark_background')
         figure = plt.figure()
         bars = plt.bar(list(range(256)), histogram)
