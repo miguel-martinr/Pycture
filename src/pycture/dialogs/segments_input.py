@@ -1,14 +1,14 @@
-from typing import List, Tuple
+from typing import List 
 from PyQt5.QtGui import QValidator
 from PyQt5.QtWidgets import QCheckBox, QDialog, QFormLayout, QGridLayout, QHBoxLayout, QInputDialog, QLabel, QLayout, QLayoutItem, QLineEdit, QMainWindow, QPushButton, QVBoxLayout, QWidget
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt, Signal
 
 from pycture.editor.image.color import Color
 
 
 class SegmentsInput(QDialog):
-    previewed = pyqtSignal(list)
-    applied = pyqtSignal(list)
+    previewed = Signal(list)
+    applied = Signal(list)
 
     def __init__(self, parent: QMainWindow) -> None:
         super().__init__(parent, Qt.WindowType.Window)

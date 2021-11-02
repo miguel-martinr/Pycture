@@ -1,47 +1,15 @@
-from typing import List, Tuple
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QInputDialog, QWidget, QMainWindow
+from PyQt5.QtWidgets import QWidget, QMainWindow
+
+from typing import List, Tuple
 from matplotlib import pyplot as plt
 
-from pycture.dialogs.input_dialogs import SegmentsInput
-from pycture.editor import Editor
-from pycture.editor.image import Color, Image
-
-from .command import Command
-from ..dialogs import Notification
+from pycture.editor.image import Color
+from pycture.dialogs import Notification, SegmentsInput
+from ..command import Command
 
 
-class EditBrightnessCommand(Command):
-    def __init__(self, parent: QWidget):
-        super().__init__(parent, "Brightness")
-
-    def execute(self, main_window: QMainWindow):
-        print("Edits brightness")
-
-
-class ToGrayScale(Command):
-    def __init__(self, parent: QWidget):
-        super().__init__(parent, "Gray scale (NTSC)")
-
-    def execute(self, main_window: QMainWindow):
-        image = self.get_active_image(main_window)
-        title = self.get_active_title(main_window)
-        if image is None:
-            notification = Notification(
-                main_window, "There isn't an active editor!").exec()
-            return
-        if not image.load_finished:
-            notification = Notification(main_window,
-                                        "The image is still loading. Please wait a bit").exec()
-            return
-
-        gray_scaled_image = image.get_gray_scaled_image()
-        main_window.add_editor(QPixmap.fromImage(
-            gray_scaled_image), title + "(GrayScaled)")
-
-
-class transform_by_linear_segments(Command):
+class TransformByLinearSegments(Command):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "By linear segments")
 
@@ -75,7 +43,7 @@ class transform_by_linear_segments(Command):
         for p in points:
             x.append(p[0])
             y.append(p[1])
-        
+
         plt.style.use('dark_background')
         plt.clf()
         plt.plot(x, y)

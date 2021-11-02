@@ -9,7 +9,7 @@ HELP_MESSAGE = """
 """
 
 
-class HelpCommand(Command):
+class ShowHelp(Command):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Show help")
 
