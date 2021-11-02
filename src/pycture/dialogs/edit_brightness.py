@@ -17,12 +17,16 @@ class EditBrightnessDialog(QDialog):
         layout = QGridLayout()
         self.setLayout(layout)
         self._set_brightness_inputs_(current_brightness)
+        self._set_contrast_inputs_(current_contrast)
         
     def _set_brightness_inputs_(self, current_brightness):
         self._brightness_inputs_ = []
         self._set_inputs_for_("Brightness", 0, 0, current_brightness, self._brightness_inputs_, 255)
         
-        
+    def _set_contrast_inputs_(self, current_contrast):
+        self._contrast_inputs_ = []
+        self._set_inputs_for_("Contrast", 0, 1, current_contrast, self._contrast_inputs_, 127)
+
     def _set_inputs_for_(self, title, row, col, values, inputs, top_limit):
         layout = QGridLayout()
         layout.addWidget(QLabel(title, self), 0,
