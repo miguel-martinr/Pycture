@@ -6,6 +6,7 @@ from PyQt5.QtCore import QThread, QSize
 
 from .image_loader import ImageLoader
 from .color import Color, RGBColor, GrayScaleLUT
+from .pixel import Pixel
 
 class Image(QImage):
     def __init__(self, image: QImage):
@@ -73,51 +74,10 @@ class Image(QImage):
             variance += histogram[i] * (i - mean) ** 2
         return variance
 
-    def get_color_from_pixel(self, pixel: int, color: RGBColor) -> int:
-        if color == RGBColor.Red:
-            return (pixel & 0x00ff0000) >> 16
-        elif color == RGBColor.Green:
-            return (pixel & 0x0000ff00) >> 8
-        else:
-            return pixel & 0x000000ff
-
     def get_pixel_rgb(self, x: int, y: int) -> (int, int, int):
         if not self.valid(x, y):
             return None
-        pixel_val = self.pixel(x, y)
-        red_val = self.get_color_from_pixel(pixel_val, Color.Red)
-        green_val = self.get_color_from_pixel(pixel_val, Color.Green)
-        blue_val = self.get_color_from_pixel(pixel_val, Color.Blue)
-        return (red_val, green_val, blue_val)
-
-    def set_green_value(self, green_value: int, pixel_value: int) -> int:
-        green_value = (green_value & 0x000000ff) << 8
-        return (green_value | (pixel_value & 0xffff00ff))
-
-    def set_blue_value(self, blue_value: int, pixel_value: int) -> int:
-        blue_value &= 0x000000ff
-        return (blue_value | (pixel_value & 0xffffff00))
-
-    def set_red_value(self, red_value: int, pixel_value: int) -> int:
-        red_value = (red_value & 0x000000ff) << 16
-        return (red_value | (pixel_value & 0xff00ffff))
-
-    def set_green_value(self, green_value: int, pixel_value: int) -> int:
-        green_value = (green_value & 0x000000ff) << 8
-        return (green_value | (pixel_value & 0xffff00ff))
-
-    def set_blue_value(self, blue_value: int, pixel_value: int) -> int:
-        blue_value &= 0x000000ff
-        return (blue_value | (pixel_value & 0xffffff00))
-
-    def get_gray_pixel(self, gray_value: int, alpha: int = 0) -> int:
-        gray_value &= 0x000000ff
-        for _ in range(2):
-            gray_value = gray_value | (gray_value << 8)
-        return (gray_value | (alpha & 0xff000000))
-    
-    def get_selection(self, x: int, y: int, width: int, height: int) -> QImage:
-        return self.copy(x, y, width, height)
+        return Pixel(self.pixel(x, y)).get_rgb()
 
     def get_gray_scaled_image(self) -> QImage:
         width = self.width()
@@ -126,34 +86,30 @@ class Image(QImage):
 
         for x in range(width):
             for y in range(heigth):
-                pixel = self.pixel(x, y)
+                pixel = Pixel(self.pixel(x, y))
                 gray_value = 0
                 for color in RGBColor:
-                    value = self.get_color_from_pixel(pixel, color)
+                    value = pixel.get_color(color)
                     gray_value += GrayScaleLUT[color.value][value]
 
                 gray_value = round(gray_value)
-                gray_scaled.setPixel(x, y, self.get_gray_pixel(gray_value, pixel))
+                gray_scaled.setPixel(x, y, pixel.set_rgb(gray_value).value)
 
         return gray_scaled
 
     def apply_LUT(self, lut: List[int], colors: (bool, bool, bool) = (True, True, True)) -> QImage:
-
         if (len(lut) != 256):
             print("LUT length must be 256")
             return
 
-        set_value = [self.set_red_value,
-                     self.set_green_value, self.set_blue_value]
-
         for x in range(self.width()):
             for y in range(self.height()):
-                new_pixel = self.pixel(x, y)
+                new_pixel = Pixel(self.pixel(x, y))
                 for color in RGBColor:
                     if  not colors[color.value]:
                         continue
-                    color_value = self.get_color_from_pixel(new_pixel, color)
+                    color_value = new_pixel.get_color(color)
                     new_value = lut[color_value]
-                    new_pixel = set_value[color.value](new_value, new_pixel)
-                self.setPixel(x, y, new_pixel)
+                    new_pixel = new_pixel.set_color(new_value, color.value)
+                self.setPixel(x, y, new_pixel.value)
         return self
