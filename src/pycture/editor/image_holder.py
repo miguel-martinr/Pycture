@@ -41,7 +41,7 @@ class ImageHolder(QLabel):
             return
         x_values = sorted([event.x(), self.press_pos[0]])
         y_values = sorted([event.y(), self.press_pos[1]])
-        new_image = self.image.get_selection(
+        new_image = self.image.copy(
             x_values[0],
             y_values[0],
             x_values[1] - x_values[0],

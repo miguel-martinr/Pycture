@@ -2,6 +2,7 @@ from PyQt5.QtCore import QObject, Signal
 from PyQt5.QtWidgets import QLabel
 
 from .color import Color, RGBColor, GrayScaleLUT
+from .pixel import Pixel
 
 
 class ImageLoader(QObject):
@@ -19,9 +20,9 @@ class ImageLoader(QObject):
         for x in range(image.width()):
             for y in range(image.height()):
                 gray_value = 0
-                pixel = image.pixel(x, y)
+                pixel = Pixel(image.pixel(x, y))
                 for color in RGBColor:
-                    value = image.get_color_from_pixel(pixel, color)
+                    value = pixel.get_color(color)
                     image.histograms[color.value][value] += 1
                     image.means[color.value] += value
                     gray_value += GrayScaleLUT[color.value][value]
