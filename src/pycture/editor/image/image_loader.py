@@ -21,7 +21,7 @@ class ImageLoader(QObject):
                 gray_value = 0
                 pixel = image.pixel(x, y)
                 for color in [Color.Red, Color.Green, Color.Blue]:
-                    value = image.get_color_from_pixel(pixel, color.value)
+                    value = image.get_color_from_pixel(pixel, color)
                     image.histograms[color.value][value] += 1
                     image.means[color.value] += value
                     gray_value += GrayScaleLUT[color.value][value]
