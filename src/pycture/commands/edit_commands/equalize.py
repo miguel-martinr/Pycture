@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QWidget, QMainWindow
 from PyQt5.QtGui import QPixmap
 
 from ..command import Command
+from pycture.editor.image import Color
 
 
 class Equalize(Command):
@@ -19,6 +20,6 @@ class Equalize(Command):
             notification = Notification(main_window,
                                         "The image is still loading. Please wait a bit").exec()
             return
-        image = image.pixmap().toImage()
 
+        image = image.get_equalized([Color.Red, Color.Green, Color.Blue])
         main_window.add_editor(QPixmap.fromImage(image), title + "(Equalized)")

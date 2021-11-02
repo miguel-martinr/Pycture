@@ -48,6 +48,7 @@ class Image(QImage):
     def get_mean(self, color: Color):
         return self.means[color.value]
 
+    # Standard deviation
     def get_sd(self, color: Color):
         return sqrt(self.get_variance(color))
 
@@ -108,6 +109,13 @@ class Image(QImage):
                 gray_scaled.setPixel(x, y, pixel.set_rgb(gray_value).value)
 
         return gray_scaled
+    
+    def get_equalized(self, colors: List[Color]) -> QImage:
+        for color in colors:
+            lut = []
+            for val in self.get_cumulative_histogram(color):
+                lut.append(max(0, val * 256 - 1))
+            self.apply_LUT(lut, color)
 
     def apply_LUT(self, lut: List[int], colors: (
             bool, bool, bool) = (True, True, True)) -> QImage:
