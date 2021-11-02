@@ -17,7 +17,7 @@ class OpenFile(Command):
         if not file_path:
             return
         (_, filename) = path.split(file_path)
-        main_window.add_editor(QPixmap(file_path), filename)
+        main_window.add_editor(QPixmap(file_path).toImage(), filename)
 
 
 class SaveFile(Command):
@@ -41,4 +41,4 @@ class SaveFile(Command):
             notification = Notification(main_window,
                                         "Supported extensions are .png, .jpg, .jpeg and .bmp").exec()
             return
-        image.pixmap().save(file_path, extension[1:])
+        image.save(file_path, extension[1:])

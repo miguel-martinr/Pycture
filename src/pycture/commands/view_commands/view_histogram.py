@@ -2,7 +2,7 @@ from io import BytesIO
 from typing import List
 
 from PyQt5.QtWidgets import QWidget, QMainWindow, QLabel
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QImage, QPixmap
 
 import matplotlib.pyplot as plt
 from PIL.ImageQt import ImageQt
@@ -33,10 +33,10 @@ class ViewHistogramCommand(Command):
 
         figure = self.draw_histogram(histogram, mean)
         self.write_mean(mean)
-        pixmap = self.save_figure_to_pixmap(figure)
+        pixmap = self.save_figure_to_image(figure)
         main_window.add_editor(pixmap, title + "." + self.text() + "-hist")
 
-    def draw_histogram(histogram: List[int], mean: float) -> plt.figure:
+    def draw_histogram(self, histogram: List[int], mean: float) -> plt.figure:
         plt.style.use('dark_background')
         figure = plt.figure()
         bars = plt.bar(list(range(256)), histogram)
@@ -53,10 +53,10 @@ class ViewHistogramCommand(Command):
         plt.axvline(mean)
         plt.title(f"Mean: {mean:.2f}")
 
-    def save_figure_to_pixmap(self, figure: plt.figure) -> QPixmap:
+    def save_figure_to_image(self, figure: plt.figure) -> QImage:
         buffer = BytesIO()
         figure.savefig(buffer)
-        return QPixmap.fromImage(ImageQt(Image.open(buffer)))
+        return QPixmap.fromImage(ImageQt(Image.open(buffer))).toImage()
 
     def get_bar_color(self, val: int) -> List[float]:
         pass

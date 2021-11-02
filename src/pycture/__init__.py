@@ -1,7 +1,7 @@
 from os import path
 
 from PyQt5.QtWidgets import QMainWindow, QWidget, QGridLayout
-from PyQt5.QtGui import QPixmap, QGuiApplication
+from PyQt5.QtGui import QImage, QGuiApplication
 from PyQt5.QtCore import QEvent
 
 from .menu_bar import MenuBar
@@ -40,7 +40,7 @@ class MainWindow(QMainWindow):
         else:
             event.ignore()
 
-    def add_editor(self, image: QPixmap, name: str):
+    def add_editor(self, image: QImage, name: str):
         while self.editors.get(name):
             (name, extension) = path.splitext(name)
             name = name + "+" + extension
