@@ -14,16 +14,12 @@ class Equalize(Command):
         if image is None:
             return
 
-        new_image = Image(image)
+        luts = (list(range(256)), list(range(256)), list(range(256)))
         for color in self.get_colors():
-            lut = []
-            for val in image.get_cumulative_histogram(color):
-                lut.append(max(0, round(val * 256) - 1))
-            rgb_bools = (
-                color == RGBColor.Red,
-                color == RGBColor.Green,
-                color == RGBColor.Blue)
-            new_image = new_image.apply_LUT(lut, rgb_bools)
+            lut = luts[color.value]
+            for index, val in enumerate(image.get_cumulative_histogram(color)):
+                lut[index] = max(0, round(val * 256) - 1)
+        new_image = image.apply_LUTs(luts)
 
         main_window.add_editor(
             new_image, title + "(" + self.text() + "Equalized)")

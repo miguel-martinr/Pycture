@@ -112,18 +112,19 @@ class Image(QImage):
 
         return gray_scaled
 
-    def apply_LUT(self, lut: List[int], colors: (
-            bool, bool, bool) = (True, True, True)) -> "Image":
-        if (len(lut) != 256):
-            print("LUT length must be 256")
-            return
+    def apply_LUTs(self, luts: (List[int], List[int], List[int])) -> "Image":
+        for lut in luts:
+            if (len(lut) != 256):
+                print("LUT length must be 256")
+                return
         image = Image(self.copy(0, 0, self.width(), self.height()))
 
         for x in range(self.width()):
             for y in range(self.height()):
                 new_pixel = Pixel(image.pixel(x, y))
                 for color in RGBColor:
-                    if not colors[color.value]:
+                    lut = luts[color.value]
+                    if lut is None:
                         continue
                     color_value = new_pixel.get_color(color)
                     new_value = lut[color_value]
