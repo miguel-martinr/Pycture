@@ -146,7 +146,7 @@ class SegmentsInput(QDialog):
         for checkbox in self.checkboxes:
             checkbox.setCheckState(state)
 
-    def get_color_opts(self) -> List[Color]:
+    def get_color_options(self) -> (bool, bool, bool):
         checkboxes = self.checkboxes[0:3]
         return tuple(map(lambda checkbox: checkbox.isChecked(), checkboxes))
 

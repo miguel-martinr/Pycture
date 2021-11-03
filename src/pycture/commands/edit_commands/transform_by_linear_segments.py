@@ -53,19 +53,20 @@ class TransformByLinearSegments(Command):
         plt.show()
 
     def apply_transformation(
-            self, main_window: QMainWindow, segments: List, opts: List[Color]):
-        image, _ = self.get_active_image_and_title(main_window)
+            self, main_window: QMainWindow, segments: List, options: tuple):
+        image, title = self.get_active_image_and_title(main_window)
         if image is None:
             return
 
         lut = self.get_LUT(segments)
-        title = self.get_active_title(main_window)
 
-        transformed_image = image.apply_LUT((lut, lut, lut))  # temp
+        lut_or_none = lambda condition: lut if condition else None
+        luts = (lut_or_none(options[0]), lut_or_none(options[1]), lut_or_none(options[2]))  
+        transformed_image = image.apply_LUTs(luts)
         main_window.add_editor(transformed_image, title + "-LT")
 
     def execute(self, main_window: QMainWindow):
-        image, _ = self.get_active_image(main_window)
+        image, _ = self.get_active_image_and_title(main_window)
         if image is None:
             return
 
@@ -74,4 +75,4 @@ class TransformByLinearSegments(Command):
             lambda s: self.preview_transformation(dialog.get_points()))
         dialog.applied.connect(
             lambda s: self.apply_transformation(
-                main_window, s, dialog.get_color_opts()))
+                main_window, s, dialog.get_color_options()))
