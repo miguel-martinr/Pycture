@@ -35,9 +35,11 @@ class Image(QImage):
         return self.histograms[color.value]
 
     def get_cumulative_histogram(self, color: Color):
-        return self.convert_histogram_to_cumulative(self.histograms[color.value])
-    
-    def convert_histogram_to_cumulative(self, histogram: List[float]) -> List[float]:
+        return self.convert_histogram_to_cumulative(
+            self.histograms[color.value])
+
+    def convert_histogram_to_cumulative(
+            self, histogram: List[float]) -> List[float]:
         accumulator = 0
         cumulative = []
         for val in histogram:
@@ -110,7 +112,8 @@ class Image(QImage):
 
         return gray_scaled
 
-    def apply_LUT(self, lut: List[int], colors: (bool, bool, bool) = (True, True, True)) -> "Image":
+    def apply_LUT(self, lut: List[int], colors: (
+            bool, bool, bool) = (True, True, True)) -> "Image":
         if (len(lut) != 256):
             print("LUT length must be 256")
             return

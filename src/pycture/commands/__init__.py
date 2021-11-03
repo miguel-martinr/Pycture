@@ -1,8 +1,6 @@
-from .edit_commands import (
-    EditBrightness,
-    ConvertToGrayScale,
-    TransformByLinearSegments,
-    Equalize)
+from .edit_commands import (EditBrightness, ConvertToGrayScale,
+                            TransformByLinearSegments, EqualizeRed,
+                            EqualizeGreen, EqualizeBlue, EqualizeRGB)
 from .file_commands import OpenFile, SaveFile
 from .view_commands import (ViewRedHistogram, ViewGreenHistogram, ViewBlueHistogram,
                             ViewGrayScaleHistogram, ViewCumulativeRedHistogram,
@@ -19,7 +17,8 @@ file_command_list = [OpenFile, SaveFile]
 edit_command_list = [
     EditBrightness,
     ConvertToGrayScale,
-    TransformByLinearSegments, Equalize]
+    TransformByLinearSegments]
+equalize_command_list = [EqualizeRed, EqualizeGreen, EqualizeBlue, EqualizeRGB]
 histogram_command_list = [
     ViewRedHistogram,
     ViewGreenHistogram,
