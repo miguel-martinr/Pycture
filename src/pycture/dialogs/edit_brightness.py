@@ -45,10 +45,12 @@ class EditBrightnessDialog(QDialog):
         contrast_values = tuple(map(get_value, self._contrast_inputs_))
         return (brightness_values, contrast_values)
 
-    def update_values(self, brigthness, contrast):
+    def update_values(self, brightness, contrast):
+        straiten = lambda value, top: 0 if value < 0 else top if value > top else value
+            
         for i in range(3):
-            self._brightness_inputs_[i].setText(str(round(brigthness[i])))
-            self._contrast_inputs_[i].setText(str(round(contrast[i])))
+            self._brightness_inputs_[i].setText(str(round(straiten(brightness[i], 255))))
+            self._contrast_inputs_[i].setText(str(round(straiten(contrast[i], 127))))
 
     def _set_brightness_inputs_(self, current_brightness):
         self._brightness_inputs_ = self._set_inputs_for_(
