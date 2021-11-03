@@ -62,5 +62,6 @@ class EditBrightness(Command):
         # print(f"Contrast: {active_image.get_contrast()[2]}")
 
         dialog = EditBrightnessDialog(main_window, active_image.get_brightness(), active_image.get_contrast())
+        dialog.recalculate.connect(lambda values: print(values))
 
 

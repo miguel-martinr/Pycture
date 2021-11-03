@@ -1,12 +1,15 @@
 
 from typing import Tuple
 from PyQt5.QtCore import QLine, Qt
-from PyQt5.QtWidgets import QDialog, QGridLayout, QLabel, QLineEdit, QMainWindow, QSlider
-
+from PyQt5.QtWidgets import QDialog, QGridLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QSlider
+from PyQt5.QtCore import Qt, Signal
 from pycture.dialogs.segments_input import IntValidator
 
 
 class EditBrightnessDialog(QDialog):
+    recalculate = Signal(tuple)
+    apply = Signal(tuple)
+
     def __init__(self, parent: QMainWindow, current_brightness: Tuple[int], current_contrast: Tuple[int]) -> None:
         super().__init__(parent, Qt.WindowType.Window)
         self._setup_(current_brightness, current_contrast)
@@ -18,42 +21,70 @@ class EditBrightnessDialog(QDialog):
         self.setLayout(layout)
         self._set_brightness_inputs_(current_brightness)
         self._set_contrast_inputs_(current_contrast)
-        
-    def _set_brightness_inputs_(self, current_brightness):
-        self._brightness_inputs_ = []
-        self._set_inputs_for_("Brightness", 0, 0, current_brightness, self._brightness_inputs_, 255)
-        
-    def _set_contrast_inputs_(self, current_contrast):
-        self._contrast_inputs_ = []
-        self._set_inputs_for_("Contrast", 0, 1, current_contrast, self._contrast_inputs_, 127)
+        self._set_buttons_()
 
-    def _set_inputs_for_(self, title, row, col, values, inputs, top_limit):
+    def _set_buttons_(self):
+        layout = self.layout()
+
+        recalculate_btn = QPushButton("Recalculate", self)
+        apply_btn = QPushButton("Apply", self)
+
+        recalculate_btn.pressed.connect(lambda:
+            self.recalculate.emit(self.get_values()))
+        apply_btn.pressed.connect(lambda:
+            self.apply.emit(self.get_values()))
+
+        layout.addWidget(recalculate_btn, layout.rowCount(),
+                         0, Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(apply_btn, layout.rowCount() - 1,
+                         layout.columnCount() - 1, Qt.AlignmentFlag.AlignCenter)
+
+    def get_values(self):
+        get_value = lambda input: int(input.text())
+        brightness_values = tuple(map(get_value, self._brightness_inputs_))
+        contrast_values = tuple(map(get_value, self._contrast_inputs_))
+        return (brightness_values, contrast_values)
+
+    def update_values(self, brigthness, contrast):
+        for i in range(3):
+            self._brightness_inputs_[i].setText(str(round(brigthness[i])))
+            self._contrast_inputs_[i].setText(str(round(contrast[i])))
+
+    def _set_brightness_inputs_(self, current_brightness):
+        self._brightness_inputs_ = self._set_inputs_for_(
+            "Brightness", 0, 0, current_brightness, 255)
+
+    def _set_contrast_inputs_(self, current_contrast):
+        self._contrast_inputs_ = self._set_inputs_for_(
+            "Contrast", 0, 1, current_contrast, 127)
+
+    def _set_inputs_for_(self, title, row, col, values, top_limit):
         layout = QGridLayout()
         layout.addWidget(QLabel(title, self), 0,
                          0, Qt.AlignmentFlag.AlignCenter)
-        
+
         self.layout().addLayout(layout, row, col)
 
         orientation = Qt.Orientation.Horizontal
         inputs = [QLineEdit(str(round(values[i]))) for i in range(3)]
-        to_int = lambda str_value: 0 if (str_value == "") else int(str_value)
-        
+
+        def to_int(str_value): return 0 if (
+            str_value == "") else int(str_value)
 
         colors = ["#ff0000", "#00ff00", "#0000ff"]
         for i, input in enumerate(inputs):
             slider = QSlider(orientation, self)
             input.setValidator(IntValidator(0, top_limit))
-            slider.setMaximum(top_limit)    
-            slider.setStyleSheet("QSlider::handle:horizontal {background-color: " + colors[i] + ";}");
+            slider.setMaximum(top_limit)
+            slider.setStyleSheet(
+                "QSlider::handle:horizontal {background-color: " + colors[i] + ";}")
             slider.setValue(to_int(values[i]))
-            
-            slider.valueChanged.connect(lambda value, i = input: i.setText(str(value)))
-            input.textChanged.connect(lambda value, s = slider: s.setValue(to_int(value))) # ASTONISHING!
+
+            slider.valueChanged.connect(
+                lambda value, i=input: i.setText(str(value)))
+            input.textChanged.connect(
+                lambda value, s=slider: s.setValue(to_int(value)))  # ASTONISHING!
             j = 2 * i
-            layout.addWidget(input, j + 1, 0, Qt.AlignmentFlag.AlignLeft)    
-            layout.addWidget(slider, j + 2, 0)   
-        
-        
-
-
-
+            layout.addWidget(input, j + 1, 0, Qt.AlignmentFlag.AlignLeft)
+            layout.addWidget(slider, j + 2, 0)
+        return inputs
