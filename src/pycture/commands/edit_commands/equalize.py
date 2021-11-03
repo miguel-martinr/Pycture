@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QWidget, QMainWindow
 from PyQt5.QtGui import QPixmap
 
 from ..command import Command
-from pycture.editor.image import Color
+from pycture.editor.image import RGBColor, Image
 
 
 class Equalize(Command):
@@ -10,16 +10,16 @@ class Equalize(Command):
         super().__init__(parent, "Equalize")
 
     def execute(self, main_window: QMainWindow):
-        image = self.get_active_image(main_window)
-        title = self.get_active_title(main_window)
+        image, title = self.get_active_image_and_title(main_window)
         if image is None:
-            notification = Notification(
-                main_window, "There isn't an active editor!").exec()
             return
-        if not image.load_finished:
-            notification = Notification(main_window,
-                                        "The image is still loading. Please wait a bit").exec()
-            return
+    
+        new_image = Image(image)
+        for color in RGBColor:
+            lut = []
+            for val in image.get_cumulative_histogram(color):
+                lut.append(max(0, round(val * 256) - 1))
+            rgb_bools = (color == RGBColor.Red, color == RGBColor.Green, color == RGBColor.Blue)
+            new_image = new_image.apply_LUT(lut, rgb_bools)
 
-        image = image.get_equalized([Color.Red, Color.Green, Color.Blue])
-        main_window.add_editor(QPixmap.fromImage(image), title + "(Equalized)")
+        main_window.add_editor(new_image, title + "(Equalized)")

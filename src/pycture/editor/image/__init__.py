@@ -109,28 +109,21 @@ class Image(QImage):
                 gray_scaled.setPixel(x, y, pixel.set_rgb(gray_value).value)
 
         return gray_scaled
-    
-    def get_equalized(self, colors: List[Color]) -> QImage:
-        for color in colors:
-            lut = []
-            for val in self.get_cumulative_histogram(color):
-                lut.append(max(0, val * 256 - 1))
-            self.apply_LUT(lut, color)
 
-    def apply_LUT(self, lut: List[int], colors: (
-            bool, bool, bool) = (True, True, True)) -> QImage:
+    def apply_LUT(self, lut: List[int], colors: (bool, bool, bool) = (True, True, True)) -> "Image":
         if (len(lut) != 256):
             print("LUT length must be 256")
             return
+        image = Image(self.copy(0, 0, self.width(), self.height()))
 
         for x in range(self.width()):
             for y in range(self.height()):
-                new_pixel = Pixel(self.pixel(x, y))
+                new_pixel = Pixel(image.pixel(x, y))
                 for color in RGBColor:
                     if not colors[color.value]:
                         continue
                     color_value = new_pixel.get_color(color)
                     new_value = lut[color_value]
-                    new_pixel = new_pixel.set_color(new_value, color.value)
-                self.setPixel(x, y, new_pixel.value)
-        return self
+                    new_pixel = new_pixel.set_color(new_value, color)
+                image.setPixel(x, y, new_pixel.value)
+        return image
