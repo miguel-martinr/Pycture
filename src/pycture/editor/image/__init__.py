@@ -33,6 +33,17 @@ class Image(QImage):
     def get_histogram(self, color: Color):
         return self.histograms[color.value]
 
+    def get_cumulative_histogram(self, color: Color):
+        return self.convert_histogram_to_cumulative(self.histograms[color.value])
+    
+    def convert_histogram_to_cumulative(self, histogram: List[float]) -> List[float]:
+        accumulator = 0
+        cumulative = []
+        for val in histogram:
+            accumulator += val
+            cumulative.append(accumulator)
+        return cumulative
+
     def get_mean(self, color: Color):
         return self.means[color.value]
 
