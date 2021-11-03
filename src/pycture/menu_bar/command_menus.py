@@ -5,7 +5,7 @@ from PyQt5.QtCore import QCoreApplication
 from pycture.commands.edit_commands import ConvertToGrayScale, TransformByLinearSegments
 from pycture.commands import (Command, file_command_list, edit_command_list,
                               histogram_command_list, cumulative_histogram_command_list,
-                              info_command_list, help_command_list)
+                              info_command_list, help_command_list, equalize_command_list)
 
 
 class CommandMenu(QMenu):
@@ -36,6 +36,7 @@ class EditMenu(CommandMenu):
         super().__init__(parent)
         self.setTitle("Edit")
         self.set_menu_commands(edit_command_list)
+        self.set_menu_submenus([EqualizeMenu])
 
 
 class ViewMenu(CommandMenu):
@@ -52,6 +53,12 @@ class HelpMenu(CommandMenu):
         self.setTitle("Help")
         self.set_menu_commands(help_command_list)
 
+# EditMenu submenus
+class EqualizeMenu(CommandMenu):
+    def __init__(self, parent: QWidget):
+        super().__init__(parent)
+        self.setTitle("Equalize")
+        self.set_menu_commands(equalize_command_list)
 
 # ViewMenu submenus
 class HistogramMenu(CommandMenu):
