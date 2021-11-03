@@ -9,7 +9,7 @@ from .image import Image
 
 class ImageHolder(QLabel):
     mouse_position_updated = Signal(int, int, int, int, int)
-    new_selection = Signal(QPixmap)
+    new_selection = Signal(QImage)
 
     def __init__(self, parent: QWidget, image: QImage):
         super().__init__(parent)
