@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QWidget, QMainWindow, QLabel
 from PyQt5.QtCore import Qt
 
 from ..command import Command
-from pycture.dialogs import Notification, InformationWindow
+from pycture.dialogs import InformationWindow
 from pycture.editor.image import Color
 
 

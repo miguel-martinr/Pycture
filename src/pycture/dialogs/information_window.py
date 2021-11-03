@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QHBoxLayout
 from PyQt5.QtCore import Qt
 
+
 class InformationWindow(QWidget):
     def __init__(self, parent: QWidget, title: str, text: str):
         super().__init__(parent)
@@ -15,4 +16,3 @@ class InformationWindow(QWidget):
         self.text.setMinimumSize(self.text.minimumSizeHint())
         self.setMinimumWidth(300)
         self.show()
-    

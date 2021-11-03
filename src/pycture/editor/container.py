@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QAbstractScrollAr
 from PyQt5.QtCore import Qt, QEvent, QCoreApplication
 
 from .image_holder import Image, ImageHolder
-from .data_bar import DataBar 
+from .data_bar import DataBar
 from ..events import UpdateMousePositionEvent, NewSelectionEvent
 
 
@@ -27,7 +27,7 @@ class Container(QWidget):
 
         self.image_holder.mouse_position_updated.connect(self.update_data_bar)
         self.image_holder.new_selection.connect(self.throw_new_selection_event)
-    
+
     def get_image(self) -> Image:
         return self.image_holder.image
 

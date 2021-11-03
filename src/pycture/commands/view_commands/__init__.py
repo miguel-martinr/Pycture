@@ -1,4 +1,6 @@
 from .view_histogram import (ViewRedHistogram, ViewGreenHistogram, ViewBlueHistogram,
                              ViewGrayScaleHistogram)
+from .view_cumulative_histogram import (ViewCumulativeRedHistogram, ViewCumulativeGreenHistogram,
+                                        ViewCumulativeBlueHistogram, ViewCumulativeGrayScaleHistogram)
 from .view_image_info import (ViewImageBrightness, ViewImageSize, ViewImageContrast,
                               ViewImageEntropy, ViewImageRanges)

@@ -1,8 +1,12 @@
 from .edit_commands import EditBrightness, ConvertToGrayScale, TransformByLinearSegments
 from .file_commands import OpenFile, SaveFile
 from .view_commands import (ViewRedHistogram, ViewGreenHistogram, ViewBlueHistogram,
-                            ViewGrayScaleHistogram, ViewImageBrightness, ViewImageSize, ViewImageContrast,
-                            ViewImageEntropy, ViewImageRanges)
+                            ViewGrayScaleHistogram, ViewCumulativeRedHistogram,
+                            ViewCumulativeGreenHistogram, ViewCumulativeBlueHistogram,
+                            ViewCumulativeGrayScaleHistogram, ViewImageBrightness,
+                            ViewImageSize, ViewImageContrast, ViewImageEntropy,
+                            ViewImageRanges)
+
 from .help_commands import ShowHelp
 from .command import Command
 
@@ -17,6 +21,11 @@ histogram_command_list = [
     ViewGreenHistogram,
     ViewBlueHistogram,
     ViewGrayScaleHistogram]
+cumulative_histogram_command_list = [
+    ViewCumulativeRedHistogram,
+    ViewCumulativeGreenHistogram,
+    ViewCumulativeBlueHistogram,
+    ViewCumulativeGrayScaleHistogram]
 info_command_list = [
     ViewImageBrightness,
     ViewImageSize,

@@ -5,7 +5,7 @@ from typing import List, Tuple
 from matplotlib import pyplot as plt
 
 from pycture.editor.image import Color
-from pycture.dialogs import Notification, SegmentsInput
+from pycture.dialogs import SegmentsInput
 from ..command import Command
 
 

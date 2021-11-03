@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt, QCoreApplication, QEvent
 from PyQt5.QtGui import QImage, QCloseEvent, QMouseEvent
-from PyQt5.QtWidgets import QDockWidget, QGraphicsDropShadowEffect, QWidget 
+from PyQt5.QtWidgets import QDockWidget, QGraphicsDropShadowEffect, QWidget
 
 from pycture.events import DeleteEditorEvent, ChangeActiveEditorEvent
 from pycture.css import LIGHT_GRAY

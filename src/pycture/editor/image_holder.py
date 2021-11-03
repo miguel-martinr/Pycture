@@ -2,7 +2,7 @@ from PIL.ImageQt import QImage
 
 from PyQt5.QtWidgets import QLabel, QWidget
 from PyQt5.QtGui import QPixmap, QMouseEvent, QGuiApplication
-from PyQt5.QtCore import Signal, Qt 
+from PyQt5.QtCore import Signal, Qt
 
 from .image import Image
 

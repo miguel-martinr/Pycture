@@ -6,14 +6,13 @@ from PyQt5.QtGui import QImage, QPixmap
 
 import matplotlib.pyplot as plt
 from PIL.ImageQt import ImageQt
-from PIL import Image
+from PIL import Image as PILImage
 
 from ..command import Command
-from pycture.dialogs import Notification
-from pycture.editor.image import Color
+from pycture.editor.image import Color, Image
 
 
-class ViewHistogramCommand(Command):
+class ViewHistogram(Command):
     def __init__(self, parent: QWidget, color: str):
         super().__init__(parent, color)
 
@@ -28,7 +27,7 @@ class ViewHistogramCommand(Command):
         figure = self.draw_histogram(histogram, mean)
         self.write_mean(mean)
         pixmap = self.save_figure_to_image(figure)
-        main_window.add_editor(pixmap, title + "." + self.text() + "-hist")
+        main_window.add_editor(pixmap, self.get_title(title))
 
     def draw_histogram(self, histogram: List[int], mean: float) -> plt.figure:
         plt.style.use('dark_background')
@@ -39,7 +38,7 @@ class ViewHistogramCommand(Command):
             # This scaling is made so the values don't reach pure black and can
             # be seen
             color = list(map(lambda val: 0 if val ==
-                         0 else (val * 240 + 15) / 255, color))
+                         0 else (val * 200 + 55) / 255, color))
             bar.set_color(color)
         return figure
 
@@ -50,19 +49,22 @@ class ViewHistogramCommand(Command):
     def save_figure_to_image(self, figure: plt.figure) -> QImage:
         buffer = BytesIO()
         figure.savefig(buffer)
-        return QPixmap.fromImage(ImageQt(Image.open(buffer))).toImage()
+        return QPixmap.fromImage(ImageQt(PILImage.open(buffer))).toImage()
+
+    def get_title(self, old_title: str):
+        return old_title + "." + self.text() + "-hist"
 
     def get_bar_color(self, val: int) -> List[float]:
         pass
 
-    def get_histogram(self, image: QLabel) -> List[int]:
+    def get_histogram(self, image: Image) -> List[int]:
         return image.get_histogram(self.color)
 
-    def get_mean(self, image: QLabel) -> float:
+    def get_mean(self, image: Image) -> float:
         return image.get_mean(self.color)
 
 
-class ViewRedHistogram(ViewHistogramCommand):
+class ViewRedHistogram(ViewHistogram):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Red")
         self.color = Color.Red
@@ -71,7 +73,7 @@ class ViewRedHistogram(ViewHistogramCommand):
         return (val / 255, 0, 0)
 
 
-class ViewGreenHistogram(ViewHistogramCommand):
+class ViewGreenHistogram(ViewHistogram):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Green")
         self.color = Color.Green
@@ -80,7 +82,7 @@ class ViewGreenHistogram(ViewHistogramCommand):
         return (0, val / 255, 0)
 
 
-class ViewBlueHistogram(ViewHistogramCommand):
+class ViewBlueHistogram(ViewHistogram):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Blue")
         self.color = Color.Blue
@@ -89,7 +91,7 @@ class ViewBlueHistogram(ViewHistogramCommand):
         return (0, 0, val / 255)
 
 
-class ViewGrayScaleHistogram(ViewHistogramCommand):
+class ViewGrayScaleHistogram(ViewHistogram):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Gray Scale (NTSC)")
         self.color = Color.Gray

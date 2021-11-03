@@ -2,7 +2,6 @@ from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QWidget, QMainWindow
 
 from ..command import Command
-from pycture.dialogs import Notification, SegmentsInput
 
 
 class ConvertToGrayScale(Command):
