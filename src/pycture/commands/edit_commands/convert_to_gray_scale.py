@@ -10,15 +10,8 @@ class ConvertToGrayScale(Command):
         super().__init__(parent, "Gray scale (NTSC)")
 
     def execute(self, main_window: QMainWindow):
-        image = self.get_active_image(main_window)
-        title = self.get_active_title(main_window)
+        image, title = self.get_active_image_and_title(main_window)
         if image is None:
-            notification = Notification(
-                main_window, "There isn't an active editor!").exec()
-            return
-        if not image.load_finished:
-            notification = Notification(main_window,
-                                        "The image is still loading. Please wait a bit").exec()
             return
 
         gray_scaled_image = image.get_gray_scaled_image()

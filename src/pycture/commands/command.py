@@ -18,12 +18,15 @@ class Command(QAction):
     def execute(self, main_window: QMainWindow):
         print("Executing base command")
 
-    def get_active_image(self, main_window: QMainWindow) -> Image:
+    def get_active_image_and_title(self, main_window: QMainWindow) -> Image:
         active_editor = main_window.get_active_editor()
-        if active_editor:
-            return active_editor.get_image()
-
-    def get_active_title(self, main_window: QMainWindow):
-        active_editor = main_window.get_active_editor()
-        if active_editor:
-            return active_editor.windowTitle()
+        if active_editor is None:
+            notification = Notification(
+                main_window, "There isn't an active editor!").exec()
+            return (None, None)
+        image = active_editor.get_image()
+        if not image.load_finished:
+            notification = Notification(main_window,
+                                        "The image is still loading. Please wait a bit").exec()
+            return (None, None)
+        return (image, active_editor.windowTitle())

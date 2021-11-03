@@ -11,13 +11,8 @@ class ViewImageInfo(Command):
         super().__init__(parent, info_name)
 
     def execute(self, main_window: QMainWindow):
-        image = self.get_active_image(main_window)
+        image, _ = self.get_active_image_and_title(main_window)
         if image is None:
-            Notification(main_window, "There isn't an active editor!").exec()
-            return
-        if not image.load_finished:
-            notification = Notification(main_window,
-                                        "The image is still loading. Please wait a bit").exec()
             return
 
         image_name = self.get_active_title(main_window)

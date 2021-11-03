@@ -13,15 +13,12 @@ from pycture.dialogs import Notification
 from pycture.editor.image import Color
 
 
-class ViewHistogramCommand(Command):
+class ViewCumulativeHistogramCommand(Command):
     def __init__(self, parent: QWidget, color: str):
         super().__init__(parent, color)
 
     def execute(self, main_window: QMainWindow):
         image, title = self.get_active_image_and_title(main_window)
-        if image is None:
-            return
-
         histogram = self.get_histogram(image)
         mean = self.get_mean(image)
 
@@ -30,36 +27,8 @@ class ViewHistogramCommand(Command):
         pixmap = self.save_figure_to_image(figure)
         main_window.add_editor(pixmap, title + "." + self.text() + "-hist")
 
-    def draw_histogram(self, histogram: List[int], mean: float) -> plt.figure:
-        plt.style.use('dark_background')
-        figure = plt.figure()
-        bars = plt.bar(list(range(256)), histogram)
-        for index, bar in enumerate(bars):
-            color = self.get_bar_color(index)
-            # This scaling is made so the values don't reach pure black and can
-            # be seen
-            color = list(map(lambda val: 0 if val ==
-                         0 else (val * 240 + 15) / 255, color))
-            bar.set_color(color)
-        return figure
-
-    def write_mean(self, mean: float):
-        plt.axvline(mean)
-        plt.title(f"Mean: {mean:.2f}")
-
-    def save_figure_to_image(self, figure: plt.figure) -> QImage:
-        buffer = BytesIO()
-        figure.savefig(buffer)
-        return QPixmap.fromImage(ImageQt(Image.open(buffer))).toImage()
-
-    def get_bar_color(self, val: int) -> List[float]:
-        pass
-
     def get_histogram(self, image: QLabel) -> List[int]:
-        return image.get_histogram(self.color)
-
-    def get_mean(self, image: QLabel) -> float:
-        return image.get_mean(self.color)
+        return image.get_cumulative_histogram(self.color)
 
 
 class ViewRedHistogram(ViewHistogramCommand):
