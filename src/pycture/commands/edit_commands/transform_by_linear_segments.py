@@ -5,7 +5,7 @@ from typing import List, Tuple
 from matplotlib import pyplot as plt
 
 from pycture.editor.image import Color
-from pycture.dialogs import Notification, SegmentsInput
+from pycture.dialogs import SegmentsInput
 from ..command import Command
 
 
@@ -54,31 +54,19 @@ class TransformByLinearSegments(Command):
 
     def apply_transformation(
             self, main_window: QMainWindow, segments: List, opts: List[Color]):
-        active_image = self.get_active_image(main_window)
-        if active_image is None:
-            notification = Notification(
-                main_window, "There isn't an active editor!").exec()
-            return
-        if not active_image.load_finished:
-            notification = Notification(main_window,
-                                        "The image is still loading. Please wait a bit").exec()
+        image, _ = self.get_active_image_and_title(main_window)
+        if image is None:
             return
 
         lut = self.get_LUT(segments)
         title = self.get_active_title(main_window)
 
-        transformed_img = active_image.apply_LUT(lut, opts)  # temp
+        transformed_img = image.apply_LUT(lut, opts)  # temp
         main_window.add_editor(transformed_img, title + "-LT")
 
     def execute(self, main_window: QMainWindow):
-        active_image = self.get_active_image(main_window)
-        if active_image is None:
-            notification = Notification(
-                main_window, "There isn't an active editor!").exec()
-            return
-        if not active_image.load_finished:
-            notification = Notification(main_window,
-                                        "The image is still loading. Please wait a bit").exec()
+        image, _ = self.get_active_image(main_window)
+        if image is None:
             return
 
         dialog = SegmentsInput(main_window)

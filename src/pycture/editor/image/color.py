@@ -1,9 +1,11 @@
 from enum import Enum
 
+
 class RGBColor(Enum):
     Red = 0
     Green = 1
     Blue = 2
+
 
 class Color(Enum):
     Red = 0

@@ -8,6 +8,7 @@ from .image_loader import ImageLoader
 from .color import Color, RGBColor, GrayScaleLUT
 from .pixel import Pixel
 
+
 class Image(QImage):
     def __init__(self, image: QImage):
         super().__init__(image)
@@ -32,6 +33,19 @@ class Image(QImage):
 
     def get_histogram(self, color: Color):
         return self.histograms[color.value]
+
+    def get_cumulative_histogram(self, color: Color):
+        return self.convert_histogram_to_cumulative(
+            self.histograms[color.value])
+
+    def convert_histogram_to_cumulative(
+            self, histogram: List[float]) -> List[float]:
+        accumulator = 0
+        cumulative = []
+        for val in histogram:
+            accumulator += val
+            cumulative.append(accumulator)
+        return cumulative
 
     def get_mean(self, color: Color):
         return self.means[color.value]
@@ -97,7 +111,8 @@ class Image(QImage):
 
         return gray_scaled
 
-    def apply_LUT(self, lut: List[int], colors: (bool, bool, bool) = (True, True, True)) -> QImage:
+    def apply_LUT(self, lut: List[int], colors: (
+            bool, bool, bool) = (True, True, True)) -> QImage:
         if (len(lut) != 256):
             print("LUT length must be 256")
             return
@@ -106,7 +121,7 @@ class Image(QImage):
             for y in range(self.height()):
                 new_pixel = Pixel(self.pixel(x, y))
                 for color in RGBColor:
-                    if  not colors[color.value]:
+                    if not colors[color.value]:
                         continue
                     color_value = new_pixel.get_color(color)
                     new_value = lut[color_value]

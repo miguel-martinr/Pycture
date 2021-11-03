@@ -25,10 +25,8 @@ class SaveFile(Command):
         super().__init__(parent, "Save")
 
     def execute(self, main_window: QMainWindow):
-        image = self.get_active_image(main_window)
+        image, _ = self.get_active_image_and_title(main_window)
         if image is None:
-            notification = Notification(
-                main_window, "There isn't an active editor!").exec()
             return
         file_path, _ = QFileDialog.getSaveFileName(
             None, "Save an image", "/home", "Images (*.png *.jpg *.jpeg *.bmp)")

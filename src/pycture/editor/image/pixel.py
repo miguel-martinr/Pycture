@@ -1,5 +1,6 @@
 from .color import RGBColor
 
+
 class Pixel():
     def __init__(self, value: int):
         self.value = value
