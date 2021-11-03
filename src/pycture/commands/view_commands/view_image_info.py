@@ -2,17 +2,13 @@ from PyQt5.QtWidgets import QWidget, QMainWindow, QLabel
 from PyQt5.QtCore import Qt
 
 from ..command import Command
-from pycture.dialogs import Notification
+from pycture.dialogs import Notification, InformationWindow
 from pycture.editor.image import Color
 
 
 class ViewImageInfo(Command):
     def __init__(self, parent: QWidget, info_name: str):
         super().__init__(parent, info_name)
-        self.container = QWidget()
-        self.container.setWindowTitle(info_name)
-        self.text_label = QLabel(self.container)
-        self.text_label.setAlignment(Qt.AlignCenter)
 
     def execute(self, main_window: QMainWindow):
         image = self.get_active_image(main_window)
@@ -23,13 +19,11 @@ class ViewImageInfo(Command):
             notification = Notification(main_window,
                                         "The image is still loading. Please wait a bit").exec()
             return
-        self.container.setParent(main_window, Qt.WindowType.Window)
-        img_name = self.get_active_title(main_window)
-        info_name = self.container.windowTitle()
-        self.container.setWindowTitle(img_name + " - " + info_name)
-        self.text_label.setFixedSize(300, 100)
-        self.text_label.setText(self.get_information(image))
-        self.container.show()
+
+        image_name = self.get_active_title(main_window)
+        info_name = self.text()
+        title = image_name + " - " + info_name
+        InformationWindow(main_window, title, self.get_information(image))
 
     def get_information(self, active_image) -> str:
         pass
@@ -50,8 +44,8 @@ class ViewImageSize(ViewImageInfo):
         super().__init__(parent, "Size")
 
     def get_information(self, active_image) -> str:
-        columns = active_image.get_width()
-        rows = active_image.get_height()
+        columns = active_image.width()
+        rows = active_image.height()
         return f"Columns: {columns}\nRows: {rows}"
 
 
