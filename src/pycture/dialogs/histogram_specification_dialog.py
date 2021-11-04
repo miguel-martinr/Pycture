@@ -7,9 +7,7 @@ from pycture.dialogs import Notification
 
 
 class HistogramSpecificationDialog(QDialog):
-    # (str, str, (bool, bool, bool))
-    # (base, sample, (r, g, b))
-    editors_selected = Signal(tuple)
+    editors_selected = Signal(str, str, tuple)
 
     def __init__(self, parent: QMainWindow, options: [str]):
         super().__init__(parent, Qt.WindowType.Window)
@@ -32,7 +30,6 @@ class HistogramSpecificationDialog(QDialog):
         layout.addWidget(button)
         button.pressed.connect(self.select_editors)
         self.setFixedSize(self.minimumSizeHint())
-        self.show()
 
     def select_editors(self):
         base = self.base_dropdown.currentText()
@@ -43,4 +40,4 @@ class HistogramSpecificationDialog(QDialog):
         if sample == base:
             Notification(self, "Can't use the same image as sample and base")
             return
-        self.editors_selected.emit((base, sample, self.checkboxes.get_checked()))
+        self.editors_selected.emit(base, sample, self.checkboxes.get_checked())

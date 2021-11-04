@@ -50,6 +50,9 @@ class MainWindow(QMainWindow):
     def get_active_editor(self) -> Editor:
         return self.editors.get(self.active_editor)
 
+    def get_editor(self, editor: str) -> Editor:
+        return self.editors.get(editor)
+
     def set_active_editor(self, name: str):
         if (self.active_editor):
             self.editors[self.active_editor].set_active(False)
