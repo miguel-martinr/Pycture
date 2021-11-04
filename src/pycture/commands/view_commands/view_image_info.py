@@ -11,11 +11,11 @@ class ViewImageInfo(Command):
         super().__init__(parent, info_name)
 
     def execute(self, main_window: QMainWindow):
-        image, _ = self.get_active_image_and_title(main_window)
+        image, image_name = self.get_active_image_and_title(main_window)
         if image is None:
             return
 
-        image_name = self.get_active_title(main_window)
+        
         info_name = self.text()
         title = image_name + " - " + info_name
         InformationWindow(main_window, title, self.get_information(image))

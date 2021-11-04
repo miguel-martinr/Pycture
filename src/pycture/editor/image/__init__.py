@@ -1,5 +1,6 @@
 from math import log2, sqrt
 from typing import List, Tuple
+from functools import reduce
 
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import QThread, QSize
@@ -10,6 +11,7 @@ from .pixel import Pixel
 
 
 class Image(QImage):
+    
     def __init__(self, image: QImage):
         super().__init__(image)
         self.setup_image_data()
@@ -48,7 +50,9 @@ class Image(QImage):
         return cumulative
 
     def get_mean(self, color: Color):
-        return self.means[color.value]
+        histogram = self.get_histogram(color)
+        mean = sum([h_i * i for i, h_i in enumerate(histogram)])        
+        return mean
 
     # Standard deviation
     def get_sd(self, color: Color):
