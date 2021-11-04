@@ -15,6 +15,7 @@ class GammaCorrectionDialog(QDialog):
 
     def _setup_(self, top):
         self.setFixedWidth(300)
+        self.setWindowTitle("Gamma correction")
         layout = QGridLayout()
         self.setLayout(layout)
 
