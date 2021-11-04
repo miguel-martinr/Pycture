@@ -8,6 +8,6 @@ class SpecifyHistogram(Command):
         super().__init__(parent, "Specify histogram")
 
     def execute(self, main_window: QMainWindow):
-        image, title = self.get_active_image_and_title(main_window)
-
-        HistogramSpecificationDialog(main_window)
+        title = main_window.get_active_editor()
+        
+        HistogramSpecificationDialog(main_window, title)
