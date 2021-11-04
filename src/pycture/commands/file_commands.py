@@ -36,7 +36,8 @@ class SaveFile(Command):
         if not extension:
             extension = ".png"
         elif extension not in [".png", ".jpg", ".jpeg", ".bmp"]:
-            notification = Notification(main_window,
-                                        "Supported extensions are .png, .jpg, .jpeg and .bmp").exec()
+            Notification(
+                main_window,
+                "Supported extensions are .png, .jpg, .jpeg and .bmp")
             return
         image.save(file_path, extension[1:])

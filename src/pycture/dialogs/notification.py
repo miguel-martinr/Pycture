@@ -7,3 +7,4 @@ class Notification(QMessageBox):
         self.setText(message)
         self.addButton(QMessageBox.StandardButton.Ok)
         self.setWindowTitle("Pycture")
+        self.exec()

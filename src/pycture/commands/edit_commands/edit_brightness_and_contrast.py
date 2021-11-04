@@ -38,11 +38,13 @@ class EditBrightnessAndContrast(Command):
         lut = list(map(get_vout, range(256)))
         return lut
 
-    def recalculate(self, brightness, contrast, dialog: EditBrightnessAndContrastDialog, active_image: Image):
+    def recalculate(self, brightness, contrast,
+                    dialog: EditBrightnessAndContrastDialog, active_image: Image):
         brightness = list(brightness)
         contrast = list(contrast)
         for i in range(3):
-            if (brightness[i][0] == brightness[i][1] and contrast[i][0] == contrast[i][1]):
+            if (brightness[i][0] == brightness[i][1]
+                    and contrast[i][0] == contrast[i][1]):
                 brightness[i] = brightness[i][0]
                 contrast[i] = contrast[i][0]
                 continue
@@ -69,7 +71,8 @@ class EditBrightnessAndContrast(Command):
             variance += histogram[i] * (i - mean) ** 2
         return sqrt(variance)
 
-    def _apply_(self, brightness, contrast, dialog: EditBrightnessAndContrastDialog, main_window: QMainWindow):
+    def _apply_(self, brightness, contrast,
+                dialog: EditBrightnessAndContrastDialog, main_window: QMainWindow):
         brightness = list(brightness)
         contrast = list(contrast)
         img, title = self.get_active_image_and_title(main_window)
@@ -79,7 +82,8 @@ class EditBrightnessAndContrast(Command):
         self.recalculate(brightness, contrast, dialog, img)
         luts = [list(range(256)), list(range(256)), list(range(256))]
         for i in range(3):
-            if (brightness[i][0] == brightness[i][1] and contrast[i][0] == contrast[i][1]):
+            if (brightness[i][0] == brightness[i][1]
+                    and contrast[i][0] == contrast[i][1]):
                 continue
             lut = self.get_LUT(brightness[i], contrast[i])
             luts[i] = lut

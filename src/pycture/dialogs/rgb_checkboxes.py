@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QHBoxLayout, QCheckBox, QWidget
 
+
 class RGBCheckboxes(QWidget):
     def __init__(self, parent: QWidget):
         super().__init__(parent)
@@ -20,7 +21,6 @@ class RGBCheckboxes(QWidget):
         if not self.changed_in_code:
             for checkbox in self.checkboxes[0:3]:
                 checkbox.setChecked(checked)
-            
 
     def rgb_checkbox_changed(self, checked):
         if not checked:
@@ -31,5 +31,5 @@ class RGBCheckboxes(QWidget):
             self.checkboxes[3].setChecked(True)
 
     def get_checked(self) -> (bool, bool, bool):
-        is_checked = lambda index: self.checkboxes[index].isChecked()
+        def is_checked(index): return self.checkboxes[index].isChecked()
         return (is_checked(0), is_checked(1), is_checked(2))

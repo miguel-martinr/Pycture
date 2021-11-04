@@ -10,7 +10,8 @@ class EditBrightnessAndContrastDialog(QDialog):
     recalculate = Signal(tuple)
     apply = Signal(tuple)
 
-    def __init__(self, parent: QMainWindow, current_brightness: Tuple[int], current_contrast: Tuple[int]) -> None:
+    def __init__(self, parent: QMainWindow,
+                 current_brightness: Tuple[int], current_contrast: Tuple[int]) -> None:
         super().__init__(parent, Qt.WindowType.Window)
         self._setup_(current_brightness, current_contrast)
         self.show()

@@ -15,7 +15,6 @@ class ViewImageInfo(Command):
         if image is None:
             return
 
-        
         info_name = self.text()
         title = image_name + " - " + info_name
         InformationWindow(main_window, title, self.get_information(image))

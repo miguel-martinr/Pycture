@@ -14,4 +14,4 @@ class ShowHelp(Command):
         super().__init__(parent, "Show help")
 
     def execute(self, main_window: QMainWindow):
-        Notification(main_window, HELP_MESSAGE).exec()
+        Notification(main_window, HELP_MESSAGE)

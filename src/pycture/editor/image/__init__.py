@@ -11,7 +11,7 @@ from .pixel import Pixel
 
 
 class Image(QImage):
-    
+
     def __init__(self, image: QImage):
         super().__init__(image)
         self.setup_image_data()
@@ -51,7 +51,7 @@ class Image(QImage):
 
     def get_mean(self, color: Color):
         histogram = self.get_histogram(color)
-        mean = sum([h_i * i for i, h_i in enumerate(histogram)])        
+        mean = sum([h_i * i for i, h_i in enumerate(histogram)])
         return mean
 
     # Standard deviation
