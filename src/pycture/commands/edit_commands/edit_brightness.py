@@ -50,18 +50,18 @@ class EditBrightness(Command):
                 continue
             lut = self.get_LUT(brightness[i], contrast[i])
             histogram = active_image.get_histogram(Color._value2member_map_[i])
-            updated_histogram = list(range(256))
+            updated_histogram = [0] * 256
 
             for j, v in enumerate(histogram):
-                updated_histogram[lut[j]] = v
+                updated_histogram[lut[j]] += v
+
             brightness[i] = round(self._get_mean_(updated_histogram))
             contrast[i] = round(self._get_sd_(updated_histogram))
 
         dialog.update_values(brightness, contrast)
 
     def _get_mean_(self, histogram):
-        mean = sum([histogram[i] * i for i in range(len(histogram))]
-                   ) / sum([histogram[i] for i in range(len(histogram))])
+        mean = sum([histogram[i] * i for i in range(len(histogram))])
         return mean
 
     def _get_sd_(self, histogram):
@@ -75,15 +75,21 @@ class EditBrightness(Command):
         brightness = list(brightness)
         contrast = list(contrast)
         img = self.get_active_image(main_window)
+        luts = []
         for i in range(3):
             if (brightness[i][0] == brightness[i][1] and contrast[i][0] == contrast[i][0]):
                 brightness[i] = brightness[i][0]
                 contrast[i] = contrast[i][0]
                 continue
             lut = self.get_LUT(brightness[i], contrast[i])
-            img = img.apply_LUT(lut, [True if j == i else False for j in range(3)])
+            luts.append(lut)
+        
+        for i, lut in enumerate(luts):
+          img = img.apply_LUT(
+            lut, [True if j == i else False for j in range(3)])
+        img.worker.finished.connect(lambda _img=img: dialog.update_values(
+            _img.get_brightness()[:3], _img.get_contrast()[:3]))
 
-        dialog.update_values(img.get_brightness()[:3], img.get_contrast()[:3])
         title = self.get_active_title(main_window) + "-BrCt Edited"
         main_window.add_editor(img, title)
 
@@ -107,5 +113,5 @@ class EditBrightness(Command):
         dialog.apply.connect(lambda values: self._apply_(tuple(zip(old_brightness, values[0])), tuple(
             zip(old_contrast, values[1])), dialog, main_window))
 
-        # dialog.recalculate.connect(lambda values: self.recalculate(
-        #     tuple(zip(old_brightness, values[0])), tuple(zip(old_contrast, values[1])), dialog, active_image))
+        dialog.recalculate.connect(lambda values: self.recalculate(
+            tuple(zip(old_brightness, values[0])), tuple(zip(old_contrast, values[1])), dialog, active_image))
