@@ -6,7 +6,8 @@ import re
 class GammaCorrectionDialog(QDialog):
     
     applied = Signal(float)
-    
+    plot = Signal(float)
+
     def __init__(self, parent: QMainWindow, top = 20) -> None:
         super().__init__(parent, Qt.WindowType.Window)
         self._setup_(top)
@@ -47,6 +48,10 @@ class GammaCorrectionDialog(QDialog):
         accept_btn = QPushButton("Apply", self)
         accept_btn.clicked.connect(lambda: self.applied.emit(self.get_gamma()))
         layout.addWidget(accept_btn, 0, 0, Qt.AlignmentFlag.AlignCenter)
+
+        plot_btn = QPushButton("Plot", self)
+        plot_btn.clicked.connect(lambda: self.plot.emit(self.get_gamma()))
+        layout.addWidget(plot_btn, 0, 1, Qt.AlignmentFlag.AlignCenter)
 
     def get_gamma(self):
         return self._to_double_(self._numeric_input_.text())
