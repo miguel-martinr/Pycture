@@ -1,4 +1,5 @@
-from .edit_commands import (EditBrightness, ConvertToGrayScale,
+from pycture.commands.edit_commands.edit_brightness_and_contrast import EditBrightnessAndContrast
+from .edit_commands import (EditBrightnessAndContrast, ConvertToGrayScale,
                             TransformByLinearSegments, EqualizeRed,
                             EqualizeGreen, EqualizeBlue, EqualizeRGB)
 from .file_commands import OpenFile, SaveFile
@@ -15,7 +16,7 @@ from .command import Command
 
 file_command_list = [OpenFile, SaveFile]
 edit_command_list = [
-    EditBrightness,
+    EditBrightnessAndContrast,
     ConvertToGrayScale,
     TransformByLinearSegments]
 equalize_command_list = [EqualizeRed, EqualizeGreen, EqualizeBlue, EqualizeRGB]

@@ -1,17 +1,15 @@
 from math import sqrt
 from typing import Tuple
-from PyQt5.QtGui import QImage
 from PyQt5.QtWidgets import QWidget, QMainWindow
-from pycture.dialogs import Notification
-from pycture.dialogs.edit_brightness import EditBrightnessDialog
+from pycture.dialogs.edit_brightness_and_contrast import EditBrightnessAndContrastDialog
 from pycture.editor.image import Image
 from pycture.editor.image.color import Color
 from ..command import Command
 
 
-class EditBrightness(Command):
+class EditBrightnessAndContrast(Command):
     def __init__(self, parent: QWidget):
-        super().__init__(parent, "Brightness")
+        super().__init__(parent, "Brightness and Contrast")
 
     def get_equation(self, brightness, contrast):
         """
@@ -21,7 +19,7 @@ class EditBrightness(Command):
         old_brightness, new_brightness = brightness
         old_contrast, new_contrast = contrast
 
-        A = old_contrast / new_contrast
+        A = new_contrast / old_contrast
         B = new_brightness - A * old_brightness
 
         return lambda vin: round(A * vin + B)
@@ -40,11 +38,11 @@ class EditBrightness(Command):
         lut = list(map(get_vout, range(256)))
         return lut
 
-    def recalculate(self, brightness, contrast, dialog: EditBrightnessDialog, active_image: Image):
+    def recalculate(self, brightness, contrast, dialog: EditBrightnessAndContrastDialog, active_image: Image):
         brightness = list(brightness)
         contrast = list(contrast)
         for i in range(3):
-            if (brightness[i][0] == brightness[i][1] and contrast[i][0] == contrast[i][0]):
+            if (brightness[i][0] == brightness[i][1] and contrast[i][0] == contrast[i][1]):
                 brightness[i] = brightness[i][0]
                 contrast[i] = contrast[i][0]
                 continue
@@ -71,44 +69,34 @@ class EditBrightness(Command):
             variance += histogram[i] * (i - mean) ** 2
         return sqrt(variance)
 
-    def _apply_(self, brightness, contrast, dialog: EditBrightnessDialog, main_window: QMainWindow):
+    def _apply_(self, brightness, contrast, dialog: EditBrightnessAndContrastDialog, main_window: QMainWindow):
         brightness = list(brightness)
         contrast = list(contrast)
-        img = self.get_active_image(main_window)
-        luts = []
+        img, title = self.get_active_image_and_title(main_window)
+        if (not img):
+            return
+
+        self.recalculate(brightness, contrast, dialog, img)
+        luts = [list(range(256)), list(range(256)), list(range(256))]
         for i in range(3):
-            if (brightness[i][0] == brightness[i][1] and contrast[i][0] == contrast[i][0]):
-                brightness[i] = brightness[i][0]
-                contrast[i] = contrast[i][0]
+            if (brightness[i][0] == brightness[i][1] and contrast[i][0] == contrast[i][1]):
                 continue
             lut = self.get_LUT(brightness[i], contrast[i])
-            luts.append(lut)
-        
-        for i, lut in enumerate(luts):
-          img = img.apply_LUT(
-            lut, [True if j == i else False for j in range(3)])
-        img.worker.finished.connect(lambda _img=img: dialog.update_values(
-            _img.get_brightness()[:3], _img.get_contrast()[:3]))
+            luts[i] = lut
 
-        title = self.get_active_title(main_window) + "-BrCt Edited"
-        main_window.add_editor(img, title)
+        img = img.apply_LUTs(tuple(luts))
+
+        main_window.add_editor(img, title + "-BrCt Edited")
 
     def execute(self, main_window: QMainWindow):
-        active_image = self.get_active_image(main_window)
-        title = self.get_active_title(main_window)
-        if active_image is None:
-            notification = Notification(
-                main_window, "There isn't an active editor!").exec()
-            return
-        if not active_image.load_finished:
-            notification = Notification(main_window,
-                                        "The image is still loading. Please wait a bit").exec()
+        active_image, _ = self.get_active_image_and_title(main_window)
+        if (not active_image):
             return
 
         old_brightness = tuple(map(round, active_image.get_brightness()[:3]))
         old_contrast = tuple(map(round, active_image.get_contrast()[:3]))
 
-        dialog = EditBrightnessDialog(
+        dialog = EditBrightnessAndContrastDialog(
             main_window, old_brightness, old_contrast)
         dialog.apply.connect(lambda values: self._apply_(tuple(zip(old_brightness, values[0])), tuple(
             zip(old_contrast, values[1])), dialog, main_window))

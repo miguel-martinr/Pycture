@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt, Signal
 from pycture.dialogs.segments_input import IntValidator
 
 
-class EditBrightnessDialog(QDialog):
+class EditBrightnessAndContrastDialog(QDialog):
     recalculate = Signal(tuple)
     apply = Signal(tuple)
 
@@ -30,9 +30,9 @@ class EditBrightnessDialog(QDialog):
         apply_btn = QPushButton("Apply", self)
 
         recalculate_btn.pressed.connect(lambda:
-            self.recalculate.emit(self.get_values()))
+                                        self.recalculate.emit(self.get_values()))
         apply_btn.pressed.connect(lambda:
-            self.apply.emit(self.get_values()))
+                                  self.apply.emit(self.get_values()))
 
         layout.addWidget(recalculate_btn, layout.rowCount(),
                          0, Qt.AlignmentFlag.AlignCenter)
@@ -40,17 +40,20 @@ class EditBrightnessDialog(QDialog):
                          layout.columnCount() - 1, Qt.AlignmentFlag.AlignCenter)
 
     def get_values(self):
-        get_value = lambda input: int(input.text())
+        def get_value(input): return int(input.text())
         brightness_values = tuple(map(get_value, self._brightness_inputs_))
         contrast_values = tuple(map(get_value, self._contrast_inputs_))
         return (brightness_values, contrast_values)
 
     def update_values(self, brightness, contrast):
-        straiten = lambda value, top: 0 if value < 0 else top if value > top else value
-            
+        def straiten(
+            value, top): return 0 if value < 0 else top if value > top else value
+
         for i in range(3):
-            self._brightness_inputs_[i].setText(str(round(straiten(brightness[i], 255))))
-            self._contrast_inputs_[i].setText(str(round(straiten(contrast[i], 127))))
+            self._brightness_inputs_[i].setText(
+                str(round(straiten(brightness[i], 255))))
+            self._contrast_inputs_[i].setText(
+                str(round(straiten(contrast[i], 127))))
 
     def _set_brightness_inputs_(self, current_brightness):
         self._brightness_inputs_ = self._set_inputs_for_(
