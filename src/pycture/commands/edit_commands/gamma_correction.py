@@ -1,4 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow, QWidget
+
+from pycture.dialogs.gamma_correction_dialog import GammaCorrectionDialog
 from ..command import Command
 
 
@@ -15,6 +17,7 @@ class GammaCorrection(Command):
         if (not active_image): return
 
         gamma_value = 5
+        dialog = GammaCorrectionDialog(main_window)
 
         # map a (Vin) in [0, 1]
         A = [a / 255 for a in range(256)]
