@@ -1,12 +1,8 @@
-from io import BytesIO
 from typing import List
 
-from PyQt5.QtWidgets import QWidget, QMainWindow, QLabel
-from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtWidgets import QWidget, QMainWindow 
 
 import matplotlib.pyplot as plt
-from PIL.ImageQt import ImageQt
-from PIL import Image as PILImage
 
 from ..command import Command
 from pycture.editor.image import Color, Image
@@ -24,14 +20,19 @@ class ViewHistogram(Command):
         histogram = self.get_histogram(image)
         mean = self.get_mean(image)
 
-        figure = self.draw_histogram(histogram, mean)
-        self.write_mean(mean)
-        pixmap = self.save_figure_to_image(figure)
-        main_window.add_editor(pixmap, self.get_title(title))
-
-    def draw_histogram(self, histogram: List[int], mean: float) -> plt.figure:
+        self.show_histogram(histogram, mean, title)
+        
+    def show_histogram(self, histogram: List[int], mean: float, title: str):
         plt.style.use('dark_background')
-        figure = plt.figure()
+        new_title = self.get_title(title)
+        plt.figure(new_title)
+        plt.title(new_title)
+        self.draw_histogram(histogram)
+        self.write_mean(mean)
+        plt.show()
+
+
+    def draw_histogram(self, histogram: List[int]):
         bars = plt.bar(list(range(256)), histogram)
         for index, bar in enumerate(bars):
             color = self.get_bar_color(index)
@@ -40,17 +41,11 @@ class ViewHistogram(Command):
             color = list(map(lambda val: 0 if val ==
                          0 else (val * 200 + 55) / 255, color))
             bar.set_color(color)
-        return figure
 
     def write_mean(self, mean: float):
         plt.axvline(mean)
         plt.title(f"Mean: {mean:.2f}")
-
-    def save_figure_to_image(self, figure: plt.figure) -> QImage:
-        buffer = BytesIO()
-        figure.savefig(buffer)
-        return QPixmap.fromImage(ImageQt(PILImage.open(buffer))).toImage()
-
+        
     def get_title(self, old_title: str):
         return old_title + "." + self.text() + "-hist"
 
