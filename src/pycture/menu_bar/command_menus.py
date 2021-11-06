@@ -54,6 +54,8 @@ class HelpMenu(CommandMenu):
         self.set_menu_commands(help_command_list)
 
 # EditMenu submenus
+
+
 class EqualizeMenu(CommandMenu):
     def __init__(self, parent: QWidget):
         super().__init__(parent)
@@ -61,6 +63,8 @@ class EqualizeMenu(CommandMenu):
         self.set_menu_commands(equalize_command_list)
 
 # ViewMenu submenus
+
+
 class HistogramMenu(CommandMenu):
     def __init__(self, parent: QWidget):
         super().__init__(parent)

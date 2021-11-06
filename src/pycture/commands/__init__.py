@@ -2,7 +2,8 @@ from pycture.commands.edit_commands.edit_brightness_and_contrast import EditBrig
 from pycture.commands.edit_commands.gamma_correction import GammaCorrection
 from .edit_commands import (EditBrightnessAndContrast, ConvertToGrayScale,
                             TransformByLinearSegments, EqualizeRed,
-                            EqualizeGreen, EqualizeBlue, EqualizeRGB)
+                            EqualizeGreen, EqualizeBlue, EqualizeRGB,
+                            SpecifyHistogram)
 from .file_commands import OpenFile, SaveFile
 from .view_commands import (ViewRedHistogram, ViewGreenHistogram, ViewBlueHistogram,
                             ViewGrayScaleHistogram, ViewCumulativeRedHistogram,
@@ -17,9 +18,10 @@ from .command import Command
 
 file_command_list = [OpenFile, SaveFile]
 edit_command_list = [
-    EditBrightnessAndContrast,
     ConvertToGrayScale,
     TransformByLinearSegments,
+    EditBrightnessAndContrast,
+    SpecifyHistogram,
     GammaCorrection]
 equalize_command_list = [EqualizeRed, EqualizeGreen, EqualizeBlue, EqualizeRGB]
 histogram_command_list = [

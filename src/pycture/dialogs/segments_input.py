@@ -1,6 +1,8 @@
 from typing import List
 from PyQt5.QtGui import QValidator
-from PyQt5.QtWidgets import QCheckBox, QDialog, QFormLayout, QGridLayout, QHBoxLayout, QInputDialog, QLabel, QLayout, QLayoutItem, QLineEdit, QMainWindow, QPushButton, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import (QCheckBox, QDialog, QFormLayout, QGridLayout,
+                             QHBoxLayout, QLabel, QLineEdit, QMainWindow,
+                             QPushButton, QVBoxLayout)
 from PyQt5.QtCore import Qt, Signal
 
 from pycture.editor.image.color import Color

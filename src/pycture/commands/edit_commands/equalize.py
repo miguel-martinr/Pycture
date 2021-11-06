@@ -14,7 +14,7 @@ class Equalize(Command):
         if image is None:
             return
 
-        luts = (list(range(256)), list(range(256)), list(range(256)))
+        luts = [list(range(256)) for x in range(3)]
         for color in self.get_colors():
             lut = luts[color.value]
             for index, val in enumerate(image.get_cumulative_histogram(color)):
