@@ -39,10 +39,9 @@ class SpecifyHistogram(Command):
     def setup_lut(self, lut: List[int], base: List[float], sample: List[float]):
         sample_index = 0
         for index, val in enumerate(base):
-            while (sample_index < 255 and base[index] > sample[sample_index]):
+            while sample_index < 255 and base[index] > sample[sample_index]:
                 sample_index += 1
             if (sample_index < 255 and sample[sample_index] - base[index] >
-                base[index] - sample[sample_index]):
-                sample_index += 1
-            print(f"index: {index},sample_index: {sample_index},value: {base[index]}, sample_value: {sample[sample_index]},")
+                abs(base[index] - sample[sample_index - 1])):
+                sample_index -= 1
             lut[index] = sample_index
