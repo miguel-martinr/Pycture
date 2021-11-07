@@ -51,7 +51,7 @@ class DifferenceDialog(QDialog):
         layout = QHBoxLayout()
         self.layout().addLayout(layout)
         
-        apply_btn = QPushButton("Apply", self)
+        apply_btn = QPushButton("View Difference", self)
         layout.addWidget(apply_btn)
         apply_btn.pressed.connect(self._apply_)
 
