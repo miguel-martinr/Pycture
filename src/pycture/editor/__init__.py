@@ -1,6 +1,7 @@
 from PyQt5.QtCore import Qt, QCoreApplication, QEvent
 from PyQt5.QtGui import QImage, QCloseEvent, QMouseEvent
 from PyQt5.QtWidgets import QDockWidget, QGraphicsDropShadowEffect, QWidget
+from pycture.editor.image import Image
 
 from pycture.events import DeleteEditorEvent, ChangeActiveEditorEvent
 from pycture.css import LIGHT_GRAY
@@ -29,7 +30,7 @@ class Editor(QDockWidget):
         active_effect.setBlurRadius(10)
         return active_effect
 
-    def get_image(self):
+    def get_image(self) -> Image:
         return self.widget().get_image()
 
     def closeEvent(self, event: QCloseEvent):

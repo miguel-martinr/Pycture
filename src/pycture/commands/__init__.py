@@ -10,12 +10,13 @@ from .view_commands import (ViewRedHistogram, ViewGreenHistogram, ViewBlueHistog
                             ViewCumulativeGreenHistogram, ViewCumulativeBlueHistogram,
                             ViewCumulativeGrayScaleHistogram, ViewImageBrightness,
                             ViewImageSize, ViewImageContrast, ViewImageEntropy,
-                            ViewImageRanges)
+                            ViewImageRanges, ViewDifference)
 
 from .help_commands import ShowHelp
 from .command import Command
 
 
+view_command_list = [ViewDifference]
 file_command_list = [OpenFile, SaveFile]
 edit_command_list = [
     ConvertToGrayScale,
