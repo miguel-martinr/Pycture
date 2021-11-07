@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QDialog, QHBoxLayout, QLabel, QMainWindow, QPushButt
 from pycture.dialogs import Notification
 
 from pycture.dialogs.dropdown_list import DropdownList
+from pycture.dialogs.map_of_changes_dialog import MapOfChangesDialog
 
 class DifferenceDialog(QDialog):
     applied = Signal(str, str)
@@ -52,11 +53,11 @@ class DifferenceDialog(QDialog):
         
         apply_btn = QPushButton("Apply", self)
         layout.addWidget(apply_btn)
+        apply_btn.pressed.connect(self._apply_)
 
         map_of_changes_btn = QPushButton("Map of changes", self)
         layout.addWidget(map_of_changes_btn)
-        
-        apply_btn.pressed.connect(self._apply_)
+        map_of_changes_btn.pressed.connect(lambda: MapOfChangesDialog(self))
 
         
 
