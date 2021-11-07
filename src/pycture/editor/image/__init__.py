@@ -2,7 +2,7 @@ from math import log2, sqrt
 from typing import List, Tuple
 from functools import reduce
 
-from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtGui import QColor, QImage, QPixmap
 from PyQt5.QtCore import QThread, QSize
 
 from .image_loader import ImageLoader
@@ -159,3 +159,29 @@ class Image(QImage):
                 result.setPixel(x, y, new_pixel)
 
         return result
+
+    def mark_pixels(self, pixels_coordinates: [(int, int)], _marker_color: QColor) -> QImage:
+        marked_image = QImage(self.copy())
+        marker_color = _marker_color.rgb()
+
+        for x, y in pixels_coordinates:
+            if (not (0 <= x < self.width())):
+                print("Mark pixels: x out of range")
+                return 
+            
+            if (not (0 <= y < self.height())):
+                print("Mark pixels: y out of range")
+                return 
+            pixel = Pixel(self.pixel(x, y))
+            marked_image.setPixel(x, y, marker_color)
+        
+        return marked_image
+
+    def get_pixels_coordinates(self, treshold: int, rgb_plane: RGBColor):
+        coordinates = []
+        for x in range(self.width()):
+            for y in range(self.height()):
+                pixel = Pixel(self.pixel(x, y))
+                if pixel.get_color(rgb_plane) > treshold:
+                    coordinates.append((x, y))
+        return coordinates

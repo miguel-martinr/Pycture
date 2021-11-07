@@ -15,7 +15,7 @@ class MapOfChangesDialog(QDialog):
     def __init__(self, parent: QMainWindow) -> None:
         super().__init__(parent, Qt.WindowType.Window)
         self._setup_()
-        self.show()
+        
 
     def _setup_(self):
         self.setWindowTitle("Map of changes")
@@ -54,7 +54,7 @@ class MapOfChangesDialog(QDialog):
         self.rgb_dropdown = DropdownList(self, ["Red", "Green", "Blue"])
         self.rgb_dropdown.activated.connect(lambda index: self.rgb_plane_changed.emit(index))
         self.rgb_dropdown.setCurrentIndex(0)
-        
+
         layout.addWidget(self.rgb_dropdown, 2,1, Qt.AlignmentFlag.AlignRight)
 
     def _set_btn_(self):
