@@ -36,7 +36,7 @@ class MapOfChangesDialog(QDialog):
         marker_color_label = QLabel("Marker color", self)
         layout.addWidget(marker_color_label, 1, 0, Qt.AlignmentFlag.AlignLeft)
         
-        self.marker_color = ColorPicker(self, '#ff0000')
+        self.marker_color = ColorPicker(self, QColor(0x00ff0000))
         layout.addWidget(self.marker_color, 1, 1)
         self.marker_color.setMaximumWidth(self.treshold.width())
 
@@ -44,33 +44,30 @@ class MapOfChangesDialog(QDialog):
 
 
 class ColorPicker(QLabel):
-    def __init__(self, parent: QWidget, initial_color: str) -> None:
+    def __init__(self, parent: QWidget, initial_color: QColor) -> None:
         super().__init__(parent)
         self._set_color_(initial_color)
-        self._set_dialog_(self._get_qcolor_())
-
+        self._set_dialog_(initial_color)
 
     def mousePressEvent(self, ev: QtGui.QMouseEvent) -> None:
         self.color_dialog.show()
     
-    def _set_color_(self, color: str):
-        self.color_str = color
-        self.setStyleSheet(f"background-color: {self.color_str}")
+    def _set_color_(self, color: QColor):
+        self.color = color
+        html_color = self._get_html_color_(color)
+        self.setStyleSheet(f"background-color: {html_color}")
+
+    def get_color(self):
+        return self.color
     
-    def _set_qcolor_(self, qcolor: QColor):
-        str_color = '#' + hex(qcolor.rgb())[2:]
-        self._set_color_(str_color)
-
-    def _get_qcolor_(self, color: str = None):
-        if (color == None): color = self.color_str
-
-        rgb = int('0' + color.replace('#', 'x'), 16)
-        return QColor(rgb)
-
-
+    def _get_html_color_(self, color: QColor = None):
+        if (color == None): color = self.color
+        html_color = '#' + hex(color.rgb())[2:]
+        return html_color
+        
     def _set_dialog_(self, initial_color: QColor):
         self.color_dialog = QColorDialog(QColor(initial_color), self) 
         self.color_dialog.setStyleSheet("background-color: black")
         self.color_dialog.setWindowFlags(Qt.WindowType.Window)
 
-        self.color_dialog.colorSelected.connect(lambda color: self._set_qcolor_(color))
+        self.color_dialog.colorSelected.connect(lambda color: self._set_color_(color))
