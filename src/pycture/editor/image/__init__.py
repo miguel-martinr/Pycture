@@ -144,8 +144,8 @@ class Image(QImage):
 
         result = QImage(self.width(), self.height(), self.format())
 
-        for x in range(self.height()):
-            for y in range(self.width()):
+        for x in range(self.width()):
+            for y in range(self.height()):
                 pixel_a = self.pixel(x, y)
                 pixel_b = image_b.pixel(x, y)
 

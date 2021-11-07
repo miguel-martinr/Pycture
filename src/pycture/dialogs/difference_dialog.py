@@ -1,7 +1,6 @@
-from typing import Tuple
 from PyQt5.QtCore import Qt, Signal
-from PyQt5.QtWidgets import QDialog, QGridLayout, QLabel, QMainWindow, QPushButton, QVBoxLayout
-from pycture.dialogs import notification
+from PyQt5.QtWidgets import QDialog, QLabel, QMainWindow, QPushButton, QVBoxLayout
+from pycture.dialogs import Notification
 
 from pycture.dialogs.dropdown_list import DropdownList
 
@@ -42,7 +41,7 @@ class DifferenceDialog(QDialog):
         image_b = self.dropwdown_b.currentText()
 
         if (len(image_a) == 0 or len(image_b) == 0):
-            notification(self, "You have to choose the images you want to use")
+            Notification(self, "You have to choose the images you want to use")
             return
 
         self.applied.emit(image_a, image_b)
