@@ -1,6 +1,6 @@
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt, Signal
-from PyQt5.QtGui import QColor, QColorConstants, QPainter, QPixmap
+from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QColorDialog, QDialog, QGridLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QVBoxLayout, QWidget
 
 from pycture.dialogs.dropdown_list import DropdownList
@@ -9,6 +9,8 @@ from .segments_input import IntValidator
 class MapOfChangesDialog(QDialog):
                     #  Treshold    RGB Plane  Marker Color
     create_map = Signal(int,       int,       QColor)
+    
+    rgb_plane_changed = Signal(int)
 
     def __init__(self, parent: QMainWindow) -> None:
         super().__init__(parent, Qt.WindowType.Window)
@@ -50,6 +52,9 @@ class MapOfChangesDialog(QDialog):
         layout.addWidget(rgb_dropdown_label, 2, 0, Qt.AlignmentFlag.AlignLeft)
 
         self.rgb_dropdown = DropdownList(self, ["Red", "Green", "Blue"])
+        self.rgb_dropdown.activated.connect(lambda index: self.rgb_plane_changed.emit(index))
+        self.rgb_dropdown.setCurrentIndex(0)
+        
         layout.addWidget(self.rgb_dropdown, 2,1, Qt.AlignmentFlag.AlignRight)
 
     def _set_btn_(self):
@@ -61,6 +66,7 @@ class MapOfChangesDialog(QDialog):
     def _create_map_(self):
         treshold = int(self.treshold.text())
         rgb_plane = self.rgb_dropdown.currentIndex()
+
         marker_color = self.marker_color.get_color()
         self.create_map.emit(treshold, rgb_plane, marker_color)
 
