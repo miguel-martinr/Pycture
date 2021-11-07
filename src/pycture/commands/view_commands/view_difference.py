@@ -22,8 +22,7 @@ class ViewDifference(Command):
             return
         
         difference = image_a.get_difference(image_b)
-        _, title = self.get_active_image_and_title(self.main_window)
-        self.main_window.add_editor(difference, title + f" -  diff({image_a_title}, {image_b_title})")
+        self.main_window.add_editor(difference, f" -  diff({image_a_title}, {image_b_title})")
         
 
     def execute(self, main_window: QtWidgets.QMainWindow):
