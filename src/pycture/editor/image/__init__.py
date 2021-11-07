@@ -137,24 +137,25 @@ class Image(QImage):
         return image
 
     def get_difference(self, image_b: QImage):
-        
+
         if (self.height() != image_b.height() or self.width() != image_b.width()):
             print("Image difference: Both images must have the same dimensions")
             return
-        
+
         result = QImage(self.width(), self.height(), self.format())
 
         for x in range(self.height()):
             for y in range(self.width()):
-                pixelA = self.pixel(x, y)
-                pixelB = image_b.pixel(x, y)
-                
-                rgbA = pixelA.to_bytes(4, 'big')[1:]
-                rgbB = pixelB.to_bytes(4, 'big')[1:]
+                pixel_a = self.pixel(x, y)
+                pixel_b = image_b.pixel(x, y)
 
-                new_pixel = 0xff000000 # opacity = 255
-                new_pixel |= int.from_bytes([abs(rgbA[i] - rgbB[i]) for i in range(3)], 'big')
+                rgb_a = pixel_a.to_bytes(4, 'big')[1:]
+                rgb_b = pixel_b.to_bytes(4, 'big')[1:]
 
-                result.setPixel(x, y, new_pixel) 
+                new_pixel = 0xff000000  # opacity = 255
+                new_pixel |= int.from_bytes(
+                    [abs(rgb_a[i] - rgb_b[i]) for i in range(3)], 'big')
+
+                result.setPixel(x, y, new_pixel)
 
         return result
