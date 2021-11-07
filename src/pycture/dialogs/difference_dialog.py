@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt, Signal
-from PyQt5.QtWidgets import QDialog, QLabel, QMainWindow, QPushButton, QVBoxLayout
+from PyQt5.QtWidgets import QDialog, QHBoxLayout, QLabel, QMainWindow, QPushButton, QVBoxLayout
 from pycture.dialogs import Notification
 
 from pycture.dialogs.dropdown_list import DropdownList
@@ -17,7 +17,7 @@ class DifferenceDialog(QDialog):
         self.setWindowTitle("Image difference")
         self.setLayout(layout)
         self._set_dropdowns_(options)
-        self._set_btn_()
+        self._set_btns_()
 
         maximum_width = 300
         self.setMinimumWidth(maximum_width)
@@ -46,12 +46,16 @@ class DifferenceDialog(QDialog):
 
         self.applied.emit(image_a, image_b)
 
-    def _set_btn_(self):
-        layout = self.layout()
+    def _set_btns_(self):
+        layout = QHBoxLayout()
+        self.layout().addLayout(layout)
         
         apply_btn = QPushButton("Apply", self)
         layout.addWidget(apply_btn)
 
+        map_of_changes_btn = QPushButton("Map of changes", self)
+        layout.addWidget(map_of_changes_btn)
+        
         apply_btn.pressed.connect(self._apply_)
 
         
