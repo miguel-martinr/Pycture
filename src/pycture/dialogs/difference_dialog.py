@@ -58,6 +58,7 @@ class DifferenceDialog(QDialog):
         map_of_changes_btn = QPushButton("Map of changes", self)
         layout.addWidget(map_of_changes_btn)
         map_of_changes_btn.pressed.connect(lambda: MapOfChangesDialog(self))
+        
 
         
 
