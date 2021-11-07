@@ -5,7 +5,7 @@ from pycture.dialogs.map_of_changes_dialog import MapOfChangesDialog
 from pycture.dialogs.difference_dialog import DifferenceDialog
 from pycture.dialogs.notification import Notification
 from pycture.editor.image import Image
-from pycture.editor.image.color import RGBColor
+from pycture.editor.image.color import Color, RGBColor
 from ..command import Command
 from ...editor import Editor
 from .view_histogram import ViewHistogram, ViewRedHistogram, ViewGreenHistogram, ViewBlueHistogram, ViewGrayScaleHistogram
@@ -48,14 +48,18 @@ class ViewDifference(Command):
             self.active_histogram.deleteLater()
         self.active_histogram = self.histograms[color_index](self.main_window)
 
-        self.main_window.set_active_editor(
-            self.difference_editor.windowTitle())
+        try:
+            self.main_window.set_active_editor(
+                self.difference_editor.windowTitle())
+        except KeyError as _:
+            Notification(self.main_window, "No difference image found")
+            return
 
         self.active_histogram.execute(self.main_window)
 
-    def mark_map_of_changes(self, treshold: int, rgb_plane: RGBColor, marker_color: QColor):
+    def mark_map_of_changes(self, treshold: int, plane: Color, marker_color: QColor):
         marked_pixels_coordinates = self.difference_editor.get_image(
-        ).get_pixels_coordinates(treshold, rgb_plane)
+        ).get_pixels_coordinates(treshold, plane)
         map_of_changes = self.image_a_editor.get_image().mark_pixels(
             marked_pixels_coordinates, marker_color)
         self.main_window.add_editor(
@@ -72,10 +76,10 @@ class ViewDifference(Command):
             lambda color_index: self._update_histogram_view_(color_index))
 
         if (self.difference_editor.get_image().load_finished):
-            self.map_dialog.rgb_plane_changed.emit(0)
+            self.map_dialog.rgb_plane_changed.emit(3) # Gray scale by default
         else:
             self.difference_editor.get_image().worker.finished.connect(
-                lambda: self.map_dialog.rgb_plane_changed.emit(0))
+                lambda: self.map_dialog.rgb_plane_changed.emit(3)) # Gray scale by default
 
         self.map_dialog.show()
 

@@ -51,9 +51,9 @@ class MapOfChangesDialog(QDialog):
         rgb_dropdown_label = QLabel("RGB plane", self)
         layout.addWidget(rgb_dropdown_label, 2, 0, Qt.AlignmentFlag.AlignLeft)
 
-        self.rgb_dropdown = DropdownList(self, ["Red", "Green", "Blue"])
+        self.rgb_dropdown = DropdownList(self, ["Red", "Green", "Blue", "Gray scale"])
         self.rgb_dropdown.activated.connect(lambda index: self.rgb_plane_changed.emit(index))
-        self.rgb_dropdown.setCurrentIndex(0)
+        self.rgb_dropdown.setCurrentIndex(3)
 
         layout.addWidget(self.rgb_dropdown, 2,1, Qt.AlignmentFlag.AlignRight)
 

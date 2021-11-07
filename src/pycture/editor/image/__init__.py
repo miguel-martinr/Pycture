@@ -177,7 +177,7 @@ class Image(QImage):
         
         return marked_image
 
-    def get_pixels_coordinates(self, treshold: int, rgb_plane: RGBColor):
+    def get_pixels_coordinates(self, treshold: int, rgb_plane: Color):
         coordinates = []
         for x in range(self.width()):
             for y in range(self.height()):
