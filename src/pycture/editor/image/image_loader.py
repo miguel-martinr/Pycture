@@ -1,8 +1,8 @@
 from PyQt5.QtCore import QObject, Signal
-from PyQt5.QtWidgets import QLabel
-
+from PyQt5.QtGui import QImage
 from .color import Color, RGBColor, GrayScaleLUT
 from .pixel import Pixel
+from ctypes import string_at
 
 
 class ImageLoader(QObject):
@@ -13,30 +13,45 @@ class ImageLoader(QObject):
         self.image = image
 
     def run(self):
-        image = self.image
+
+        image: QImage = self.image
         image.histograms = [[0] * 256, [0] * 256, [0] * 256, [0] * 256]
         image.ranges = [[255, 0], [255, 0], [255, 0], [255, 0]]
-        image.means = [0] * 4
-        for x in range(image.width()):
-            for y in range(image.height()):
-                gray_value = 0
-                pixel = Pixel(image.pixel(x, y))
-                for color in RGBColor:
-                    value = pixel.get_color(color)
-                    image.histograms[color.value][value] += 1
-                    image.means[color.value] += value
-                    gray_value += GrayScaleLUT[color.value][value]
+     
+        size = image.width() * image.height()
 
-                gray_value = round(gray_value)
-                image.histograms[Color.Gray.value][gray_value] += 1
-                image.means[Color.Gray.value] += gray_value
+        pixels = image.constBits().asstring(size * 4)
+        for i in range(size):
+            i_ = i * 4
+            bgr_bytes = pixels[i_:i_+3]
+            b, g, r = [int.from_bytes(bgr_bytes[j:j+1], 'big') for j in range(3)]
+ 
+            gray_value = 0
+            rgb_values = [r, g, b]
+            for i, value in enumerate(rgb_values):
+                
+                image.histograms[i][value] += 1
 
-        total_pixels = image.width() * image.height()
+                gray_value += GrayScaleLUT[i][value]
+            gray_value = round(gray_value)
+            image.histograms[Color.Gray.value][gray_value] += 1
+    
+        
         image.histograms = list(map(lambda histogram:
                                     list(
-                                        map(lambda x: x / total_pixels, histogram)),
+                                        map(lambda x: x / size, histogram)),
                                     image.histograms
                                     ))
-        image.means = list(map(lambda mean: mean / total_pixels, image.means))
+        self.load_means()
         image.load_finished = True
+        
         self.finished.emit()
+
+    def load_means(self):
+        image = self.image
+        image.means = [self.calculate_mean(hist) for hist in image.histograms]
+
+
+    def calculate_mean(self, normalized_histogram):
+        mean = sum([normalized_histogram[i] * i for i in range(len(normalized_histogram))])
+        return mean
