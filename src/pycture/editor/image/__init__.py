@@ -128,6 +128,7 @@ class Image(QImage):
         return gray_scaled
 
     def apply_LUTs(self, luts: (List[int], List[int], List[int])) -> "Image":
+        then = datetime.now()
         for lut in luts:
             if (len(lut) != 256):
                 print("LUT length must be 256")
@@ -145,6 +146,7 @@ class Image(QImage):
                     new_value = lut[color_value]
                     new_pixel = new_pixel.set_color(new_value, color)
                 image.setPixel(x, y, new_pixel.value)
+        print(datetime.now() - then)
         return image
 
     def get_difference(self, image_b: QImage):
