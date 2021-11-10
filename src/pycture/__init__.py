@@ -18,11 +18,20 @@ class MainWindow(QMainWindow):
         self.setMenuBar(MenuBar(self))
         placeholder_widget = QWidget()
         self.setCentralWidget(placeholder_widget)
-        desktop_size = QGuiApplication.screens()[0].size()
-        self.setMaximumWidth(desktop_size.width())
-        self.setMaximumHeight(desktop_size.height())
+        self.setup_size()
         self.editors = {}
         self.active_editor = None
+
+    def setup_size(self):
+        desktop_size = QGuiApplication.screens()[0].size()
+        screen_width = desktop_size.width()
+        screen_height = desktop_size.height()
+        self.setMaximumSize(screen_width, screen_height)
+        width = round(0.3 * screen_width)
+        height = round(0.3 * screen_height)
+        self.resize(width, height)
+        self.move((screen_width - width) / 2, height / 2)
+
 
     def customEvent(self, event: QEvent):
         if isinstance(event, ExecuteCommandEvent):
