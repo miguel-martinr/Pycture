@@ -9,7 +9,7 @@ from .image_loader import ImageLoader
 from .color import Color, RGBColor, GrayScaleLUT
 from .pixel import Pixel
 
-from datetime import datetime
+from datetime import date, datetime
 
 
 class Image(QImage):
@@ -25,23 +25,20 @@ class Image(QImage):
         self.worker = ImageLoader(self)
         self.worker.moveToThread(self.thread)
         self.thread.started.connect(self.worker.run)
-
- 
-        
         self.worker.finished.connect(self.thread.quit)
+
+        self.worker.finished.connect(self.print_time)
+
         self.worker.finished.connect(self.worker.deleteLater)
-        self.worker.finished.connect(self.print_time_ms)
-
         self.thread.finished.connect(self.thread.deleteLater)
-        self.set_timer()
-        self.thread.start()
 
-    def set_timer(self):
         self.then = datetime.now()
 
-    def print_time_ms(self):
+        self.thread.start()
+
+    def print_time(self):
         delta = datetime.now() - self.then
-        print(delta)
+        print("Loading time: ", delta)
 
     def get_brightness(self):
         return list(map(lambda color: self.get_mean(color), Color))
@@ -66,9 +63,7 @@ class Image(QImage):
         return cumulative
 
     def get_mean(self, color: Color):
-        histogram = self.get_histogram(color)
-        mean = sum([h_i * i for i, h_i in enumerate(histogram)])
-        return mean
+        return self.means[color.value]
 
     # Standard deviation
     def get_sd(self, color: Color):
