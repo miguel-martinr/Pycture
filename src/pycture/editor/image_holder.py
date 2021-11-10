@@ -8,7 +8,8 @@ from .image import Image
 
 
 class ImageHolder(QLabel):
-    mouse_position_updated = Signal(int, int, int, int, int)
+    # Takes the position as (x, y) and the color as (r, g, b)
+    mouse_position_updated = Signal(tuple, tuple)
     new_selection = Signal(QImage)
 
     def __init__(self, parent: QWidget, image: QImage):
@@ -25,7 +26,7 @@ class ImageHolder(QLabel):
         pos = (event.x(), event.y())
         rgb = self.image.get_pixel_rgb(pos[0], pos[1])
         if rgb is not None:
-            self.mouse_position_updated.emit(*pos, *rgb)
+            self.mouse_position_updated.emit(pos, rgb)
 
     def mousePressEvent(self, event: QMouseEvent):
         if (event.button() == Qt.LeftButton and

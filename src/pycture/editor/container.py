@@ -25,14 +25,11 @@ class Container(QWidget):
         layout.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
         self.setLayout(layout)
 
-        self.image_holder.mouse_position_updated.connect(self.update_data_bar)
+        self.image_holder.mouse_position_updated.connect(self.data_bar.update_data)
         self.image_holder.new_selection.connect(self.throw_new_selection_event)
 
     def get_image(self) -> Image:
         return self.image_holder.image
-
-    def update_data_bar(self, x: int, y: int, r: int, g: int, b: int):
-        self.data_bar.update_data((x, y), (r, g, b))
 
     def throw_new_selection_event(self, image: QImage):
         QCoreApplication.sendEvent(self.parent(), NewSelectionEvent(image))
