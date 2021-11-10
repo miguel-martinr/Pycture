@@ -9,11 +9,14 @@ from .image_loader import ImageLoader
 from .color import Color, RGBColor, GrayScaleLUT
 from .pixel import Pixel
 
+from datetime import datetime
+
 
 class Image(QImage):
 
     def __init__(self, image: QImage):
         super().__init__(image)
+        self.then = None
         self.setup_image_data()
         self.load_finished = False
 
@@ -22,10 +25,23 @@ class Image(QImage):
         self.worker = ImageLoader(self)
         self.worker.moveToThread(self.thread)
         self.thread.started.connect(self.worker.run)
+
+ 
+        
         self.worker.finished.connect(self.thread.quit)
         self.worker.finished.connect(self.worker.deleteLater)
+        self.worker.finished.connect(self.print_time_ms)
+
         self.thread.finished.connect(self.thread.deleteLater)
+        self.set_timer()
         self.thread.start()
+
+    def set_timer(self):
+        self.then = datetime.now()
+
+    def print_time_ms(self):
+        delta = datetime.now() - self.then
+        print(delta)
 
     def get_brightness(self):
         return list(map(lambda color: self.get_mean(color), Color))
@@ -167,14 +183,14 @@ class Image(QImage):
         for x, y in pixels_coordinates:
             if (not (0 <= x < self.width())):
                 print("Mark pixels: x out of range")
-                return 
-            
+                return
+
             if (not (0 <= y < self.height())):
                 print("Mark pixels: y out of range")
-                return 
+                return
             pixel = Pixel(self.pixel(x, y))
             marked_image.setPixel(x, y, marker_color)
-        
+
         return marked_image
 
     def get_pixels_coordinates(self, treshold: int, rgb_plane: Color):
