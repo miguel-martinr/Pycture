@@ -1,8 +1,7 @@
 from PyQt5.QtCore import QObject, Signal
 from PyQt5.QtGui import QImage
-from .color import Color, RGBColor, GrayScaleLUT
-from .pixel import Pixel
-from ctypes import string_at
+from .color import Color, GrayScaleLUT
+import sys
 
 
 class ImageLoader(QObject):
@@ -21,13 +20,21 @@ class ImageLoader(QObject):
         size = image.width() * image.height()
 
         pixels = image.constBits().asstring(size * 4)
+  
+        if sys.byteorder == 'little':
+            get_rgb = lambda bgra: (bgra[2], bgra[1], bgra[0])
+        else:
+            get_rgb = lambda argb: (argb[1], argb[2], argb[3])
+              
         for i in range(size):
             i_ = i * 4
-            bgr_bytes = pixels[i_:i_+3]
-            b, g, r = [int.from_bytes(bgr_bytes[j:j+1], 'big') for j in range(3)]
- 
+            
+            color_bytes = pixels[i_:i_+3]
+            color_ints = [int.from_bytes(color_bytes[j:j+1], 'big') for j in range(3)]
+
             gray_value = 0
-            rgb_values = [r, g, b]
+            rgb_values = get_rgb(color_ints)
+
             for i, value in enumerate(rgb_values):
                 
                 image.histograms[i][value] += 1
