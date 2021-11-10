@@ -24,10 +24,14 @@ class MainWindow(QMainWindow):
 
     def setup_size(self):
         desktop_size = QGuiApplication.screens()[0].size()
-        width = desktop_size.width()
-        height = desktop_size.height()
-        self.setMaximumSize(width, height)
-        self.resize(round(0.3 * width), round(0.3 * height))
+        screen_width = desktop_size.width()
+        screen_height = desktop_size.height()
+        self.setMaximumSize(screen_width, screen_height)
+        width = round(0.3 * screen_width)
+        height = round(0.3 * screen_height)
+        self.resize(width, height)
+        self.move((screen_width - width) / 2, height / 2)
+
 
     def customEvent(self, event: QEvent):
         if isinstance(event, ExecuteCommandEvent):
