@@ -1,7 +1,7 @@
 
 from typing import Tuple
 from PyQt5.QtCore import QLine, Qt
-from PyQt5.QtWidgets import QDialog, QGridLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QSlider
+from PyQt5.QtWidgets import QCheckBox, QDialog, QGridLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QSlider
 from PyQt5.QtCore import Qt, Signal
 from pycture.dialogs.segments_input import IntValidator
 
@@ -9,6 +9,7 @@ from pycture.dialogs.segments_input import IntValidator
 class EditBrightnessAndContrastDialog(QDialog):
     recalculate = Signal(tuple)
     apply = Signal(tuple)
+    gray = Signal(bool)
 
     def __init__(self, parent: QMainWindow,
                  current_brightness: Tuple[int], current_contrast: Tuple[int]) -> None:
@@ -20,9 +21,31 @@ class EditBrightnessAndContrastDialog(QDialog):
         self.setWindowTitle("Edit brightness and contrast")
         layout = QGridLayout()
         self.setLayout(layout)
+        
+        all_rgb = QCheckBox("Gray scale")
+        all_rgb.stateChanged.connect(self.set_gray)
+        layout.addWidget(all_rgb, 0, 0)
+        
         self._set_brightness_inputs_(current_brightness)
         self._set_contrast_inputs_(current_contrast)
         self._set_buttons_()
+
+    def set_gray(self, gray_checked: Qt.CheckState):
+        gray_checked = True if gray_checked == Qt.CheckState.Checked else False
+        gray_slider: QSlider = self._brightness_sliders_[3]
+        gray_slider.setEnabled(gray_checked)
+        for i in range(3):
+            brightness_slider: QSlider = self._brightness_sliders_[i]
+            brightness_slider.setDisabled(gray_checked)
+            brightness_input: QLine = self._brightness_inputs_[i]
+            brightness_input.setDisabled(gray_checked)
+            
+            contrast_slider: QSlider = self._contrast_sliders_[i]
+            contrast_slider.setDisabled(gray_checked)
+            contrast_input: QLine = self._contrast_inputs_[i]
+            contrast_input.setDisabled(gray_checked)
+        
+            
 
     def _set_buttons_(self):
         layout = self.layout()
@@ -57,12 +80,12 @@ class EditBrightnessAndContrastDialog(QDialog):
                 str(round(straiten(contrast[i], 127))))
 
     def _set_brightness_inputs_(self, current_brightness):
-        self._brightness_inputs_ = self._set_inputs_for_(
-            "Brightness", 0, 0, current_brightness, 255)
+        self._brightness_inputs_, self._brightness_sliders_ = self._set_inputs_for_(
+            "Brightness", 1, 0, current_brightness, 255)
 
     def _set_contrast_inputs_(self, current_contrast):
-        self._contrast_inputs_ = self._set_inputs_for_(
-            "Contrast", 0, 1, current_contrast, 127)
+        self._contrast_inputs_, self._contrast_sliders_ = self._set_inputs_for_(
+            "Contrast", 1, 1, current_contrast, 127)
 
     def _set_inputs_for_(self, title, row, col, values, top_limit):
         layout = QGridLayout()
@@ -78,6 +101,7 @@ class EditBrightnessAndContrastDialog(QDialog):
             str_value == "") else int(str_value)
 
         colors = ["#ff0000", "#00ff00", "#0000ff", "#6c6c6c"]
+        sliders = []
         for i, input in enumerate(inputs):
             slider = QSlider(orientation, self)
             input.setValidator(IntValidator(0, top_limit))
@@ -93,4 +117,7 @@ class EditBrightnessAndContrastDialog(QDialog):
             j = 2 * i
             layout.addWidget(input, j + 1, 0, Qt.AlignmentFlag.AlignLeft)
             layout.addWidget(slider, j + 2, 0)
-        return inputs
+            sliders.append(slider)
+            
+        
+        return (inputs, sliders)
