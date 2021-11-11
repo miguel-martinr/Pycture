@@ -2,7 +2,7 @@ from PIL.ImageQt import QImage
 
 from PyQt5.QtWidgets import QLabel, QWidget, QRubberBand
 from PyQt5.QtGui import QPixmap, QMouseEvent, QGuiApplication
-from PyQt5.QtCore import Signal, Qt
+from PyQt5.QtCore import Signal, Qt, QRect
 
 from .image import Image
 
@@ -30,14 +30,8 @@ class ImageHolder(QLabel):
         if rgb is not None:
             self.mouse_position_updated.emit(pos, rgb)
         if self.press_pos is not None:
-            x_values = sorted([event.x(), self.press_pos[0]])
-            y_values = sorted([event.y(), self.press_pos[1]])
-            self.rubberband.setGeometry(
-                x_values[0],
-                y_values[0],
-                x_values[1] - x_values[0],
-                y_values[1] - y_values[0]
-            )
+            rect = self.Qrect_from_two_points(self.press_pos, (event.x(), event.y()))
+            self.rubberband.setGeometry(rect)
             
 
     def mousePressEvent(self, event: QMouseEvent):
@@ -55,13 +49,20 @@ class ImageHolder(QLabel):
                 QGuiApplication.keyboardModifiers() != Qt.ControlModifier):
             return
         self.rubberband.hide()
-        x_values = sorted([event.x(), self.press_pos[0]])
-        y_values = sorted([event.y(), self.press_pos[1]])
-        new_image = self.image.copy(
-            x_values[0],
-            y_values[0],
-            x_values[1] - x_values[0],
-            y_values[1] - y_values[0]
-        )
+        clamp = lambda x, lower, upper: max(min(x, upper), lower)
+        rect = self.Qrect_from_two_points(self.press_pos, (
+            clamp(event.x(), 0, self.image.width()),
+            clamp(event.y(), 0, self.image.height())
+        ))
+        new_image = self.image.copy(rect)
         self.new_selection.emit(new_image)
         event.ignore()
+        
+    def Qrect_from_two_points(self, point1: (int, int), point2: (int, int)) -> QRect:
+        return QRect(
+            min(point1[0], point2[0]),
+            min(point1[1], point2[1]),
+            abs(point1[0] - point2[0]),
+            abs(point1[1] - point2[1])
+        )
+        
