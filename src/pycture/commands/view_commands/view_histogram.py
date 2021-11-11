@@ -27,7 +27,8 @@ class ViewHistogram(Command):
         figure = self.get_histogram_figure(histogram, mean, new_title)
         PlotWindow(main_window, FigureCanvasQTAgg(figure), new_title)
 
-    def get_histogram_figure(self, histogram: List[int], mean: float, title: str) -> Figure:
+    def get_histogram_figure(
+            self, histogram: List[int], mean: float, title: str) -> Figure:
         plt.style.use('dark_background')
         figure = plt.figure(title)
         plt.title(title)

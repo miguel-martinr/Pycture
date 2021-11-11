@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QWidget, QHBoxLayout
 from PyQt5.QtCore import Qt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 
+
 class PlotWindow(QWidget):
     def __init__(self, parent: QWidget, plot: FigureCanvasQTAgg, title: str):
         super().__init__(parent)

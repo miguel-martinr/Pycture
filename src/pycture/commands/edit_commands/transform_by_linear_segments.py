@@ -65,10 +65,9 @@ class TransformByLinearSegments(Command):
 
         def lut_or_none(condition): return lut if condition else None
         luts = (
-            lut_or_none(
-                options[0]), lut_or_none(
-                options[1]), lut_or_none(
-                options[2])
+            lut_or_none(options[0]),
+            lut_or_none(options[1]),
+            lut_or_none(options[2])
         )
         transformed_image = image.apply_LUTs(luts)
         main_window.add_editor(transformed_image, title + "-LT")
@@ -80,8 +79,10 @@ class TransformByLinearSegments(Command):
 
         dialog = SegmentsInput(main_window)
         dialog.previewed.connect(lambda points:
-            self.preview_transformation(main_window, points)
-        )
+                                 self.preview_transformation(
+                                     main_window, points)
+                                 )
         dialog.applied.connect(lambda segments, options:
-            self.apply_transformation(main_window, segments, options)
-        )
+                               self.apply_transformation(
+                                   main_window, segments, options)
+                               )

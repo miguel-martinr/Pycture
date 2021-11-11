@@ -3,7 +3,6 @@ from typing import Tuple
 from PyQt5.QtCore import QLine, Qt
 from PyQt5.QtWidgets import QCheckBox, QDialog, QGridLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QSlider
 from PyQt5.QtCore import Qt, Signal
-from pycture.dialogs.segments_input import IntValidator
 
 
 class EditBrightnessAndContrastDialog(QDialog):

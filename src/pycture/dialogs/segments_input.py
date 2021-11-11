@@ -1,12 +1,12 @@
 from typing import List
-from PyQt5.QtGui import QValidator
 from PyQt5.QtWidgets import (QCheckBox, QDialog, QFormLayout, QGridLayout,
-                             QHBoxLayout, QLabel, QLineEdit, QMainWindow,
+                             QLabel, QLineEdit, QMainWindow,
                              QPushButton, QVBoxLayout)
 from PyQt5.QtCore import Qt, Signal
 
 from pycture.editor.image.color import Color
 from .widgets import RGBCheckboxes
+from .widgets import CustomIntValidator
 
 
 class SegmentsInput(QDialog):
@@ -55,14 +55,18 @@ class SegmentsInput(QDialog):
         preview_button.clicked.connect(
             lambda: self.previewed.emit(self.get_points())
         )
-        accept_button.clicked.connect(lambda: preview_button.setDisabled(False))
+        accept_button.clicked.connect(
+            lambda: preview_button.setDisabled(False)
+        )
         footer.addWidget(preview_button, 0, 0)
 
         # Apply button
         apply_button = QPushButton("Apply")
         apply_button.setDisabled(True)
         apply_button.clicked.connect(
-            lambda: self.applied.emit(self.get_segments(), self.checkboxes.get_checked())
+            lambda: self.applied.emit(
+                self.get_segments(),
+                self.checkboxes.get_checked())
         )
         accept_button.clicked.connect(lambda: apply_button.setDisabled(False))
         footer.addWidget(apply_button, 0, 1)
@@ -107,7 +111,7 @@ class SegmentsInput(QDialog):
 
     def _get_int_input_(self, bottom: int, top: int, default: int = 0):
         input = QLineEdit(str(default))
-        input.setValidator(IntValidator(bottom, top))
+        input.setValidator(CustomIntValidator(bottom, top))
         return input
 
     def get_points(self):
@@ -130,21 +134,3 @@ class SegmentsInput(QDialog):
         for i in range(len(points) - 1):
             segments.append((points[i], points[i + 1]))
         return segments
-
-
-class IntValidator(QValidator):
-    def __init__(self, bottom: int, top: int) -> None:
-        super().__init__()
-        self.bottom = bottom
-        self.top = top
-
-    def validate(self, input: str, pos: int):
-        State = QValidator.State
-
-        if (input == ""):
-            return State.Intermediate, input, pos
-        if (not str.isdigit(input)):
-            return State.Invalid, input, pos
-        if (not (self.bottom <= int(input) <= self.top)):
-            return State.Invalid, input, pos
-        return State.Acceptable, input, pos

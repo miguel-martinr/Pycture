@@ -4,7 +4,7 @@ from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QColorDialog, QDialog, QGridLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QVBoxLayout, QWidget
 
 from pycture.dialogs.widgets import DropdownList
-from .segments_input import IntValidator
+from .widgets import CustomIntValidator
 
 
 class MapOfChangesDialog(QDialog):
@@ -36,7 +36,7 @@ class MapOfChangesDialog(QDialog):
         layout.addWidget(treshold_label, 0, 0, Qt.AlignmentFlag.AlignLeft)
 
         self.treshold = QLineEdit('0', self)
-        self.treshold.setValidator(IntValidator(0, 255))
+        self.treshold.setValidator(CustomIntValidator(0, 255))
 
         layout.addWidget(self.treshold, 0, 1, Qt.AlignmentFlag.AlignRight)
 

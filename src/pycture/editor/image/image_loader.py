@@ -40,9 +40,9 @@ class ImageLoader(QObject):
             image.histograms[Color.Gray.value][gray_value] += 1
 
         image.histograms = list(map(lambda histogram:
-            list(map(lambda x: x / size, histogram)),
-            image.histograms
-        ))
+                                    list(map(lambda x: x / size, histogram)),
+                                    image.histograms
+                                    ))
         self.load_means()
         image.load_finished = True
 
