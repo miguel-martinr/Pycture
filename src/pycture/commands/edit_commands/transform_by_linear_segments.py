@@ -3,9 +3,11 @@ from PyQt5.QtWidgets import QWidget, QMainWindow
 
 from typing import List, Tuple
 from matplotlib import pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 
 from pycture.editor.image import Color
-from pycture.dialogs import SegmentsInput
+from pycture.dialogs import SegmentsInput, PlotWindow
 from ..command import Command
 
 
@@ -37,7 +39,7 @@ class TransformByLinearSegments(Command):
                 lut[i] = round(equation(i))
         return lut
 
-    def preview_transformation(self, points: List):
+    def preview_transformation(self, main_window: QMainWindow, points: List):
         x = []
         y = []
         for p in points:
@@ -45,12 +47,13 @@ class TransformByLinearSegments(Command):
             y.append(p[1])
 
         plt.style.use('dark_background')
-        plt.clf()
+        title = "Linear transformation"
+        figure = plt.figure(title)
         plt.plot(x, y)
         plt.xlabel("Vin")
         plt.ylabel("Vout")
-        plt.title("Linear transformation")
-        plt.show()
+        plt.title(title)
+        PlotWindow(main_window, FigureCanvasQTAgg(figure), title)
 
     def apply_transformation(
             self, main_window: QMainWindow, segments: List, options: tuple):
@@ -76,7 +79,7 @@ class TransformByLinearSegments(Command):
 
         dialog = SegmentsInput(main_window)
         dialog.previewed.connect(
-            lambda s: self.preview_transformation(dialog.get_points()))
+            lambda s: self.preview_transformation(main_window, dialog.get_points()))
         dialog.applied.connect(
             lambda s: self.apply_transformation(
                 main_window, s, dialog.get_color_options()))
