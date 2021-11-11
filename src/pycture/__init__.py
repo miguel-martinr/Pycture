@@ -26,11 +26,13 @@ class MainWindow(QMainWindow):
         desktop_size = QGuiApplication.screens()[0].size()
         screen_width = desktop_size.width()
         screen_height = desktop_size.height()
-        self.setMaximumSize(screen_width, screen_height)
-        width = round(0.3 * screen_width)
-        height = round(0.3 * screen_height)
-        self.resize(width, height)
-        self.move((screen_width - width) / 2, height / 2)
+        width = round(0.4 * screen_width)
+        height = round(0.4 * screen_height)
+        x = (screen_width - width) / 2
+        y = height / 2
+        self.setGeometry(x, y, width, height)
+        
+        
 
     def customEvent(self, event: QEvent):
         if isinstance(event, ExecuteCommandEvent):
