@@ -38,14 +38,16 @@ class EditBrightnessAndContrastDialog(QDialog):
             brightness_slider: QSlider = self._brightness_sliders_[i]
             brightness_slider.setDisabled(gray_checked)
             brightness_input: QLine = self._brightness_inputs_[i]
-            brightness_input.setDisabled(gray_checked)
+            brightness_input.setDisabled(gray_checked)            
+            brightness_input.setText(self._brightness_inputs_[3].text())
+            self._brightness_inputs_[3].textChanged.connect(lambda text, input=brightness_input: input.setText(text))
             
             contrast_slider: QSlider = self._contrast_sliders_[i]
             contrast_slider.setDisabled(gray_checked)
             contrast_input: QLine = self._contrast_inputs_[i]
             contrast_input.setDisabled(gray_checked)
-        
-            
+            contrast_input.setText(self._contrast_inputs_[3].text())
+            self._contrast_inputs_[3].textChanged.connect(lambda text, input=contrast_input: input.setText(text))
 
     def _set_buttons_(self):
         layout = self.layout()
