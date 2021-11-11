@@ -1,7 +1,7 @@
 from PyQt5.QtCore import QObject, Signal
 from PyQt5.QtGui import QImage
 from .color import Color, GrayScaleLUT
-import sys
+from .get_rgb import get_rgb
 
 
 class ImageLoader(QObject):
@@ -21,10 +21,7 @@ class ImageLoader(QObject):
 
         pixels = image.constBits().asstring(size * 4)
   
-        if sys.byteorder == 'little':
-            get_rgb = lambda bgra: (bgra[2], bgra[1], bgra[0])
-        else:
-            get_rgb = lambda argb: (argb[1], argb[2], argb[3])
+
               
         for i in range(size):
             i_ = i * 4
