@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt, Signal
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QColorDialog, QDialog, QGridLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QVBoxLayout, QWidget
 
-from pycture.dialogs.dropdown_list import DropdownList
+from pycture.dialogs.widgets import DropdownList
 from .segments_input import IntValidator
 
 

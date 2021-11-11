@@ -6,11 +6,12 @@ from PyQt5.QtWidgets import (QCheckBox, QDialog, QFormLayout, QGridLayout,
 from PyQt5.QtCore import Qt, Signal
 
 from pycture.editor.image.color import Color
+from .widgets import RGBCheckboxes
 
 
 class SegmentsInput(QDialog):
     previewed = Signal(list)
-    applied = Signal(list)
+    applied = Signal(list, tuple)
 
     def __init__(self, parent: QMainWindow) -> None:
         super().__init__(parent, Qt.WindowType.Window)
@@ -24,13 +25,13 @@ class SegmentsInput(QDialog):
         layout = QVBoxLayout()
         self.setLayout(layout)
 
-        # Colors checkboxes
-        self._set_color_opts_()
+        self.checkboxes = RGBCheckboxes(self)
+        layout.addWidget(self.checkboxes)
 
-        # Input and accept btn
+        # Input and accept button
         self.num_of_segments_form = QFormLayout()
         layout.addLayout(self.num_of_segments_form)
-        accept_btn, segments_num_input = self._get_segments_num_input_(
+        accept_button, segments_num_input = self._get_segments_num_input_(
             self.num_of_segments_form)
 
         # Point inputs
@@ -41,42 +42,30 @@ class SegmentsInput(QDialog):
             QLabel("Y"), 0, 2, Qt.AlignmentFlag.AlignCenter)
         layout.addLayout(self.points_grid)
 
-        accept_btn.clicked.connect(lambda: self._update_point_inputs_(
+        accept_button.clicked.connect(lambda: self._update_point_inputs_(
             int(segments_num_input.text()) + 1, self.points_grid))
 
         # To place preview and apply buttons
         footer = QGridLayout()
         layout.addLayout(footer)
 
-        # Preview btn
-        preview_btn = QPushButton("Preview")
-        preview_btn.setDisabled(True)
-        preview_btn.clicked.connect(
-            lambda: self.previewed.emit(
-                self.get_segments()))
-        accept_btn.clicked.connect(lambda: preview_btn.setDisabled(False))
-        footer.addWidget(preview_btn, 0, 0)
+        # Preview button
+        preview_button = QPushButton("Preview")
+        preview_button.setDisabled(True)
+        preview_button.clicked.connect(
+            lambda: self.previewed.emit(self.get_points())
+        )
+        accept_button.clicked.connect(lambda: preview_button.setDisabled(False))
+        footer.addWidget(preview_button, 0, 0)
 
-        # Apply btn
-        apply_btn = QPushButton("Apply")
-        apply_btn.setDisabled(True)
-        apply_btn.clicked.connect(
-            lambda: self.applied.emit(
-                self.get_segments()))
-        accept_btn.clicked.connect(lambda: apply_btn.setDisabled(False))
-        footer.addWidget(apply_btn, 0, 1)
-
-    def _set_color_opts_(self):
-        # Colors checkboxes
-        self.checkboxes = []
-        my_layout = QHBoxLayout()
-        color_opts = ["Red", "Green", "Blue", "All"]
-        for i, color in enumerate(color_opts):
-            checkbox = QCheckBox(color, self)
-            self.checkboxes.append(checkbox)
-            my_layout.addWidget(checkbox)
-        self.checkboxes[-1].stateChanged.connect(self._set_all_checkboxes_)
-        self.layout().addLayout(my_layout)
+        # Apply button
+        apply_button = QPushButton("Apply")
+        apply_button.setDisabled(True)
+        apply_button.clicked.connect(
+            lambda: self.applied.emit(self.get_segments(), self.checkboxes.get_checked())
+        )
+        accept_button.clicked.connect(lambda: apply_button.setDisabled(False))
+        footer.addWidget(apply_button, 0, 1)
 
     def _add_point_input_(self):
         input = self._get_int_input_(0, 255)
@@ -112,9 +101,9 @@ class SegmentsInput(QDialog):
     def _get_segments_num_input_(self, form: QFormLayout):
         num_of_segments_input = self._get_int_input_(1, 10, 1)
         form.addRow("Num of segments:", num_of_segments_input)
-        accept_btn = QPushButton("Accept", self)
-        form.addRow(accept_btn)
-        return accept_btn, num_of_segments_input
+        accept_button = QPushButton("Accept", self)
+        form.addRow(accept_button)
+        return accept_button, num_of_segments_input
 
     def _get_int_input_(self, bottom: int, top: int, default: int = 0):
         input = QLineEdit(str(default))
@@ -141,16 +130,6 @@ class SegmentsInput(QDialog):
         for i in range(len(points) - 1):
             segments.append((points[i], points[i + 1]))
         return segments
-
-    def _set_all_checkboxes_(self, state: Qt.CheckState):
-        if (state != Qt.CheckState.Checked):
-            return
-        for checkbox in self.checkboxes:
-            checkbox.setCheckState(state)
-
-    def get_color_options(self) -> (bool, bool, bool):
-        checkboxes = self.checkboxes[0:3]
-        return tuple(map(lambda checkbox: checkbox.isChecked(), checkboxes))
 
 
 class IntValidator(QValidator):

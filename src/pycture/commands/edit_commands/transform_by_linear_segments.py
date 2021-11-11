@@ -68,7 +68,8 @@ class TransformByLinearSegments(Command):
             lut_or_none(
                 options[0]), lut_or_none(
                 options[1]), lut_or_none(
-                options[2]))
+                options[2])
+        )
         transformed_image = image.apply_LUTs(luts)
         main_window.add_editor(transformed_image, title + "-LT")
 
@@ -78,8 +79,9 @@ class TransformByLinearSegments(Command):
             return
 
         dialog = SegmentsInput(main_window)
-        dialog.previewed.connect(
-            lambda s: self.preview_transformation(main_window, dialog.get_points()))
-        dialog.applied.connect(
-            lambda s: self.apply_transformation(
-                main_window, s, dialog.get_color_options()))
+        dialog.previewed.connect(lambda points:
+            self.preview_transformation(main_window, points)
+        )
+        dialog.applied.connect(lambda segments, options:
+            self.apply_transformation(main_window, segments, options)
+        )
