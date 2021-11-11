@@ -42,7 +42,7 @@ class EditBrightnessAndContrast(Command):
                     dialog: EditBrightnessAndContrastDialog, active_image: Image):
         brightness = list(brightness)
         contrast = list(contrast)
-        for i in range(3):
+        for i in range(4):
             if (brightness[i][0] == brightness[i][1]
                     and contrast[i][0] == contrast[i][1]):
                 brightness[i] = brightness[i][0]

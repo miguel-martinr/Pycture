@@ -75,7 +75,7 @@ class EditBrightnessAndContrastDialog(QDialog):
         def straiten(
             value, top): return 0 if value < 0 else top if value > top else value
 
-        for i in range(3):
+        for i in range(4):
             self._brightness_inputs_[i].setText(
                 str(round(straiten(brightness[i], 255))))
             self._contrast_inputs_[i].setText(
