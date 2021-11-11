@@ -6,7 +6,7 @@ from PyQt5.QtGui import QValidator
 # wanted here. This way you can't write 256 or -1.
 # For more information: https://doc.qt.io/qt-5/qvalidator.html#validate
 class CustomIntValidator(QValidator):
-    def __init__(self, lower_limit: int, upper_limit: int) -> None:
+    def __init__(self, lower_limit: int, upper_limit: int):
         super().__init__()
         self.lower_limit = lower_limit
         self.upper_limit = upper_limit
