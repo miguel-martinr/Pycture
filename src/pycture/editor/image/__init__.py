@@ -3,13 +3,14 @@ from typing import List, Tuple
 from functools import reduce
 
 from PyQt5.QtGui import QColor, QImage, QPixmap
-from PyQt5.QtCore import QThread, QSize
+from PyQt5.QtCore import QPoint, QThread, QSize
 
 from .image_loader import ImageLoader
 from .color import Color, RGBColor, GrayScaleLUT
 from .pixel import Pixel
 
-from datetime import date, datetime
+from datetime import datetime
+from .get_rgb import get_rgb
 
 
 class Image(QImage):
@@ -127,24 +128,33 @@ class Image(QImage):
 
         return gray_scaled
 
-    def apply_LUTs(self, luts: (List[int], List[int], List[int])) -> "Image":
+    def apply_LUTs(self, luts: (List[int], List[int], List[int])) -> QImage:
+
         for lut in luts:
             if (len(lut) != 256):
                 print("LUT length must be 256")
                 return
-        image = Image(self.copy(0, 0, self.width(), self.height()))
+        image = QImage(self.copy(0, 0, self.width(), self.height()))
 
-        for x in range(self.width()):
-            for y in range(self.height()):
-                new_pixel = Pixel(image.pixel(x, y))
-                for color in RGBColor:
-                    lut = luts[color.value]
-                    if lut is None:
-                        continue
-                    color_value = new_pixel.get_color(color)
-                    new_value = lut[color_value]
-                    new_pixel = new_pixel.set_color(new_value, color)
-                image.setPixel(x, y, new_pixel.value)
+        size = image.width() * image.height()
+        pixels = image.constBits().asstring(size * 4)
+        get_qpoint = lambda i: QPoint(i % self.width(), i // self.width())
+        for i in range(size):
+            i_ = i * 4
+            
+            color_bytes = pixels[i_:i_+3]
+            color_ints = [int.from_bytes(color_bytes[j:j+1], 'big') for j in range(3)]
+            rgb_values = get_rgb(color_ints)
+
+            for color in RGBColor:
+                lut = luts[color.value]
+                if lut is None:
+                    continue
+                color_value = rgb_values[color.value]
+                rgb_values[color.value] = lut[color_value]
+                new_pixel = int.from_bytes([255, *rgb_values], 'big')
+            image.setPixel(get_qpoint(i), new_pixel)
+              
         return image
 
     def get_difference(self, image_b: QImage):
@@ -185,7 +195,7 @@ class Image(QImage):
             if (not (0 <= y < self.height())):
                 print("Mark pixels: y out of range")
                 return
-            pixel = Pixel(self.pixel(x, y))
+        
             marked_image.setPixel(x, y, marker_color)
 
         return marked_image
