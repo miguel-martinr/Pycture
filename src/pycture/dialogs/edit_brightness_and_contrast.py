@@ -72,12 +72,12 @@ class EditBrightnessAndContrastDialog(QDialog):
         self.layout().addLayout(layout, row, col)
 
         orientation = Qt.Orientation.Horizontal
-        inputs = [QLineEdit(str(round(values[i]))) for i in range(3)]
+        inputs = [QLineEdit(str(round(values[i]))) for i in range(4)]
 
         def to_int(str_value): return 0 if (
             str_value == "") else int(str_value)
 
-        colors = ["#ff0000", "#00ff00", "#0000ff"]
+        colors = ["#ff0000", "#00ff00", "#0000ff", "#6c6c6c"]
         for i, input in enumerate(inputs):
             slider = QSlider(orientation, self)
             input.setValidator(IntValidator(0, top_limit))

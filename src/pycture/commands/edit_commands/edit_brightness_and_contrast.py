@@ -97,8 +97,8 @@ class EditBrightnessAndContrast(Command):
         if (not active_image):
             return
 
-        old_brightness = tuple(map(round, active_image.get_brightness()[:3]))
-        old_contrast = tuple(map(round, active_image.get_contrast()[:3]))
+        old_brightness = tuple(map(round, active_image.get_brightness()))
+        old_contrast = tuple(map(round, active_image.get_contrast()))
 
         dialog = EditBrightnessAndContrastDialog(
             main_window, old_brightness, old_contrast)
