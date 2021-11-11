@@ -193,7 +193,7 @@ class Image(QImage):
             if (not (0 <= y < self.height())):
                 print("Mark pixels: y out of range")
                 return
-            pixel = Pixel(self.pixel(x, y))
+            
             marked_image.setPixel(x, y, marker_color)
 
         return marked_image
