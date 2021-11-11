@@ -32,7 +32,6 @@ class MainWindow(QMainWindow):
         self.resize(width, height)
         self.move((screen_width - width) / 2, height / 2)
 
-
     def customEvent(self, event: QEvent):
         if isinstance(event, ExecuteCommandEvent):
             event.command.execute(self)

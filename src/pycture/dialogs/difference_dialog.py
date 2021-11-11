@@ -49,7 +49,7 @@ class DifferenceDialog(QDialog):
 
         signal = self.map_of_changes if map_of_changes else self.applied
         signal.emit(image_a, image_b)
-  
+
     def _set_btns_(self):
         layout = QHBoxLayout()
         self.layout().addLayout(layout)
@@ -60,4 +60,5 @@ class DifferenceDialog(QDialog):
 
         map_of_changes_btn = QPushButton("Map of changes", self)
         layout.addWidget(map_of_changes_btn)
-        map_of_changes_btn.pressed.connect(lambda: self._apply_(map_of_changes=True))
+        map_of_changes_btn.pressed.connect(
+            lambda: self._apply_(map_of_changes=True))

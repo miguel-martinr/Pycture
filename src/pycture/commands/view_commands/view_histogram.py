@@ -1,6 +1,6 @@
 from typing import List
 
-from PyQt5.QtWidgets import QWidget, QMainWindow 
+from PyQt5.QtWidgets import QWidget, QMainWindow
 
 import matplotlib.pyplot as plt
 
@@ -21,7 +21,7 @@ class ViewHistogram(Command):
         mean = self.get_mean(image)
 
         self.show_histogram(histogram, mean, title)
-        
+
     def show_histogram(self, histogram: List[int], mean: float, title: str):
         plt.style.use('dark_background')
         new_title = self.get_title(title)
@@ -30,7 +30,6 @@ class ViewHistogram(Command):
         self.draw_histogram(histogram)
         self.write_mean(mean)
         plt.show()
-
 
     def draw_histogram(self, histogram: List[int]):
         bars = plt.bar(list(range(256)), histogram)
@@ -45,7 +44,7 @@ class ViewHistogram(Command):
     def write_mean(self, mean: float):
         plt.axvline(mean)
         plt.title(f"Mean: {mean:.2f}")
-        
+
     def get_title(self, old_title: str):
         return old_title + "." + self.text() + "-hist"
 

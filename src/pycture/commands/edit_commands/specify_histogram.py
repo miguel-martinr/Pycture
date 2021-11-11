@@ -36,12 +36,13 @@ class SpecifyHistogram(Command):
 
         self.main_window.add_editor(new_image, base + "(ModHist)")
 
-    def setup_lut(self, lut: List[int], base: List[float], sample: List[float]):
+    def setup_lut(self, lut: List[int],
+                  base: List[float], sample: List[float]):
         sample_index = 0
         for index, val in enumerate(base):
             while sample_index < 255 and base[index] > sample[sample_index]:
                 sample_index += 1
             if (sample_index < 255 and sample[sample_index] - base[index] >
-                abs(base[index] - sample[sample_index - 1])):
+                    abs(base[index] - sample[sample_index - 1])):
                 sample_index -= 1
             lut[index] = sample_index

@@ -13,7 +13,7 @@ class GammaCorrection(Command):
         return b
 
     def get_LUTs(self, gamma_value):
-          # map a (Vin) in [0, 1]
+        # map a (Vin) in [0, 1]
         A = [a / 255 for a in range(256)]
 
         # apply gamma function
@@ -39,7 +39,7 @@ class GammaCorrection(Command):
 
         # apply gamma function
         B = [self.gamma(a, gamma_value) for a in A]
-        
+
         plt.style.use('dark_background')
         plt.clf()
         plt.interactive(True)
@@ -48,7 +48,6 @@ class GammaCorrection(Command):
         plt.ylabel("b")
         plt.title(f"Gamma correction - {gamma_value}")
         plt.show()
-        
 
     def execute(self, main_window: QMainWindow):
         active_image, title = self.get_active_image_and_title(main_window)

@@ -149,7 +149,8 @@ class Image(QImage):
 
     def get_difference(self, image_b: QImage):
 
-        if (self.height() != image_b.height() or self.width() != image_b.width()):
+        if (self.height() != image_b.height()
+                or self.width() != image_b.width()):
             print("Image difference: Both images must have the same dimensions")
             return
 
@@ -171,7 +172,8 @@ class Image(QImage):
 
         return result
 
-    def mark_pixels(self, pixels_coordinates: [(int, int)], _marker_color: QColor) -> QImage:
+    def mark_pixels(self, pixels_coordinates: [
+                    (int, int)], _marker_color: QColor) -> QImage:
         marked_image = QImage(self.copy())
         marker_color = _marker_color.rgb()
 

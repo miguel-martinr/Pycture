@@ -6,16 +6,16 @@ from PyQt5.QtWidgets import QColorDialog, QDialog, QGridLayout, QLabel, QLineEdi
 from pycture.dialogs.dropdown_list import DropdownList
 from .segments_input import IntValidator
 
+
 class MapOfChangesDialog(QDialog):
-                    #  Treshold    RGB Plane  Marker Color
-    create_map = Signal(int,       int,       QColor)
-    
+    #  Treshold    RGB Plane  Marker Color
+    create_map = Signal(int, int, QColor)
+
     rgb_plane_changed = Signal(int)
 
     def __init__(self, parent: QMainWindow) -> None:
         super().__init__(parent, Qt.WindowType.Window)
         self._setup_()
-        
 
     def _setup_(self):
         self.setWindowTitle("Map of changes")
@@ -28,7 +28,6 @@ class MapOfChangesDialog(QDialog):
         self.setMinimumWidth(maximum_width)
         self.setMaximumWidth(maximum_width)
 
-    
     def _set_inputs_(self):
         layout = QGridLayout()
         self.layout().addLayout(layout)
@@ -43,7 +42,7 @@ class MapOfChangesDialog(QDialog):
 
         marker_color_label = QLabel("Marker color", self)
         layout.addWidget(marker_color_label, 1, 0, Qt.AlignmentFlag.AlignLeft)
-        
+
         self.marker_color = ColorPicker(self, QColor(0x00ff0000))
         layout.addWidget(self.marker_color, 1, 1)
         self.marker_color.setMaximumWidth(self.treshold.width())
@@ -51,11 +50,13 @@ class MapOfChangesDialog(QDialog):
         rgb_dropdown_label = QLabel("RGB plane", self)
         layout.addWidget(rgb_dropdown_label, 2, 0, Qt.AlignmentFlag.AlignLeft)
 
-        self.rgb_dropdown = DropdownList(self, ["Red", "Green", "Blue", "Gray scale"])
-        self.rgb_dropdown.activated.connect(lambda index: self.rgb_plane_changed.emit(index))
+        self.rgb_dropdown = DropdownList(
+            self, ["Red", "Green", "Blue", "Gray scale"])
+        self.rgb_dropdown.activated.connect(
+            lambda index: self.rgb_plane_changed.emit(index))
         self.rgb_dropdown.setCurrentIndex(3)
 
-        layout.addWidget(self.rgb_dropdown, 2,1, Qt.AlignmentFlag.AlignRight)
+        layout.addWidget(self.rgb_dropdown, 2, 1, Qt.AlignmentFlag.AlignRight)
 
     def _set_btn_(self):
         accept_btn = QPushButton("Create map", self)
@@ -70,6 +71,7 @@ class MapOfChangesDialog(QDialog):
         marker_color = self.marker_color.get_color()
         self.create_map.emit(treshold, rgb_plane, marker_color)
 
+
 class ColorPicker(QLabel):
     def __init__(self, parent: QWidget, initial_color: QColor) -> None:
         super().__init__(parent)
@@ -78,7 +80,7 @@ class ColorPicker(QLabel):
 
     def mousePressEvent(self, ev: QtGui.QMouseEvent) -> None:
         self.color_dialog.show()
-    
+
     def _set_color_(self, color: QColor):
         self.color = color
         html_color = self._get_html_color_(color)
@@ -86,15 +88,17 @@ class ColorPicker(QLabel):
 
     def get_color(self):
         return self.color
-    
+
     def _get_html_color_(self, color: QColor = None):
-        if (color == None): color = self.color
+        if (color is None):
+            color = self.color
         html_color = '#' + hex(color.rgb())[2:]
         return html_color
 
     def _set_dialog_(self, initial_color: QColor):
-        self.color_dialog = QColorDialog(QColor(initial_color), self) 
+        self.color_dialog = QColorDialog(QColor(initial_color), self)
         self.color_dialog.setStyleSheet("background-color: black")
         self.color_dialog.setWindowFlags(Qt.WindowType.Window)
 
-        self.color_dialog.colorSelected.connect(lambda color: self._set_color_(color))
+        self.color_dialog.colorSelected.connect(
+            lambda color: self._set_color_(color))
