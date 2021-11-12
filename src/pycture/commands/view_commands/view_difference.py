@@ -78,7 +78,7 @@ class ViewDifference(Command):
         if (self.difference_editor.get_image().load_finished):
             self.map_dialog.rgb_plane_changed.emit(3)  # Gray scale by default
         else:
-            self.difference_editor.get_image().worker.finished.connect(
+            self.difference_editor.get_image().loader.finished.connect(
                 lambda: self.map_dialog.rgb_plane_changed.emit(3))  # Gray scale by default
 
         self.map_dialog.show()
