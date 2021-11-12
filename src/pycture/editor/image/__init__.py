@@ -131,7 +131,7 @@ class Image(QImage):
     def apply_LUTs(self, luts: (List[int], List[int], List[int])) -> QImage:
 
         for lut in luts:
-            if (len(lut) != 256):
+            if lut is not None and len(lut) != 256:
                 print("LUT length must be 256")
                 return
         image = QImage(self.copy(0, 0, self.width(), self.height()))
@@ -140,12 +140,11 @@ class Image(QImage):
         pixels = image.constBits().asstring(size * 4)
         get_qpoint = lambda i: QPoint(i % self.width(), i // self.width())
         for i in range(size):
-            i_ = i * 4
-            
-            color_bytes = pixels[i_:i_+3]
-            color_ints = [int.from_bytes(color_bytes[j:j+1], 'big') for j in range(3)]
+            color_bytes = pixels[i * 4:i * 4 + 3]
+            color_ints = [int.from_bytes(color_bytes[j:j + 1], 'big') for j in range(3)]
             rgb_values = get_rgb(color_ints)
 
+            new_pixel = int.from_bytes([255, *rgb_values], 'big')
             for color in RGBColor:
                 lut = luts[color.value]
                 if lut is None:

@@ -1,8 +1,8 @@
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QMainWindow, QPushButton, QLabel
 from PyQt5.QtCore import Qt, Signal
 
-from .rgb_checkboxes import RGBCheckboxes
-from .dropdown_list import DropdownList
+from .widgets import RGBCheckboxes
+from .widgets import DropdownList
 from pycture.dialogs import Notification
 
 

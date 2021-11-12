@@ -3,9 +3,12 @@ from typing import List
 from PyQt5.QtWidgets import QWidget, QMainWindow
 
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 
 from ..command import Command
 from pycture.editor.image import Color, Image
+from pycture.dialogs import PlotWindow
 
 
 class ViewHistogram(Command):
@@ -20,16 +23,18 @@ class ViewHistogram(Command):
         histogram = self.get_histogram(image)
         mean = self.get_mean(image)
 
-        self.show_histogram(histogram, mean, title)
-
-    def show_histogram(self, histogram: List[int], mean: float, title: str):
-        plt.style.use('dark_background')
         new_title = self.get_title(title)
-        plt.figure(new_title)
-        plt.title(new_title)
+        figure = self.get_histogram_figure(histogram, mean, new_title)
+        PlotWindow(main_window, FigureCanvasQTAgg(figure), new_title)
+
+    def get_histogram_figure(
+            self, histogram: List[int], mean: float, title: str) -> Figure:
+        plt.style.use('dark_background')
+        figure = plt.figure(title)
+        plt.title(title)
         self.draw_histogram(histogram)
         self.write_mean(mean)
-        plt.show()
+        return figure
 
     def draw_histogram(self, histogram: List[int]):
         bars = plt.bar(list(range(256)), histogram)
