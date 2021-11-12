@@ -1,13 +1,11 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QColor, QImage
-from pycture.dialogs.map_of_changes_dialog import MapOfChangesDialog
 
-from pycture.dialogs.difference_dialog import DifferenceDialog
-from pycture.dialogs.notification import Notification
+from pycture.dialogs import Notification, DifferenceDialog, MapOfChangesDialog
 from pycture.editor.image import Image
 from pycture.editor.image.color import Color, RGBColor
 from ..command import Command
-from ...editor import Editor
+from pycture.editor import Editor
 from .view_histogram import ViewHistogram, ViewRedHistogram, ViewGreenHistogram, ViewBlueHistogram, ViewGrayScaleHistogram
 
 

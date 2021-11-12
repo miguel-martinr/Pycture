@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow, QWidget
 import matplotlib.pyplot as plt
-from pycture.dialogs.gamma_correction_dialog import GammaCorrectionDialog
+from pycture.dialogs import GammaCorrectionDialog
 from ..command import Command
 
 

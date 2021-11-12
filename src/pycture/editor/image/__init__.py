@@ -157,7 +157,6 @@ class Image(QImage):
         return image
 
     def get_difference(self, image_b: QImage):
-
         if (self.height() != image_b.height()
                 or self.width() != image_b.width()):
             print("Image difference: Both images must have the same dimensions")

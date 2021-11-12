@@ -1,9 +1,9 @@
 from PyQt5.QtCore import Qt, Signal
 from PyQt5.QtWidgets import QDialog, QHBoxLayout, QLabel, QMainWindow, QPushButton, QVBoxLayout
-from pycture.dialogs import Notification
 
 from pycture.dialogs.widgets import DropdownList
-from pycture.dialogs.map_of_changes_dialog import MapOfChangesDialog
+from .map_of_changes_dialog import MapOfChangesDialog
+from .notification import Notification
 
 
 class DifferenceDialog(QDialog):
