@@ -1,7 +1,7 @@
 from math import sqrt
 from typing import Tuple
 from PyQt5.QtWidgets import QWidget, QMainWindow
-from pycture.dialogs.edit_brightness_and_contrast import EditBrightnessAndContrastDialog
+from pycture.dialogs import EditBrightnessAndContrastDialog
 from pycture.editor.image import Image
 from pycture.editor.image.color import Color
 from ..command import Command

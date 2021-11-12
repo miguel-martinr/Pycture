@@ -3,7 +3,7 @@ from typing import List, Tuple
 from functools import reduce
 
 from PyQt5.QtGui import QColor, QImage, QPixmap
-from PyQt5.QtCore import QPoint, QThread, QSize
+from PyQt5.QtCore import QPoint, QThread, QSize, Signal
 
 from .image_loader import ImageLoader
 from .color import Color, RGBColor, GrayScaleLUT
@@ -23,18 +23,21 @@ class Image(QImage):
 
     def setup_image_data(self):
         self.thread = QThread()
-        self.worker = ImageLoader(self)
-        self.worker.moveToThread(self.thread)
-        self.thread.started.connect(self.worker.run)
-        self.worker.finished.connect(self.thread.quit)
+        self.loader = ImageLoader(self)
+        self.loader.moveToThread(self.thread)
 
-        self.worker.finished.connect(self.print_time)
-
-        self.worker.finished.connect(self.worker.deleteLater)
+        self.thread.started.connect(self.loader.run)
+        self.loader.finished.connect(self.print_time)
+        self.loader.finished.connect(self.thread.quit)
+        self.loader.finished.connect(self.loader.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
 
         self.then = datetime.now()
-
+        
+    # This function needs to be separated to allow other elements
+    # to connect signals to ImageLoader's slots. Trying to connect
+    # the signal after the thread has started is unsafe
+    def start_load(self):
         self.thread.start()
 
     def print_time(self):
@@ -157,7 +160,6 @@ class Image(QImage):
         return image
 
     def get_difference(self, image_b: QImage):
-
         if (self.height() != image_b.height()
                 or self.width() != image_b.width()):
             print("Image difference: Both images must have the same dimensions")

@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QWidget, QFileDialog, QMainWindow
 from PyQt5.QtGui import QPixmap
 
 from .command import Command
-from ..dialogs import Notification
+from pycture.dialogs import Notification
 
 
 class OpenFile(Command):

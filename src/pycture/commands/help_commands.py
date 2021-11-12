@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QMainWindow
 
 from .command import Command
-from ..dialogs import Notification
+from pycture.dialogs import Notification
 
 HELP_MESSAGE = """
 • You can apply different operations to the selected editor with the menus in the top bar.

@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QAction, QWidget, QMainWindow
 from PyQt5.QtCore import QCoreApplication
-from pycture.dialogs.notification import Notification
+from pycture.dialogs import Notification
 
 from pycture.editor.image import Image
 
