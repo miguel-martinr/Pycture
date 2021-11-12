@@ -12,6 +12,7 @@ from .widgets import RGBCheckboxes, PointsInput, CustomIntValidator
 class SegmentsInput(QDialog):
     previewed = Signal(list) # list of points
     applied = Signal(list, tuple) # list of points and color options
+    # It is guaranteed that there will be at least two points
 
     def __init__(self, parent: QMainWindow):
         super().__init__(parent, Qt.WindowType.Window)
@@ -31,7 +32,7 @@ class SegmentsInput(QDialog):
     def setup_point_input(self):
         self.layout.addWidget(QLabel("Number of segments:", self))
         self.number_of_points_input = QLineEdit("1", self)
-        self.number_of_points_input.setValidator(CustomIntValidator(1, 254))
+        self.number_of_points_input.setValidator(CustomIntValidator(1, 25))
         self.layout.addWidget(self.number_of_points_input)
         accept_button = QPushButton("Accept", self)
         self.layout.addWidget(accept_button)
@@ -59,20 +60,20 @@ class SegmentsInput(QDialog):
 
     def emit_previewed(self):
         points = self.get_points()
-        if points is None:
-            Notification(self, "The x coordinates of the points must be monotonically increasing")
-        else:
+        if points is not None:
             self.previewed.emit(points)
 
     def emit_applied(self):
         points = self.get_points()
-        color_options = self.checkboxes.get_checked()
-        self.applied.emit((points, color_options))
+        if points is not None:
+            color_options = self.checkboxes.get_checked()
+            self.applied.emit(points, color_options)
 
     def get_points(self):
         points = self.points_input.get_points() 
         if self.check_points_integrity(points):
             return points
+        Notification(self, "The x coordinates of the points must be monotonically increasing")
 
     def check_points_integrity(self, points):
         points_x = list(map(lambda point: point[0], self.points_input.get_points()))        
