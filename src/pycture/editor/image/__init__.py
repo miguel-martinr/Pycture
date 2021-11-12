@@ -23,14 +23,14 @@ class Image(QImage):
 
     def setup_image_data(self):
         self.thread = QThread()
-        self.worker = ImageLoader(self)
-        self.worker.moveToThread(self.thread)
-        self.thread.started.connect(self.worker.run)
-        self.worker.finished.connect(self.thread.quit)
+        self.loader = ImageLoader(self)
+        self.loader.moveToThread(self.thread)
+        self.thread.started.connect(self.loader.run)
+        self.loader.finished.connect(self.thread.quit)
 
-        self.worker.finished.connect(self.print_time)
+        self.loader.finished.connect(self.print_time)
 
-        self.worker.finished.connect(self.worker.deleteLater)
+        self.loader.finished.connect(self.loader.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
 
         self.then = datetime.now()

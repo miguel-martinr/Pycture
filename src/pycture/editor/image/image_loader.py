@@ -6,10 +6,12 @@ from .get_rgb import get_rgb
 
 class ImageLoader(QObject):
     finished = Signal()
+    progress = Signal(int) # number between 0 and 100
 
     def __init__(self, image):
         super().__init__()
         self.image = image
+        self.current_progress = 0
 
     def run(self):
         image: QImage = self.image
@@ -20,12 +22,11 @@ class ImageLoader(QObject):
 
         pixels = image.constBits().asstring(size * 4)
   
-
-              
         for i in range(size):
-            i_ = i * 4
-
-            color_bytes = pixels[i_:i_ + 3]
+            if i * 100 / size > self.current_progress:
+                self.current_progress += 1
+                self.progress.emit(self.current_progress)
+            color_bytes = pixels[i * 4:i * 4 + 3]
             color_ints = [int.from_bytes(
                 color_bytes[j:j + 1], 'big') for j in range(3)
             ]
