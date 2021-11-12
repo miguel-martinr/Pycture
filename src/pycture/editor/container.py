@@ -16,11 +16,12 @@ class Container(QWidget):
         self.setLayout(self.layout)
 
         self.setup_scroll_area(image)
+        self.get_image().loader.progress.connect(self.update_progress_bar)
+        self.get_image().start_load()
         self.data_bar = DataBar(self)
         self.layout.addWidget(self.data_bar)
         self.progress_bar = None
 
-        self.get_image().loader.progress.connect(self.update_progress_bar)
         self.image_holder.mouse_position_updated.connect(
             self.data_bar.update_data
         )

@@ -3,7 +3,7 @@ from typing import List, Tuple
 from functools import reduce
 
 from PyQt5.QtGui import QColor, QImage, QPixmap
-from PyQt5.QtCore import QPoint, QThread, QSize
+from PyQt5.QtCore import QPoint, QThread, QSize, Signal
 
 from .image_loader import ImageLoader
 from .color import Color, RGBColor, GrayScaleLUT
@@ -25,16 +25,19 @@ class Image(QImage):
         self.thread = QThread()
         self.loader = ImageLoader(self)
         self.loader.moveToThread(self.thread)
+
         self.thread.started.connect(self.loader.run)
-        self.loader.finished.connect(self.thread.quit)
-
         self.loader.finished.connect(self.print_time)
-
+        self.loader.finished.connect(self.thread.quit)
         self.loader.finished.connect(self.loader.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
 
         self.then = datetime.now()
-
+        
+    # This function needs to be separated to allow other elements
+    # to connect signals to ImageLoader's slots. Trying to connect
+    # the signal after the thread has started is unsafe
+    def start_load(self):
         self.thread.start()
 
     def print_time(self):
