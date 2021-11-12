@@ -1,12 +1,9 @@
-from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QWidget, QMainWindow
 
 from typing import List, Tuple
 from matplotlib import pyplot as plt
-from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 
-from pycture.editor.image import Color
 from pycture.dialogs import SegmentsInput, PlotWindow
 from ..command import Command
 
@@ -78,7 +75,7 @@ class TransformByLinearSegments(Command):
         lut = list(range(256))
         point_index = 1
         line_equation = self.get_equation(points[0], points[1])
-        for x in range(points[0][0], points[-1][0]):
+        for x in range(points[0][0], points[-1][0] + 1):
             if x > points[point_index][0]:
                 line_equation = self.get_equation(points[point_index], points[point_index + 1])
                 point_index += 1
