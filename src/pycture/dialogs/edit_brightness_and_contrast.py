@@ -3,7 +3,7 @@ from typing import Tuple
 from PyQt5.QtCore import QLine, Qt
 from PyQt5.QtWidgets import QCheckBox, QDialog, QGridLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QSlider
 from PyQt5.QtCore import Qt, Signal
-
+from .widgets import CustomIntValidator
 
 class EditBrightnessAndContrastDialog(QDialog):
     recalculate = Signal(tuple)
@@ -105,7 +105,7 @@ class EditBrightnessAndContrastDialog(QDialog):
         sliders = []
         for i, input in enumerate(inputs):
             slider = QSlider(orientation, self)
-            input.setValidator(IntValidator(0, top_limit))
+            input.setValidator(CustomIntValidator(0, top_limit))
             slider.setMaximum(top_limit)
             slider.setStyleSheet(
                 "QSlider::handle:horizontal {background-color: " + colors[i] + ";}")
