@@ -38,6 +38,8 @@ class TransformByLinearSegments(Command):
         plt.xlabel("Vin")
         plt.ylabel("Vout")
         plt.title(title)
+        plt.xlim(0, 255)
+        plt.ylim(0, 255)
         PlotWindow(main_window, FigureCanvasQTAgg(figure), title)
     
     def plot_changes(self, points: List):
