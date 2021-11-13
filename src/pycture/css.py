@@ -36,3 +36,10 @@ QScrollArea {{
     border: 0px;
 }}
 """
+
+PLOT_TOOLBAR_CSS = f"""
+* {{
+    color: {DARK_WHITE};
+    background: {MEDIUM_GRAY};
+}}
+"""
