@@ -1,90 +1,65 @@
-from PyQt5.QtCore import Qt, Signal
-from PyQt5.QtGui import QDoubleValidator, QValidator
-from PyQt5.QtWidgets import QDialog, QGridLayout, QLineEdit, QMainWindow, QPushButton, QSlider
 import re
+
+from PyQt5.QtCore import Qt, Signal
+from PyQt5.QtWidgets import (
+    QDialog, QHBoxLayout, QVBoxLayout, QLineEdit, QMainWindow, QPushButton, QSlider, QLayout
+)
+
+from .widgets import CustomDoubleValidator
 
 
 class GammaCorrectionDialog(QDialog):
-
     applied = Signal(float)
     plot = Signal(float)
 
-    def __init__(self, parent: QMainWindow, top=20) -> None:
+    def __init__(self, parent: QMainWindow, upper_limit=20) -> None:
         super().__init__(parent, Qt.WindowType.Window)
-        self._setup_(top)
+        self.setWindowTitle("Gamma correction")
+        self.setFixedWidth(300)
+        self.layout = QVBoxLayout()
+        self.layout.setSizeConstraint(QLayout.SetFixedSize)
+        self.setLayout(self.layout)
+
+        self.setup_slider(upper_limit)
+        self.setup_buttons()
         self.show()
 
-    def _setup_(self, top):
-        self.setFixedWidth(300)
-        self.setWindowTitle("Gamma correction")
-        layout = QGridLayout()
-        self.setLayout(layout)
 
-        self._set_inputs_(top)
-        self._set_buttons_()
-        pass
+    def setup_slider(self, upper_limit):
+        layout = QHBoxLayout()
+        self.layout.addLayout(layout)
 
-    def _set_inputs_(self, top):
-        layout = QGridLayout()
-        self.layout().addLayout(layout, 0, 0)
+        self.slider = QSlider(Qt.Orientation.Horizontal, self)
+        self.slider.setMaximum(upper_limit / 0.02)
+        layout.addWidget(self.slider)
 
-        self._slider_ = QSlider(Qt.Orientation.Horizontal, self)
-        self._slider_.setMaximum(top / 0.02)
-        layout.addWidget(self._slider_, 0, 0, Qt.AlignmentFlag.AlignCenter)
+        self.numeric_input = QLineEdit("0.5", self)
+        self.numeric_input.setFixedWidth(40)
+        self.numeric_input.setValidator(CustomDoubleValidator(0, upper_limit, 2))
+        layout.addWidget(self.numeric_input)
 
-        self._numeric_input_ = QLineEdit("0.5", self)
-        self._numeric_input_.setFixedWidth(40)
-        self._numeric_input_.setValidator(DoubleValidator(0, top, 2))
-        layout.addWidget(self._numeric_input_, 0, 1,
-                         Qt.AlignmentFlag.AlignCenter)
-
-        self._slider_.sliderMoved.connect(
-            lambda value: self._numeric_input_.setText(f"{(value * 0.02):.2f}"))
-        self._numeric_input_.textEdited.connect(
-            lambda text: self._slider_.setValue(
+        self.slider.sliderMoved.connect(
+            lambda value: self.numeric_input.setText(f"{(value * 0.02):.2f}"))
+        self.numeric_input.textEdited.connect(
+            lambda text: self.slider.setValue(
                 round(
-                    self._to_double_(text) /
+                    self.text_to_double(text) /
                     0.02)))
 
-    def _set_buttons_(self):
-        layout = QGridLayout()
-        self.layout().addLayout(layout, 1, 0)
+    def setup_buttons(self):
+        layout = QHBoxLayout()
+        self.layout.addLayout(layout)
 
-        accept_btn = QPushButton("Apply", self)
-        accept_btn.clicked.connect(lambda: self.applied.emit(self.get_gamma()))
-        layout.addWidget(accept_btn, 0, 0, Qt.AlignmentFlag.AlignCenter)
+        accept_button = QPushButton("Apply", self)
+        accept_button.clicked.connect(lambda: self.applied.emit(self.get_gamma()))
+        layout.addWidget(accept_button)
 
-        plot_btn = QPushButton("Plot", self)
-        plot_btn.clicked.connect(lambda: self.plot.emit(self.get_gamma()))
-        layout.addWidget(plot_btn, 0, 1, Qt.AlignmentFlag.AlignCenter)
+        plot_button = QPushButton("Plot", self)
+        plot_button.clicked.connect(lambda: self.plot.emit(self.get_gamma()))
+        layout.addWidget(plot_button)
 
     def get_gamma(self):
-        return self._to_double_(self._numeric_input_.text())
+        return self.text_to_double(self.numeric_input.text())
 
-    def _to_double_(self, text):
+    def text_to_double(self, text):
         return 0.0 if text == "" else float(text)
-
-
-class DoubleValidator(QDoubleValidator):
-    def __init__(self, bottom: int, top: int, decimals: int):
-        super().__init__()
-        self.bottom = bottom
-        self.top = top
-        self.decimals = decimals
-
-    def validate(self, input: str, pos: int):
-        State = QValidator.State
-
-        if (input == ""):
-            return State.Intermediate, input, pos
-
-        if (input[-1] == ','):
-            return State.Invalid, input, pos
-
-        matched_float = re.match('^\\d+(\\.)?(\\d{1,2})?$', input)
-        if (not matched_float):
-            return State.Invalid, input, pos
-
-        if (not (self.bottom <= float(input) <= self.top)):
-            return State.Invalid, input, pos
-        return State.Acceptable, input, pos
