@@ -52,8 +52,6 @@ class ViewDifference(Command):
                 self.difference_editor.windowTitle())
             self.active_histogram.execute(self.main_window)
         except KeyError as _:
-            # Notification(self.main_window, "No difference image found")
-            # return
             self._show_difference_(
                 self.image_a_editor.windowTitle(), self.image_b_editor.windowTitle())
 
@@ -69,13 +67,7 @@ class ViewDifference(Command):
         ).get_pixels_coordinates(treshold, plane)
 
         map_of_changes = self.image_a_editor.get_image().mark_pixels(
-            marked_pixels_coordinates, marker_color)
-
-        # try:
-        #     pass
-        # except:
-        #     pass
-        
+            marked_pixels_coordinates, marker_color)        
         
         self.main_window.add_editor(
             map_of_changes, f"Map of changes ({self.image_a_editor.windowTitle()} - {self.image_b_editor.windowTitle()})")
