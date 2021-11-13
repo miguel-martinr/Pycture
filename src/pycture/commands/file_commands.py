@@ -13,7 +13,7 @@ class OpenFile(Command):
 
     def execute(self, main_window: QMainWindow):
         file_path, _ = QFileDialog.getOpenFileName(
-            None, "Open an image", "/home", "Images (*.png *.jpg *.jpeg *.bmp)")
+            None, "Open an image", "/home", "Images (*.png *.jpg *.jpeg *.bmp *tif)")
         if not file_path:
             return
         (_, filename) = path.split(file_path)
@@ -29,13 +29,13 @@ class SaveFile(Command):
         if image is None:
             return
         file_path, _ = QFileDialog.getSaveFileName(
-            None, "Save an image", "/home", "Images (*.png *.jpg *.jpeg *.bmp)")
+            None, "Save an image", "/home", "Images (*.png *.jpg *.jpeg *.bmp *.tif)")
         if not file_path:
             return
         _, extension = path.splitext(file_path)
         if not extension:
             extension = ".png"
-        elif extension not in [".png", ".jpg", ".jpeg", ".bmp"]:
+        elif extension not in [".png", ".jpg", ".jpeg", ".bmp", ".tif"]:
             Notification(
                 main_window,
                 "Supported extensions are .png, .jpg, .jpeg and .bmp")
