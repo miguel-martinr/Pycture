@@ -15,6 +15,7 @@ class RGBSliders(QWidget):
 
         self.number_inputs = []
         self.sliders = []
+        self.gray = False
         
         for color in ["#ff0000", "#00ff00", "#0000ff"]:
             self.add_color_input(color)
@@ -30,6 +31,7 @@ class RGBSliders(QWidget):
         )
 
         slider.valueChanged.connect(lambda value: number_input.setText(str(value)))
+        slider.valueChanged.connect(self.update_all_if_gray)
         text_value_to_int = lambda text: 0 if text == "" else int(text)
         number_input.textChanged.connect(
             lambda text: slider.setValue(text_value_to_int(text))
@@ -39,10 +41,21 @@ class RGBSliders(QWidget):
         self.number_inputs.append(number_input)
         self.layout.addWidget(slider)
         self.layout.addWidget(number_input)
+    
+    def update_all_if_gray(self, value: int):
+        if self.gray:
+            for slider in self.sliders:
+                slider.setValue(value)
             
     def set_values(self, values: (int, int, int)):
         for index, slider in enumerate(self.sliders):
             slider.setValue(values[index])
 
     def get_values(self) -> (int, int, int):
-        return tuple(map(lambda number_input: int(number_input.text())))
+        return tuple(map(
+            lambda number_input: int(number_input.text()),
+            self.number_inputs
+        ))
+    
+    def toggle_gray(self, gray: bool):
+        self.gray = gray

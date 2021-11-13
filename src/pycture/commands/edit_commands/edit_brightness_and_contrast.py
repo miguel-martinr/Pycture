@@ -42,23 +42,23 @@ class EditBrightnessAndContrast(Command):
                     dialog: EditBrightnessAndContrastDialog, active_image: Image):
         brightness = list(brightness)
         contrast = list(contrast)
-        for i in range(4):
-            if (brightness[i][0] == brightness[i][1]
-                    and contrast[i][0] == contrast[i][1]):
-                brightness[i] = brightness[i][0]
-                contrast[i] = contrast[i][0]
-                continue
-            lut = self.get_LUT(brightness[i], contrast[i])
-            histogram = active_image.get_histogram(Color._value2member_map_[i])
-            updated_histogram = [0] * 256
+        # for i in range(4):
+        #     if (brightness[i][0] == brightness[i][1]
+        #             and contrast[i][0] == contrast[i][1]):
+        #         brightness[i] = brightness[i][0]
+        #         contrast[i] = contrast[i][0]
+        #         continue
+        #     lut = self.get_LUT(brightness[i], contrast[i])
+        #     histogram = active_image.get_histogram(Color._value2member_map_[i])
+        #     updated_histogram = [0] * 256
 
-            for j, v in enumerate(histogram):
-                updated_histogram[lut[j]] += v
+        #     for j, v in enumerate(histogram):
+        #         updated_histogram[lut[j]] += v
 
-            brightness[i] = round(self._get_mean_(updated_histogram))
-            contrast[i] = round(self._get_sd_(updated_histogram))
+        #     brightness[i] = round(self._get_mean_(updated_histogram))
+        #     contrast[i] = round(self._get_sd_(updated_histogram))
 
-        dialog.update_values(brightness, contrast)
+        # dialog.update_values(brightness, contrast)
 
     def _get_mean_(self, histogram):
         mean = sum([histogram[i] * i for i in range(len(histogram))])
