@@ -44,7 +44,7 @@ class GammaCorrectionDialog(QDialog):
         self.numeric_input.setValidator(CustomDoubleValidator(0, self.slider_limit, 4))
         layout.addWidget(self.numeric_input)
 
-        self.slider.sliderMoved.connect(self.update_text_value)
+        self.slider.valueChanged.connect(self.update_text_value)
         self.numeric_input.textEdited.connect(self.update_slider_value)
             
     # These changes are needed to smooth the values in the slider
