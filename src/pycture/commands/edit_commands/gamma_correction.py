@@ -1,6 +1,8 @@
 from PyQt5.QtWidgets import QMainWindow, QWidget
+
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 import matplotlib.pyplot as plt
+
 from pycture.dialogs import GammaCorrectionDialog
 from pycture.dialogs.plot_window import PlotWindow
 from ..command import Command
@@ -10,54 +12,55 @@ class GammaCorrection(Command):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Gamma correction")
 
-    def gamma(self, a, gamma_value):
-        b = a ** gamma_value
-        return b
+    def execute(self, main_window: QMainWindow):
+        dialog = GammaCorrectionDialog(main_window)
+        dialog.plot.connect(
+            lambda gamma_value: self.plot(main_window, gamma_value)
+        )
+        dialog.applied.connect(lambda gamma_value, color_options:
+            self.apply(main_window, gamma_value, color_options)
+        )
 
-    def get_LUTs(self, gamma_value):
-        # map a (Vin) in [0, 1]
-        A = [a / 255 for a in range(256)]
-
-        # apply gamma function
-        B = [self.gamma(a, gamma_value) for a in A]
-
-        # map b (Vout) in [0, 255]
-        luts = [[round(b * 255) for b in B]] * 3
-        return luts
-
-    def apply(self, gamma_value, main_window):
-        active_image, title = self.get_active_image_and_title(main_window)
-        if (not active_image):
-            return
-
-        luts = self.get_LUTs(gamma_value)
-        new_image = active_image.apply_LUTs(luts)
-        main_window.add_editor(
-            new_image, title + f" (Gamma corrected - {gamma_value})")
-
-    def plot(self, gamma_value, main_window):
-        # map a (Vin) in [0, 1]
-        A = [a / 255 for a in range(256)]
-
-        # apply gamma function
-        B = [self.gamma(a, gamma_value) for a in A]
+    def plot(self, main_window: QMainWindow, gamma_value: int):
+        # put 256 values in the x axis between 0 and 1
+        x_values = [x / 255 for x in range(256)]
+        # get the equivalent y with the respective gamma function
+        y_values = [self.gamma(x, gamma_value) for x in x_values]
 
         plt.style.use('dark_background')
         title = f"Gamma correction - {gamma_value}"
-        figure = plt.figure(title)
-        plt.plot(A, B)
-        plt.xlabel("a")
-        plt.ylabel("b")
+        figure = plt.figure()
+        plt.plot(x_values, y_values)
+        plt.xlabel("Vin")
+        plt.ylabel("Vout")
         PlotWindow(main_window, FigureCanvasQTAgg(figure), title)
-        
 
-    def execute(self, main_window: QMainWindow):
-        active_image, title = self.get_active_image_and_title(main_window)
-        if (not active_image):
+    def apply(self, main_window: QMainWindow, gamma_value: int, color_options: (int, int, int)):
+        image, title = self.get_active_image_and_title(main_window)
+        if image is None:
             return
 
-        dialog = GammaCorrectionDialog(main_window)
-        dialog.applied.connect(
-            lambda gamma_value: self.apply(gamma_value, main_window))
-        dialog.plot.connect(
-            lambda gamma_value: self.plot(gamma_value, main_window))
+        lut = self.get_LUT(gamma_value)
+        lut_or_none = lambda condition: lut if condition else None
+        new_image = image.apply_LUTs((
+            lut_or_none(color_options[0]),
+            lut_or_none(color_options[1]),
+            lut_or_none(color_options[2])
+        ))
+        main_window.add_editor(
+            new_image, title + f" (Gamma corrected - {gamma_value})"
+        )
+
+    def get_LUT(self, gamma_value: int):
+        # put 256 values in the x axis between 0 and 1
+        x_values = [x / 255 for x in range(256)]
+        # get the equivalent y with the respective gamma function
+        y_values = [self.gamma(x, gamma_value) for x in x_values]
+
+        # map the y values to the interval [0. 255]
+        lut = [round(y * 255) for y in y_values]
+        return lut
+
+    def gamma(self, x, gamma_value):
+        y = x ** gamma_value
+        return y

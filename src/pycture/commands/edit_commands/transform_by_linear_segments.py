@@ -62,13 +62,12 @@ class TransformByLinearSegments(Command):
 
         lut = self.get_LUT(segments)
 
-        def lut_or_none(condition): return lut if condition else None
-        luts = (
+        lut_or_none = lambda condition: lut if condition else None
+        transformed_image = image.apply_LUTs((
             lut_or_none(options[0]),
             lut_or_none(options[1]),
             lut_or_none(options[2])
-        )
-        transformed_image = image.apply_LUTs(luts)
+        ))
         main_window.add_editor(transformed_image, title + "-LT")
 
     def get_LUT(self, points: List):
