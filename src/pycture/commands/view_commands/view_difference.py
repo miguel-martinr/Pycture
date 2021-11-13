@@ -67,10 +67,30 @@ class ViewDifference(Command):
         ).get_pixels_coordinates(treshold, plane)
 
         map_of_changes = self.image_a_editor.get_image().mark_pixels(
-            marked_pixels_coordinates, marker_color)        
+            marked_pixels_coordinates, marker_color)
+
+        try:
+            difference_editor: Editor = self.main_window.get_editor(self.difference_editor.windowTitle())            
+        except KeyError:
+            self._show_difference_(self.image_a_editor.windowTitle(), self.image_b_editor.windowTitle())
+            difference_editor: Editor = self.main_window.get_editor(self.difference_editor.windowTitle())
+            
+        pixels_to_mark = difference_editor.get_image().get_pixels_coordinates(treshold, plane)
+        marked_image = difference_editor.get_image().mark_pixels(pixels_to_mark, marker_color)
         
-        self.main_window.add_editor(
-            map_of_changes, f"Map of changes ({self.image_a_editor.windowTitle()} - {self.image_b_editor.windowTitle()})")
+        marked_image_title = f"Map of changes ({self.image_a_editor.windowTitle()} - {self.image_b_editor.windowTitle()})"
+        
+        
+        try:
+            marked_editor = self.marked_editor
+            marked_editor.set_image(marked_image)
+        except AttributeError:
+            self.main_window.add_editor(marked_image, marked_image_title)
+            self.marked_editor = self.main_window.get_editor(marked_image_title)
+            
+        
+        # self.main_window.add_editor(
+        #     map_of_changes, marked_editor_title)
 
     def _trigger_map_of_changes_(self, image_a_title, image_b_title):
         self.map_dialog = MapOfChangesDialog(self.main_window)
