@@ -18,14 +18,14 @@ class ViewDifference(Command):
 
     def _show_difference_(self, image_a_title, image_b_title):
 
-        self.image_a_editor = editor_a = self.main_window.get_editor(
+        self.image_a_editor: Editor = self.main_window.get_editor(
             image_a_title)
 
-        self.image_b_editor = editor_b = self.main_window.get_editor(
+        self.image_b_editor: Editor = self.main_window.get_editor(
             image_b_title)
 
-        image_a = editor_a.get_image()
-        image_b = editor_b.get_image()
+        image_a = self.image_a_editor.get_image()
+        image_b = self.image_b_editor.get_image()
 
         if (image_a.height() != image_b.height()
                 or image_a.width() != image_b.width()):
@@ -50,11 +50,16 @@ class ViewDifference(Command):
         try:
             self.main_window.set_active_editor(
                 self.difference_editor.windowTitle())
+            self.active_histogram.execute(self.main_window)
         except KeyError as _:
-            Notification(self.main_window, "No difference image found")
-            return
-
-        self.active_histogram.execute(self.main_window)
+            # Notification(self.main_window, "No difference image found")
+            # return
+            self._show_difference_(
+                self.image_a_editor.windowTitle(), self.image_b_editor.windowTitle())
+            
+            self.difference_editor.get_image().loader.finished.connect(lambda: self.active_histogram.execute(self.main_window))
+            self.main_window.set_active_editor(
+                self.difference_editor.windowTitle())
 
     def mark_map_of_changes(self, treshold: int,
                             plane: Color, marker_color: QColor):
