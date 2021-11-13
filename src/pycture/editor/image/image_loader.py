@@ -23,8 +23,9 @@ class ImageLoader(QObject):
         pixels = image.constBits().asstring(size * 4)
   
         for i in range(size):
-            if i * 100 / size > self.current_progress:
-                self.current_progress += 1
+            progress_percentage = (i + 1) * 100 / size
+            if progress_percentage > self.current_progress:
+                self.current_progress = round(progress_percentage)
                 self.progress.emit(self.current_progress)
             color_bytes = pixels[i * 4:i * 4 + 3]
             color_ints = [int.from_bytes(
