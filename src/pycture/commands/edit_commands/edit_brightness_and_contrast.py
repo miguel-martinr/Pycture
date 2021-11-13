@@ -75,11 +75,11 @@ class EditBrightnessAndContrast(Command):
                 dialog: EditBrightnessAndContrastDialog, main_window: QMainWindow):
         brightness = list(brightness)
         contrast = list(contrast)
-        img, title = self.get_active_image_and_title(main_window)
-        if (not img):
+        image, title = self.get_active_image_and_title(main_window)
+        if image is None:
             return
 
-        self.recalculate(brightness, contrast, dialog, img)
+        self.recalculate(brightness, contrast, dialog, image)
         luts = [list(range(256)), list(range(256)), list(range(256))]
         for i in range(3):
             if (brightness[i][0] == brightness[i][1]
@@ -88,9 +88,9 @@ class EditBrightnessAndContrast(Command):
             lut = self.get_LUT(brightness[i], contrast[i])
             luts[i] = lut
 
-        img = img.apply_LUTs(tuple(luts))
+        image = image.apply_LUTs(tuple(luts))
 
-        main_window.add_editor(img, title + "-BrCt Edited")
+        main_window.add_editor(image, title + "-BrCt Edited")
 
     def execute(self, main_window: QMainWindow):
         active_image, _ = self.get_active_image_and_title(main_window)
