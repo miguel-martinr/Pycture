@@ -14,13 +14,11 @@ QDockWidget::title {{
 }}
 """
 
-
 class Editor(QDockWidget):
     def __init__(self, parent: QWidget, image: QImage, image_name: str):
         super().__init__(parent)
         self.setWindowTitle(image_name)
-        self.setWidget(Container(self, image))
-
+        self.set_image(image)
         self.setAllowedAreas(Qt.DockWidgetArea.AllDockWidgetAreas)
         parent.addDockWidget(Qt.DockWidgetArea.TopDockWidgetArea, self)
         self.active = False
@@ -63,3 +61,11 @@ class Editor(QDockWidget):
 
     def is_fully_loaded(self):
         return self.get_image().load_finished
+      
+    def set_image(self, image: QImage):
+        current_container: Container = self.widget()
+        
+        if current_container:
+            current_container.deleteLater()
+        
+        self.setWidget(Container(self, image))

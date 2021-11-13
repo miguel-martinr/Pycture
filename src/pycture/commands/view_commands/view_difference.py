@@ -56,17 +56,27 @@ class ViewDifference(Command):
             # return
             self._show_difference_(
                 self.image_a_editor.windowTitle(), self.image_b_editor.windowTitle())
-            
-            self.difference_editor.get_image().loader.finished.connect(lambda: self.active_histogram.execute(self.main_window))
+
+            self.difference_editor.get_image().loader.finished.connect(
+                lambda: self.active_histogram.execute(self.main_window))
             self.main_window.set_active_editor(
                 self.difference_editor.windowTitle())
 
     def mark_map_of_changes(self, treshold: int,
                             plane: Color, marker_color: QColor):
+
         marked_pixels_coordinates = self.difference_editor.get_image(
         ).get_pixels_coordinates(treshold, plane)
+
         map_of_changes = self.image_a_editor.get_image().mark_pixels(
             marked_pixels_coordinates, marker_color)
+
+        # try:
+        #     pass
+        # except:
+        #     pass
+        
+        
         self.main_window.add_editor(
             map_of_changes, f"Map of changes ({self.image_a_editor.windowTitle()} - {self.image_b_editor.windowTitle()})")
 
