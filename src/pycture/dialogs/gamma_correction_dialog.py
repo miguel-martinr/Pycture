@@ -12,39 +12,50 @@ class GammaCorrectionDialog(QDialog):
     applied = Signal(float)
     plot = Signal(float)
 
-    def __init__(self, parent: QMainWindow, upper_limit=20) -> None:
+    # Slider limit should never be less than or equal to 0
+    def __init__(self, parent: QMainWindow, slider_limit: int = 30) -> None:
         super().__init__(parent, Qt.WindowType.Window)
         self.setWindowTitle("Gamma correction")
-        self.setFixedWidth(300)
         self.layout = QVBoxLayout()
         self.layout.setSizeConstraint(QLayout.SetFixedSize)
         self.setLayout(self.layout)
 
-        self.setup_slider(upper_limit)
+        self.slider_limit = slider_limit
+        self.setup_slider()
         self.setup_buttons()
         self.show()
 
-
-    def setup_slider(self, upper_limit):
+    def setup_slider(self):
         layout = QHBoxLayout()
         self.layout.addLayout(layout)
 
         self.slider = QSlider(Qt.Orientation.Horizontal, self)
-        self.slider.setMaximum(upper_limit / 0.02)
+        self.slider.setMinimum(2 - self.slider_limit)
+        self.slider.setMaximum(self.slider_limit)
+        self.slider.setValue(1)
+        self.slider.setFixedWidth(200)
         layout.addWidget(self.slider)
 
-        self.numeric_input = QLineEdit("0.5", self)
-        self.numeric_input.setFixedWidth(40)
-        self.numeric_input.setValidator(CustomDoubleValidator(0, upper_limit, 2))
+        self.numeric_input = QLineEdit("1", self)
+        self.numeric_input.setValidator(CustomDoubleValidator(0, self.slider_limit, 4))
         layout.addWidget(self.numeric_input)
 
-        self.slider.sliderMoved.connect(
-            lambda value: self.numeric_input.setText(f"{(value * 0.02):.2f}"))
-        self.numeric_input.textEdited.connect(
-            lambda text: self.slider.setValue(
-                round(
-                    self.text_to_double(text) /
-                    0.02)))
+        self.slider.sliderMoved.connect(self.update_text_value)
+        self.numeric_input.textEdited.connect(self.update_slider_value)
+            
+    def update_text_value(self, slider_value: int):
+        new_text_value = slider_value
+        if slider_value < 1:
+            new_text_value = 1 / (2 - slider_value)
+        self.numeric_input.setText(str(round(new_text_value, 4)))
+        
+    def update_slider_value(self, text_value: str):
+        value = self.text_to_double(text_value)
+        if value < 1 / self.slider_limit:
+            value = 2 - self.slider_limit
+        elif value < 1:
+            value = 2 - 1 / value
+        self.slider.setValue(round(value))
 
     def setup_buttons(self):
         layout = QHBoxLayout()
@@ -59,7 +70,7 @@ class GammaCorrectionDialog(QDialog):
         layout.addWidget(plot_button)
 
     def get_gamma(self):
-        return self.text_to_double(self.numeric_input.text())
+        return max(self.text_to_double(self.numeric_input.text()), 1 / self.slider_limit)
 
     def text_to_double(self, text):
         return 0.0 if text == "" else float(text)
