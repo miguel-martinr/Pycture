@@ -6,11 +6,11 @@ from PyQt5.QtWidgets import (
     QSlider, QLayout, QLabel
 )
 
-from .widgets import CustomDoubleValidator
+from .widgets import CustomDoubleValidator, RGBCheckboxes
 
 
 class GammaCorrectionDialog(QDialog):
-    applied = Signal(float)
+    applied = Signal(float, tuple) # Gamma value and color options
     plot = Signal(float)
 
     # Slider limit should never be less than or equal to 0
@@ -21,6 +21,8 @@ class GammaCorrectionDialog(QDialog):
         self.layout.setSizeConstraint(QLayout.SetFixedSize)
         self.setLayout(self.layout)
 
+        self.checkboxes = RGBCheckboxes(self)
+        self.layout.addWidget(self.checkboxes)
         label = QLabel("Gamma value:", self)
         self.layout.addWidget(label)
 
@@ -68,7 +70,9 @@ class GammaCorrectionDialog(QDialog):
         self.layout.addLayout(layout)
 
         accept_button = QPushButton("Apply", self)
-        accept_button.clicked.connect(lambda: self.applied.emit(self.get_gamma()))
+        accept_button.clicked.connect(
+            lambda: self.applied.emit(self.get_gamma(), self.checkboxes.get_checked())
+        )
         layout.addWidget(accept_button)
 
         plot_button = QPushButton("Plot", self)
