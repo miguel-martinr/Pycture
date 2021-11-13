@@ -1,6 +1,8 @@
 from PyQt5.QtWidgets import QMainWindow, QWidget
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 import matplotlib.pyplot as plt
 from pycture.dialogs import GammaCorrectionDialog
+from pycture.dialogs.plot_window import PlotWindow
 from ..command import Command
 
 
@@ -33,7 +35,7 @@ class GammaCorrection(Command):
         main_window.add_editor(
             new_image, title + f" (Gamma corrected - {gamma_value})")
 
-    def plot(self, gamma_value):
+    def plot(self, gamma_value, main_window):
         # map a (Vin) in [0, 1]
         A = [a / 255 for a in range(256)]
 
@@ -41,13 +43,13 @@ class GammaCorrection(Command):
         B = [self.gamma(a, gamma_value) for a in A]
 
         plt.style.use('dark_background')
-        plt.clf()
-        plt.interactive(True)
+        title = f"Gamma correction - {gamma_value}"
+        figure = plt.figure(title)
         plt.plot(A, B)
         plt.xlabel("a")
         plt.ylabel("b")
-        plt.title(f"Gamma correction - {gamma_value}")
-        plt.show()
+        PlotWindow(main_window, FigureCanvasQTAgg(figure), title)
+        
 
     def execute(self, main_window: QMainWindow):
         active_image, title = self.get_active_image_and_title(main_window)
@@ -58,4 +60,4 @@ class GammaCorrection(Command):
         dialog.applied.connect(
             lambda gamma_value: self.apply(gamma_value, main_window))
         dialog.plot.connect(
-            lambda gamma_value: self.plot(gamma_value))
+            lambda gamma_value: self.plot(gamma_value, main_window))
