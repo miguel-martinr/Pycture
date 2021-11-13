@@ -33,7 +33,6 @@ class ViewHistogram(Command):
         figure = plt.figure(title)
         plt.title(title)
         plt.xlim(0, 255)
-        plt.ylim(0, 1)
         self.draw_histogram(histogram)
         self.write_mean(mean)
         return figure
