@@ -12,6 +12,8 @@ class EditBrightnessAndContrastDialog(QDialog):
     ):
         super().__init__(parent, Qt.WindowType.Window)
         self.setWindowTitle("Edit brightness and contrast")
+        self.current_brightness = current_brightness
+        self.current_contrast = current_contrast
         layout = QGridLayout()
         self.setLayout(layout)
         
@@ -21,8 +23,12 @@ class EditBrightnessAndContrastDialog(QDialog):
         
         layout.addWidget(QLabel("Brightness", self), 1, 0)
         layout.addWidget(QLabel("Contrast", self), 1, 1)
-        layout.addWidget(RGBSliders(self, 0, 255), 2, 0)
-        layout.addWidget(RGBSliders(self, 0, 255), 2, 1)
+        self.brightness_sliders = RGBSliders(self, 0, 255)
+        self.brightness_sliders.set_values(self.current_brightness[:-1])
+        layout.addWidget(self.brightness_sliders, 2, 0)
+        self.contrast_sliders = RGBSliders(self, 0, 255)
+        self.contrast_sliders.set_values(self.current_contrast[:-1])
+        layout.addWidget(self.contrast_sliders, 2, 1)
         self.show()
 
     # def set_gray(self, gray_checked: Qt.CheckState):

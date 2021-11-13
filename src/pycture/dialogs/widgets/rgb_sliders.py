@@ -40,5 +40,9 @@ class RGBSliders(QWidget):
         self.layout.addWidget(slider)
         self.layout.addWidget(number_input)
             
+    def set_values(self, values: (int, int, int)):
+        for index, slider in enumerate(self.sliders):
+            slider.setValue(values[index])
+
     def get_values(self) -> (int, int, int):
         return tuple(map(lambda number_input: int(number_input.text())))
