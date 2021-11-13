@@ -2,7 +2,8 @@ import re
 
 from PyQt5.QtCore import Qt, Signal
 from PyQt5.QtWidgets import (
-    QDialog, QHBoxLayout, QVBoxLayout, QLineEdit, QMainWindow, QPushButton, QSlider, QLayout
+    QDialog, QHBoxLayout, QVBoxLayout, QLineEdit, QMainWindow, QPushButton,
+    QSlider, QLayout, QLabel
 )
 
 from .widgets import CustomDoubleValidator
@@ -19,6 +20,9 @@ class GammaCorrectionDialog(QDialog):
         self.layout = QVBoxLayout()
         self.layout.setSizeConstraint(QLayout.SetFixedSize)
         self.setLayout(self.layout)
+
+        label = QLabel("Gamma value:", self)
+        self.layout.addWidget(label)
 
         self.slider_limit = slider_limit
         self.setup_slider()
@@ -43,12 +47,14 @@ class GammaCorrectionDialog(QDialog):
         self.slider.sliderMoved.connect(self.update_text_value)
         self.numeric_input.textEdited.connect(self.update_slider_value)
             
+    # These changes are needed to smooth the values in the slider
     def update_text_value(self, slider_value: int):
         new_text_value = slider_value
         if slider_value < 1:
             new_text_value = 1 / (2 - slider_value)
         self.numeric_input.setText(str(round(new_text_value, 4)))
         
+    # These changes are needed to smooth the values in the slider
     def update_slider_value(self, text_value: str):
         value = self.text_to_double(text_value)
         if value < 1 / self.slider_limit:
