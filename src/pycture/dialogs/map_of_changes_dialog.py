@@ -36,7 +36,7 @@ class MapOfChangesDialog(QDialog):
         layout.addWidget(treshold_label, 0, 0, Qt.AlignmentFlag.AlignLeft)
 
         
-        self.treshold_input = QLineEdit("Treshold", self)
+        self.treshold_input = QLineEdit("127", self)
         
         self.treshold_input.setValidator(CustomIntValidator(0, 255))
         
