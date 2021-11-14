@@ -104,6 +104,3 @@ class EditBrightnessAndContrast(Command):
             main_window, old_brightness, old_contrast)
         dialog.apply.connect(lambda values: self._apply_(tuple(zip(old_brightness, values[0])), tuple(
             zip(old_contrast, values[1])), dialog, main_window))
-
-        dialog.recalculate.connect(lambda values: self.recalculate(
-            tuple(zip(old_brightness, values[0])), tuple(zip(old_contrast, values[1])), dialog, active_image))
