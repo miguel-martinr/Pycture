@@ -1,8 +1,8 @@
 import typing
 from PyQt5 import QtGui
 from PyQt5.QtCore import QObject, Qt, Signal
-from PyQt5.QtGui import QColor, QValidator
-from PyQt5.QtWidgets import QColorDialog, QDialog, QGridLayout, QLabel, QLineEdit, QMainWindow, QSlider, QVBoxLayout, QWidget
+from PyQt5.QtGui import QColor, QImage, QPixmap, QValidator
+from PyQt5.QtWidgets import QColorDialog, QDialog, QGridLayout, QLabel, QLayoutItem, QLineEdit, QMainWindow, QSlider, QVBoxLayout, QWidget
 
 from pycture.dialogs.widgets import DropdownList
 from .widgets import CustomIntValidator
@@ -85,6 +85,11 @@ class MapOfChangesDialog(QDialog):
 
         self.map_changed.emit(treshold, rgb_plane, marker_color)
 
+    def update_map_view(self, map_image: QImage):
+        layout: QVBoxLayout = self.layout()
+        new_label = QLabel(self)
+        new_label.setPixmap(QPixmap.fromImage(map_image))
+        layout.addWidget(new_label)
 
 class ColorPicker(QLabel):
     color_changed = Signal(QColor)

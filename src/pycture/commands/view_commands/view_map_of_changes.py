@@ -1,14 +1,15 @@
-from PyQt5.QtCore import Signal
+from PyQt5.QtCore import Qt, Signal
 from pycture.dialogs import Notification
 
 from pycture.dialogs.map_of_changes_dialog import MapOfChangesDialog
 from pycture.dialogs.select_two_images_dialog import SelectTwoImagesDialog
 from pycture.editor import Editor
+from pycture.editor import image
 from pycture.editor.image import Image
 from pycture.editor.image.color import RGBColor
 from ..command import Command
 from PyQt5 import QtWidgets
-from PyQt5.QtGui import QColor, QImage
+from PyQt5.QtGui import QColor, QImage, QPixmap
 
 
 class ViewMapOfChanges(Command):
@@ -29,14 +30,16 @@ class ViewMapOfChanges(Command):
         self.map_changed.connect(self._show_map_)
 
     def _show_map_(self, map_image: QImage):
-
-        map_editor = self.main_window.get_editor(self.map_title)
-
-        if not map_editor:
-            map_editor = Editor(self.main_window, map_image, self.map_title)
-            self.main_window.add_editor(editor=map_editor)
-        # else:
-        #     map_editor.set_image(map_image)
+        try:
+            image_holder = self.image_holder
+        except AttributeError:
+            image_holder = self.image_holder = QtWidgets.QLabel(self.main_window, Qt.WindowType.Window)
+            image_holder.setWindowTitle(self.map_title)
+            
+        image_holder.setPixmap(QPixmap.fromImage(map_image))
+        image_holder.show()
+            
+            
 
     def _update_map_(self, treshold: int, plane: RGBColor, marker_color: QColor):
         if not self.is_setted:
@@ -48,19 +51,19 @@ class ViewMapOfChanges(Command):
 
         pixels_to_mark = diff_image.get_pixels_coordinates(treshold, plane)
         self.marked_image = base_image.mark_pixels(
-            pixels_to_mark, marker_color, in_place=True)
+            pixels_to_mark, marker_color)
 
         self.map_changed.emit(self.marked_image)
 
     def _images_selected_(self, base_title: str, sample_title: str, select_dialog: SelectTwoImagesDialog):
         base_editor = self.main_window.get_editor(base_title)
         if not base_editor:
-            Notification(self.dialog, f"Image {base_title} not found")
+            Notification(self.map_dialog, f"Image {base_title} not found")
             return
 
         sample_editor = self.main_window.get_editor(sample_title)
         if not sample_editor:
-            Notification(self.dialog, f"Image {sample_title} not found")
+            Notification(self.map_dialog, f"Image {sample_title} not found")
             return
 
         base_image = base_editor.get_image()
@@ -74,12 +77,12 @@ class ViewMapOfChanges(Command):
                 
     def _trigger_map_(self):
         self.map_dialog.show()
+        self.map_dialog._map_changed_()
         
-
     def execute(self, main_window: QtWidgets.QMainWindow):
         self.main_window = main_window
         
-        self.map_dialog = self.dialog = MapOfChangesDialog(self.main_window)
+        self.map_dialog = self.map_dialog = MapOfChangesDialog(self.main_window)
         self.map_dialog.map_changed.connect(self._update_map_)
         
         select_images_dialog = SelectTwoImagesDialog(

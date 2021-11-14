@@ -2,7 +2,7 @@ from math import log2, sqrt
 from typing import List, Tuple
 from functools import reduce
 
-from PyQt5.QtGui import QColor, QImage, QPainter, QPixmap
+from PyQt5.QtGui import QColor, QImage, QPixmap
 from PyQt5.QtCore import QPoint, QThread, QSize, Signal
 
 from .image_loader import ImageLoader
@@ -33,7 +33,7 @@ class Image(QImage):
         self.thread.finished.connect(self.thread.deleteLater)
 
         self.then = datetime.now()
-
+        
     # This function needs to be separated to allow other elements
     # to connect signals to ImageLoader's slots. Trying to connect
     # the signal after the thread has started is unsafe
@@ -141,11 +141,10 @@ class Image(QImage):
 
         size = image.width() * image.height()
         pixels = image.constBits().asstring(size * 4)
-        def get_qpoint(i): return QPoint(i % self.width(), i // self.width())
+        get_qpoint = lambda i: QPoint(i % self.width(), i // self.width())
         for i in range(size):
             color_bytes = pixels[i * 4:i * 4 + 3]
-            color_ints = [int.from_bytes(
-                color_bytes[j:j + 1], 'big') for j in range(3)]
+            color_ints = [int.from_bytes(color_bytes[j:j + 1], 'big') for j in range(3)]
             rgb_values = get_rgb(color_ints)
 
             new_pixel = int.from_bytes([255, *rgb_values], 'big')
@@ -157,7 +156,7 @@ class Image(QImage):
                 rgb_values[color.value] = lut[color_value]
                 new_pixel = int.from_bytes([255, *rgb_values], 'big')
             image.setPixel(get_qpoint(i), new_pixel)
-
+              
         return image
 
     def get_difference(self, image_b: QImage):
@@ -185,25 +184,9 @@ class Image(QImage):
         return result
 
     def mark_pixels(self, pixels_coordinates: [
-                    (int, int)], _marker_color: QColor, in_place: bool = False) -> QImage:
-        if in_place:
-            marked_image = self
-        else:
-            marked_image = QImage(self.copy())
-            
-        try:
-            original_pixmap = self.original_pixmap
-        except AttributeError:
-            original_pixmap = self.original_pixmap = QPixmap.fromImage(self).copy()
-            
-        try:
-            painter = self.painter
-            painter.eraseRect(self.rect())
-        except AttributeError:
-            painter = self.painter = QPainter(marked_image)
-            
-        painter.drawPixmap(self.rect(), original_pixmap)
-        painter.setPen(_marker_color)
+                    (int, int)], _marker_color: QColor) -> QImage:
+        marked_image = QImage(self.copy())
+        marker_color = _marker_color.rgb()
 
         for x, y in pixels_coordinates:
             if (not (0 <= x < self.width())):
@@ -213,10 +196,9 @@ class Image(QImage):
             if (not (0 <= y < self.height())):
                 print("Mark pixels: y out of range")
                 return
-            painter.drawPoint(x, y)
-            # marked_image.setPixel(x, y, marker_color)
+        
+            marked_image.setPixel(x, y, marker_color)
 
- 
         return marked_image
 
     def get_pixels_coordinates(self, treshold: int, rgb_plane: Color):
