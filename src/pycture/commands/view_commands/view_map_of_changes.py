@@ -53,5 +53,5 @@ class ViewMapOfChanges(Command):
 
         self.main_window = main_window
         dialog = self.dialog = MapOfChangesDialog(main_window)
-        dialog.treshold_changed.connect(self._update_map_)
+        dialog.map_changed.connect(self._update_map_)
         dialog.show()
