@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt, Signal
 from .widgets import RGBSliders, DropdownList
+from .notification import Notification
 
 class EditBrightnessAndContrastDialog(QDialog):
     # The name of the editor and the values of the brightness and contrast
@@ -16,11 +17,10 @@ class EditBrightnessAndContrastDialog(QDialog):
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
         
-
-        self.layout.addWidget(QLabel(self, "Image:"))
+        self.layout.addWidget(QLabel("Image:", self))
         self.dropdown = DropdownList(self, editors)
         self.layout.addWidget(self.dropdown)
-        self.dropdown.currentTextChanged.connect(self.update_selected_editor)
+        self.dropdown.textActivated.connect(self.update_selected_editor)
         self.current_brightness = [0] * 4
         self.current_contrast = [0] * 4
         
@@ -31,9 +31,7 @@ class EditBrightnessAndContrastDialog(QDialog):
 
         self.setup_sliders()
         apply_button = QPushButton("Apply", self)
-        apply_button.pressed.connect(lambda:
-            self.applied.emit(self.get_values())
-        )
+        apply_button.pressed.connect(self.emit_aplied)
         self.layout.addWidget(apply_button)
         
         self.show()
@@ -43,9 +41,11 @@ class EditBrightnessAndContrastDialog(QDialog):
         layout.addWidget(QLabel("Brightness", self), 0, 0)
         layout.addWidget(QLabel("Contrast", self), 0, 1)
         self.brightness_sliders = RGBSliders(self, 0, 255)
+        self.brightness_sliders.set_disabled(True)
         self.brightness_sliders.set_values(self.current_brightness[:-1])
         layout.addWidget(self.brightness_sliders, 1, 0)
         self.contrast_sliders = RGBSliders(self, 0, 127)
+        self.contrast_sliders.set_disabled(True)
         self.contrast_sliders.set_values(self.current_contrast[:-1])
         layout.addWidget(self.contrast_sliders, 1, 1)
         self.layout.addLayout(layout)
@@ -67,10 +67,20 @@ class EditBrightnessAndContrastDialog(QDialog):
         self.contrast_sliders.set_values(contrast_values)
         
     def update_selected_editor(self, editor: str):
-        image = self.parent().get_editor(editor).get_image()
+        self.brightness_sliders.set_disabled(False)
+        self.contrast_sliders.set_disabled(False)
+        image  = self.parent().get_editor(editor).get_image()
         self.brightness_values = image.get_brightness()
-        self.contrast_values = image.get_contrastbrightness()
+        self.contrast_values = image.get_contrast()
         self.update_sliders()
+        
+    def emit_aplied(self):
+        brightness, contrast = self.get_values()
+        editor = self.dropdown.currentText()
+        if self.parent().get_editor(editor) is None:
+            Notification(self, "An active image must be chosen")
+            return
+        self.applied.emit(editor, brightness, contrast)
 
     def get_values(self):
         brightness_values = self.brightness_sliders.get_values()

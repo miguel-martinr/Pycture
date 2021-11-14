@@ -6,8 +6,6 @@ class DropdownList(QComboBox):
     def __init__(self, parent: QWidget, options: [str]):
         super().__init__(parent)
         self.options = options
-        for option in options:
-            self.addItem(option)
 
     # Update the options so they are consistent with new values
     # in the options list (remember the list is a reference)

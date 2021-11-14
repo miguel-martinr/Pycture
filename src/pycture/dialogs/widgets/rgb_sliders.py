@@ -59,3 +59,9 @@ class RGBSliders(QWidget):
     
     def toggle_gray(self, gray: bool):
         self.gray = gray
+    
+    def set_disabled(self, disable: bool):
+        for slider in self.sliders:
+            slider.setDisabled(disable)
+        for number_input in self.number_inputs:
+            number_input.setDisabled(disable)
