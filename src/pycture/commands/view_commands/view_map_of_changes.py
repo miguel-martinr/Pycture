@@ -22,7 +22,7 @@ class ViewMapOfChanges(Command):
 
     def setup(self, base_image: Image, diff_image: Image, map_title: str):
         self.map_title = map_title
-        self.base_image = base_image
+        self.base_image = Image(base_image)
         self.diff_image = diff_image
         self.is_setted = True
 
@@ -35,8 +35,8 @@ class ViewMapOfChanges(Command):
         if not map_editor:
             map_editor = Editor(self.main_window, map_image, self.map_title)
             self.main_window.add_editor(editor=map_editor)
-        else:
-            map_editor.set_image(map_image)
+        # else:
+        #     map_editor.set_image(map_image)
 
     def _update_map_(self, treshold: int, plane: RGBColor, marker_color: QColor):
         if not self.is_setted:
@@ -48,7 +48,7 @@ class ViewMapOfChanges(Command):
 
         pixels_to_mark = diff_image.get_pixels_coordinates(treshold, plane)
         self.marked_image = base_image.mark_pixels(
-            pixels_to_mark, marker_color)
+            pixels_to_mark, marker_color, in_place=True)
 
         self.map_changed.emit(self.marked_image)
 

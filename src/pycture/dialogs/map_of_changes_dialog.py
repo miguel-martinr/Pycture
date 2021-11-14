@@ -36,11 +36,13 @@ class MapOfChangesDialog(QDialog):
         layout.addWidget(treshold_label, 0, 0, Qt.AlignmentFlag.AlignLeft)
 
         
-        self.treshold_input = TextInputWithSlider(self, CustomIntValidator(0, 255))
+        self.treshold_input = QLineEdit("Treshold", self)
+        
+        self.treshold_input.setValidator(CustomIntValidator(0, 255))
         
 
-        layout.addWidget(self.treshold_input.text_input, 0, 1, Qt.AlignmentFlag.AlignRight)
-        layout.addWidget(self.treshold_input.slider, 1, 1, Qt.AlignmentFlag.AlignRight)
+        layout.addWidget(self.treshold_input, 0, 1, Qt.AlignmentFlag.AlignRight)
+        
 
         # Marker color
         marker_color_label = QLabel("Marker color", self)
@@ -48,7 +50,7 @@ class MapOfChangesDialog(QDialog):
 
         self.marker_color = ColorPicker(self, QColor(0x00ff0000))
         layout.addWidget(self.marker_color, 2, 1)
-        self.marker_color.setMaximumWidth(self.treshold_input.text_input.width())
+        self.marker_color.setMaximumWidth(self.treshold_input.width())
 
         # RGB Plane
         rgb_dropdown_label = QLabel("RGB plane", self)
@@ -61,8 +63,8 @@ class MapOfChangesDialog(QDialog):
 
 
         # Signals handling
-        self.treshold_input.value_changed.connect(lambda: self._map_changed_())
-        self.treshold_input.slider.setValue(127)
+        self.treshold_input.textChanged.connect(lambda: self._map_changed_())
+        
         
         self.marker_color.color_changed.connect(lambda: self._map_changed_())
         
@@ -76,7 +78,8 @@ class MapOfChangesDialog(QDialog):
         self.rgb_dropdown.setCurrentIndex(3)
         
     def _map_changed_(self):
-        treshold = self.treshold_input.get_value()
+        treshold_text = self.treshold_input.text()
+        treshold = int(treshold_text) if treshold_text != "" else 0
         rgb_plane = self.rgb_dropdown.currentIndex()
         marker_color = self.marker_color.get_color()
 
@@ -117,52 +120,3 @@ class ColorPicker(QLabel):
             lambda color: self._set_color_(color))
 
 
-class TextInputWithSlider(QObject):
-    # The value of the slider is taken as the whole input value
-    value_changed = Signal(int)
-    
-    #
-    # @param to_slider tranforms the text input before setting it as the slider's value.
-    # (A function that receives any string allowed by the specified validator and returns an integer)
-    #
-    # @param to_input tranforms the int slider's value before setting it as the text input's value.
-    # (A function that receives any int allowed by the specified validator and returns a string)
-    #
-    def __init__(self, parent: QWidget = None,
-                 validator: QValidator = None,
-                 bottom: int = 0,
-                 top: int = 255,
-                 to_slider: typing.Callable = int,
-                 to_input: typing.Callable = str) -> (QLineEdit, QSlider):
-        super().__init__(parent=None)
-
-        if validator is None:
-            validator = CustomIntValidator(bottom, top)
-            
-        self.to_slider = to_slider
-        self.to_input = to_input
-        
-        self.text_input = text_input = QLineEdit(parent)
-        text_input.setValidator(validator)
-        
-        self.slider = slider = QSlider(orientation=Qt.Orientation.Horizontal)
-        self.slider.setMinimum(bottom)
-        self.slider.setMaximum(top)
-
-        text_input.textChanged.connect(
-            lambda text: slider.setValue(to_slider(text)))
-        slider.valueChanged.connect(
-            lambda value: text_input.setText(to_input(value))
-        )
-
-        text_input.textChanged.connect(
-            lambda: self.value_changed.emit(self.slider.value())
-        )
-        slider.valueChanged.connect(
-            lambda value: self.value_changed.emit(value)
-        )
-        
-        
-    # Returns slider's current value (int)
-    def get_value(self):
-        return self.to_slider()
