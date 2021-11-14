@@ -50,11 +50,19 @@ class MainWindow(QMainWindow):
         else:
             event.ignore()
 
-    def add_editor(self, image: QImage, name: str):
+    def add_editor(self, image: QImage = None, name: str = "", editor: Editor = None):
+        if editor:
+          name = editor.windowTitle()
+          
         while self.editors.get(name):
             (name, extension) = path.splitext(name)
             name = name + "+" + extension
-        self.editors[name] = Editor(self, image, name)
+            
+        if editor:
+          self.editors[name] = editor
+        else:
+          self.editors[name] = Editor(self, image, name)
+        
         self.set_active_editor(name)
 
     def get_active_editor(self) -> Editor:

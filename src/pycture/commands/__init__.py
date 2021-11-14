@@ -1,5 +1,6 @@
 from pycture.commands.edit_commands.edit_brightness_and_contrast import EditBrightnessAndContrast
 from pycture.commands.edit_commands.gamma_correction import GammaCorrection
+from pycture.commands.view_commands.view_map_of_changes import ViewMapOfChanges
 from .edit_commands import (EditBrightnessAndContrast, ConvertToGrayScale,
                             TransformByLinearSegments, EqualizeRed,
                             EqualizeGreen, EqualizeBlue, EqualizeRGB,
@@ -16,7 +17,7 @@ from .help_commands import ShowHelp
 from .command import Command
 
 
-view_command_list = [ViewDifference]
+view_command_list = [ViewDifference, ViewMapOfChanges]
 file_command_list = [OpenFile, SaveFile]
 edit_command_list = [
     ConvertToGrayScale,
