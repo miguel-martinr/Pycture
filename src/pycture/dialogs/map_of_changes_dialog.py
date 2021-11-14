@@ -38,7 +38,7 @@ class MapOfChangesDialog(QDialog):
 
         self.treshold = QLineEdit('0', self)
         self.treshold.setValidator(CustomIntValidator(0, 255))
-        self.treshold.textChanged.connect(lambda: self._create_map_())
+        self.treshold.textChanged.connect(lambda: self._treshold_changed_())
 
         layout.addWidget(self.treshold, 0, 1, Qt.AlignmentFlag.AlignRight)
 
@@ -60,18 +60,18 @@ class MapOfChangesDialog(QDialog):
 
         layout.addWidget(self.rgb_dropdown, 2, 1, Qt.AlignmentFlag.AlignRight)
 
-    def _set_btn_(self):
-        accept_btn = QPushButton("Create map", self)
-        self.layout().addWidget(accept_btn)
+    # def _set_btn_(self):
+    #     accept_btn = QPushButton("Create map", self)
+    #     self.layout().addWidget(accept_btn)
 
-        accept_btn.pressed.connect(self._create_map_)
+    #     accept_btn.pressed.connect(self._create_map_)
 
-    def _create_map_(self):
+    def _treshold_changed_(self):
         treshold_text = self.treshold.text()
         if treshold_text == "":
             return
         
-        treshold = int()
+        treshold = int(treshold_text)
         rgb_plane = self.rgb_dropdown.currentIndex()
 
         marker_color = self.marker_color.get_color()
