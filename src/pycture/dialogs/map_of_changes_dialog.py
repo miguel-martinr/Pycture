@@ -10,6 +10,7 @@ from .widgets import CustomIntValidator
 class MapOfChangesDialog(QDialog):
     #  Treshold    RGB Plane  Marker Color
     create_map = Signal(int, int, QColor)
+    treshold_changed = Signal(int)
 
     rgb_plane_changed = Signal(int)
 
@@ -22,7 +23,7 @@ class MapOfChangesDialog(QDialog):
         layout = QVBoxLayout()
         self.setLayout(layout)
         self._set_inputs_()
-        self._set_btn_()
+        # self._set_btn_()
 
         maximum_width = 300
         self.setMinimumWidth(maximum_width)
@@ -37,6 +38,7 @@ class MapOfChangesDialog(QDialog):
 
         self.treshold = QLineEdit('0', self)
         self.treshold.setValidator(CustomIntValidator(0, 255))
+        self.treshold.textChanged.connect(lambda text: self.treshold_changed.emit(int(text)))
 
         layout.addWidget(self.treshold, 0, 1, Qt.AlignmentFlag.AlignRight)
 
