@@ -2,7 +2,7 @@ import typing
 from PyQt5 import QtGui
 from PyQt5.QtCore import QObject, Qt, Signal
 from PyQt5.QtGui import QColor, QImage, QPixmap, QValidator
-from PyQt5.QtWidgets import QColorDialog, QDialog, QGridLayout, QLabel, QLayoutItem, QLineEdit, QMainWindow, QSlider, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QColorDialog, QDialog, QGridLayout, QLabel, QLayoutItem, QLineEdit, QMainWindow, QPushButton, QSlider, QVBoxLayout, QWidget
 
 from pycture.dialogs.widgets import DropdownList
 from .widgets import CustomIntValidator
@@ -12,6 +12,7 @@ class MapOfChangesDialog(QDialog):
     #  Treshold    RGB Plane  Marker Color
     map_changed = Signal(int, int, QColor)
     rgb_plane_changed = Signal(int)
+    save_current = Signal()
 
     def __init__(self, parent: QMainWindow) -> None:
         super().__init__(parent, Qt.WindowType.Window)
@@ -22,6 +23,7 @@ class MapOfChangesDialog(QDialog):
         layout = QVBoxLayout()
         self.setLayout(layout)
         self._set_inputs_()
+        self._set_btn_()
 
         maximum_width = 300
         self.setMinimumWidth(maximum_width)
@@ -46,20 +48,20 @@ class MapOfChangesDialog(QDialog):
 
         # Marker color
         marker_color_label = QLabel("Marker color", self)
-        layout.addWidget(marker_color_label, 2, 0, Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(marker_color_label, 1, 0, Qt.AlignmentFlag.AlignLeft)
 
         self.marker_color = ColorPicker(self, QColor(0x00ff0000))
-        layout.addWidget(self.marker_color, 2, 1)
+        layout.addWidget(self.marker_color, 1, 1)
         self.marker_color.setMaximumWidth(self.treshold_input.width())
 
         # RGB Plane
         rgb_dropdown_label = QLabel("RGB plane", self)
-        layout.addWidget(rgb_dropdown_label, 3, 0, Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(rgb_dropdown_label, 2, 0, Qt.AlignmentFlag.AlignLeft)
 
         self.rgb_dropdown = DropdownList(
             self, ["Red", "Green", "Blue", "Gray scale"])
 
-        layout.addWidget(self.rgb_dropdown, 3, 1, Qt.AlignmentFlag.AlignRight)
+        layout.addWidget(self.rgb_dropdown, 2, 1, Qt.AlignmentFlag.AlignRight)
 
 
         # Signals handling
@@ -75,7 +77,7 @@ class MapOfChangesDialog(QDialog):
 
         self.rgb_dropdown.activated.connect(
             lambda: self._map_changed_())
-        self.rgb_dropdown.setCurrentIndex(3)
+        
         
     def _map_changed_(self):
         treshold_text = self.treshold_input.text()
@@ -85,12 +87,10 @@ class MapOfChangesDialog(QDialog):
 
         self.map_changed.emit(treshold, rgb_plane, marker_color)
 
-    def update_map_view(self, map_image: QImage):
-        layout: QVBoxLayout = self.layout()
-        new_label = QLabel(self)
-        new_label.setPixmap(QPixmap.fromImage(map_image))
-        layout.addWidget(new_label)
-
+    def _set_btn_(self):
+        save_current_button = QPushButton("Save current", self)
+        save_current_button.pressed.connect(lambda: self.save_current.emit())
+        self.layout().addWidget(save_current_button)
 class ColorPicker(QLabel):
     color_changed = Signal(QColor)
     def __init__(self, parent: QWidget, initial_color: QColor) -> None:

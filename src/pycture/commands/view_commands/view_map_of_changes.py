@@ -3,7 +3,7 @@ from pycture.dialogs import Notification
 
 from pycture.dialogs.map_of_changes_dialog import MapOfChangesDialog
 from pycture.dialogs.select_two_images_dialog import SelectTwoImagesDialog
-from pycture.editor import Editor
+from pycture.editor import Editor, image_holder
 from pycture.editor import image
 from pycture.editor.image import Image
 from pycture.editor.image.color import RGBColor
@@ -40,6 +40,13 @@ class ViewMapOfChanges(Command):
         image_holder.show()
             
             
+    def _save_current_map_(self):
+        try:
+            image_holder = self.image_holder
+        except KeyError:
+            return
+        
+        self.main_window.add_editor(editor=Editor(self.main_window, image_holder.pixmap().toImage(), self.map_title))
 
     def _update_map_(self, treshold: int, plane: RGBColor, marker_color: QColor):
         if not self.is_setted:
@@ -84,7 +91,9 @@ class ViewMapOfChanges(Command):
         
         self.map_dialog = self.map_dialog = MapOfChangesDialog(self.main_window)
         self.map_dialog.map_changed.connect(self._update_map_)
+        self.map_dialog.save_current.connect(self._save_current_map_)
         
+
         select_images_dialog = SelectTwoImagesDialog(
             main_window, main_window.get_editor_list(), button_text="Create map")
         select_images_dialog.applied.connect(lambda base_title, sample_title: self._images_selected_(
