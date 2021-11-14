@@ -11,18 +11,33 @@ class EditBrightnessAndContrast(Command):
     def __init__(self, parent: QWidget):
         super().__init__(parent, "Brightness and Contrast")
 
-    def get_equation(self, brightness, contrast):
-        """
-        @param brightness: (old_brightness, new_brightness)
-        @param contrast: (old_contrast, new_contrast)
-        """
-        old_brightness, new_brightness = brightness
-        old_contrast, new_contrast = contrast
+    def execute(self, main_window: QMainWindow):
+        dialog = EditBrightnessAndContrastDialog(
+            main_window, main_window.get_editor_list()
+        )
+        dialog.applied.connect(lambda brightness, contrast: 
+            self.apply(main_window, brightness, contrast)
+        )
 
-        A = new_contrast / old_contrast
-        B = new_brightness - A * old_brightness
+    def apply(self, main_window: QMainWindow, brightness, contrast):
+        brightness = list(brightness)
+        contrast = list(contrast)
+        image, title = self.get_active_image_and_title(main_window)
+        if image is None:
+            return
 
-        return lambda vin: round(A * vin + B)
+        self.recalculate(brightness, contrast, dialog, image)
+        luts = [list(range(256)), list(range(256)), list(range(256))]
+        for i in range(3):
+            if (brightness[i][0] == brightness[i][1]
+                    and contrast[i][0] == contrast[i][1]):
+                continue
+            lut = self.get_LUT(brightness[i], contrast[i])
+            luts[i] = lut
+
+        image = image.apply_LUTs(tuple(luts))
+
+        main_window.add_editor(image, title + "-BrCt Edited")
 
     def get_LUT(self, brightness: Tuple[int], contrast: Tuple[int]):
         equation = self.get_equation(brightness, contrast)
@@ -71,36 +86,15 @@ class EditBrightnessAndContrast(Command):
             variance += histogram[i] * (i - mean) ** 2
         return sqrt(variance)
 
-    def _apply_(self, brightness, contrast,
-                dialog: EditBrightnessAndContrastDialog, main_window: QMainWindow):
-        brightness = list(brightness)
-        contrast = list(contrast)
-        image, title = self.get_active_image_and_title(main_window)
-        if image is None:
-            return
+    def get_equation(self, brightness, contrast):
+        """
+        @param brightness: (old_brightness, new_brightness)
+        @param contrast: (old_contrast, new_contrast)
+        """
+        old_brightness, new_brightness = brightness
+        old_contrast, new_contrast = contrast
 
-        self.recalculate(brightness, contrast, dialog, image)
-        luts = [list(range(256)), list(range(256)), list(range(256))]
-        for i in range(3):
-            if (brightness[i][0] == brightness[i][1]
-                    and contrast[i][0] == contrast[i][1]):
-                continue
-            lut = self.get_LUT(brightness[i], contrast[i])
-            luts[i] = lut
+        A = new_contrast / old_contrast
+        B = new_brightness - A * old_brightness
 
-        image = image.apply_LUTs(tuple(luts))
-
-        main_window.add_editor(image, title + "-BrCt Edited")
-
-    def execute(self, main_window: QMainWindow):
-        active_image, _ = self.get_active_image_and_title(main_window)
-        if (not active_image):
-            return
-
-        old_brightness = tuple(map(round, active_image.get_brightness()))
-        old_contrast = tuple(map(round, active_image.get_contrast()))
-
-        dialog = EditBrightnessAndContrastDialog(
-            main_window, old_brightness, old_contrast)
-        dialog.apply.connect(lambda values: self._apply_(tuple(zip(old_brightness, values[0])), tuple(
-            zip(old_contrast, values[1])), dialog, main_window))
+        return lambda vin: round(A * vin + B)
