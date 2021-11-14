@@ -31,7 +31,7 @@ class MapOfChangesDialog(QDialog):
         layout = QGridLayout()
         self.layout().addLayout(layout)
 
-        
+        # Treshold
         treshold_label = QLabel("Treshold", self)
         layout.addWidget(treshold_label, 0, 0, Qt.AlignmentFlag.AlignLeft)
 
@@ -42,6 +42,7 @@ class MapOfChangesDialog(QDialog):
         layout.addWidget(self.treshold_input.text_input, 0, 1, Qt.AlignmentFlag.AlignRight)
         layout.addWidget(self.treshold_input.slider, 1, 1, Qt.AlignmentFlag.AlignRight)
 
+        # Marker color
         marker_color_label = QLabel("Marker color", self)
         layout.addWidget(marker_color_label, 2, 0, Qt.AlignmentFlag.AlignLeft)
 
@@ -49,19 +50,30 @@ class MapOfChangesDialog(QDialog):
         layout.addWidget(self.marker_color, 2, 1)
         self.marker_color.setMaximumWidth(self.treshold_input.text_input.width())
 
+        # RGB Plane
         rgb_dropdown_label = QLabel("RGB plane", self)
         layout.addWidget(rgb_dropdown_label, 3, 0, Qt.AlignmentFlag.AlignLeft)
 
         self.rgb_dropdown = DropdownList(
             self, ["Red", "Green", "Blue", "Gray scale"])
+
+        layout.addWidget(self.rgb_dropdown, 3, 1, Qt.AlignmentFlag.AlignRight)
+
+
+        # Signals handling
+        self.treshold_input.value_changed.connect(lambda: self._map_changed_())
+        self.treshold_input.slider.setValue(127)
+        
+        self.marker_color.color_changed.connect(lambda: self._map_changed_())
+        
+        
         self.rgb_dropdown.activated.connect(
             lambda index: self.rgb_plane_changed.emit(index))
         self.rgb_dropdown.setCurrentIndex(3)
 
-        layout.addWidget(self.rgb_dropdown, 3, 1, Qt.AlignmentFlag.AlignRight)
-
-        self.treshold_input.value_changed.connect(lambda: self._map_changed_())
-        self.treshold_input.slider.setValue(127)
+        # self.rgb_dropdown.activated.connect(
+        #     lambda: self.map_changed())
+        # self.rgb_dropdown.setCurrentIndex(3)
         
     def _map_changed_(self):
         treshold = self.treshold_input.get_value()
@@ -72,6 +84,7 @@ class MapOfChangesDialog(QDialog):
 
 
 class ColorPicker(QLabel):
+    color_changed = Signal(QColor)
     def __init__(self, parent: QWidget, initial_color: QColor) -> None:
         super().__init__(parent)
         self._set_color_(initial_color)
@@ -84,6 +97,7 @@ class ColorPicker(QLabel):
         self.color = color
         html_color = self._get_html_color_(color)
         self.setStyleSheet(f"background-color: {html_color}")
+        self.color_changed.emit(self.color)
 
     def get_color(self):
         return self.color
