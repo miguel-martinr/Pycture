@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QColor, QImage
+from pycture.commands.view_commands.view_map_of_changes import ViewMapOfChanges
 
 from pycture.dialogs import Notification, DifferenceDialog, MapOfChangesDialog
 from pycture.editor.image import Image
@@ -112,6 +113,16 @@ class ViewDifference(Command):
 
         self.map_dialog.create_map.connect(self.mark_map_of_changes)
 
+    def _moc_(self, image_a_title: str, image_b_title: str):
+        view_moc = ViewMapOfChanges(self.main_window)
+        
+        base_image: Image = self.main_window.get_editor(image_a_title).get_image()
+        sample_image = self.main_window.get_editor(image_b_title).get_image()
+        diff_image = Image(base_image.get_difference(sample_image))
+        
+        view_moc.setup(base_image, diff_image, f"MapOfChanges({image_a_title}, {image_b_title})")
+        view_moc.execute(self.main_window)
+
     def execute(self, main_window: QtWidgets.QMainWindow):
         self.main_window = main_window
         self.histograms = [ViewRedHistogram, ViewGreenHistogram,
@@ -120,4 +131,4 @@ class ViewDifference(Command):
         self.dialog = DifferenceDialog(
             main_window, main_window.get_editor_list())
         self.dialog.applied.connect(self._show_difference_)
-        self.dialog.map_of_changes.connect(self._trigger_map_of_changes_)
+        self.dialog.map_of_changes.connect(self._moc_)

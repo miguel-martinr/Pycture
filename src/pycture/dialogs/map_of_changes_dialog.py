@@ -10,7 +10,7 @@ from .widgets import CustomIntValidator
 class MapOfChangesDialog(QDialog):
     #  Treshold    RGB Plane  Marker Color
     create_map = Signal(int, int, QColor)
-    treshold_changed = Signal(int)
+    treshold_changed = Signal(int, int, QColor)
 
     rgb_plane_changed = Signal(int)
 
@@ -38,7 +38,7 @@ class MapOfChangesDialog(QDialog):
 
         self.treshold = QLineEdit('0', self)
         self.treshold.setValidator(CustomIntValidator(0, 255))
-        self.treshold.textChanged.connect(lambda text: self.treshold_changed.emit(int(text)))
+        self.treshold.textChanged.connect(lambda: self._create_map_())
 
         layout.addWidget(self.treshold, 0, 1, Qt.AlignmentFlag.AlignRight)
 
@@ -67,11 +67,16 @@ class MapOfChangesDialog(QDialog):
         accept_btn.pressed.connect(self._create_map_)
 
     def _create_map_(self):
-        treshold = int(self.treshold.text())
+        treshold_text = self.treshold.text()
+        if treshold_text == "":
+            return
+        
+        treshold = int()
         rgb_plane = self.rgb_dropdown.currentIndex()
 
         marker_color = self.marker_color.get_color()
         self.create_map.emit(treshold, rgb_plane, marker_color)
+        self.treshold_changed.emit(treshold, rgb_plane, marker_color)
 
 
 class ColorPicker(QLabel):
