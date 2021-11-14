@@ -1,6 +1,7 @@
 from PyQt5.QtCore import Signal
 
 from pycture.dialogs.map_of_changes_dialog import MapOfChangesDialog
+from pycture.dialogs.select_two_images_dialog import SelectTwoImagesDialog
 from pycture.editor import Editor
 from pycture.editor.image import Image
 from pycture.editor.image.color import RGBColor
@@ -50,6 +51,8 @@ class ViewMapOfChanges(Command):
         if not self.is_setted:
             print("ViewMapOfChanges: command must be setted up before being executed")
             return
+        
+        select_images_dialog = SelectTwoImagesDialog(main_window, main_window.get_editor_list())
 
         self.main_window = main_window
         dialog = self.dialog = MapOfChangesDialog(main_window)

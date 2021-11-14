@@ -2,25 +2,23 @@ from PyQt5.QtCore import Qt, Signal
 from PyQt5.QtWidgets import QDialog, QHBoxLayout, QLabel, QMainWindow, QPushButton, QVBoxLayout
 
 from pycture.dialogs.widgets import DropdownList
-from .map_of_changes_dialog import MapOfChangesDialog
 from .notification import Notification
 
 
-class DifferenceDialog(QDialog):
+class SelectTwoImagesDialog(QDialog):
     applied = Signal(str, str)
-    map_of_changes = Signal(str, str)
 
-    def __init__(self, parent: QMainWindow, options: [str]) -> None:
+    def __init__(self, parent: QMainWindow, options: [str], button_text: str = "Accept") -> None:
         super().__init__(parent, Qt.WindowType.Window)
-        self._setup_(options)
+        self._setup_(options, button_text)
         self.show()
 
-    def _setup_(self, options: [str]):
+    def _setup_(self, options: [str], button_text: str):
         layout = QVBoxLayout(self)
-        self.setWindowTitle("Image difference")
+        self.setWindowTitle("Select two images")
         self.setLayout(layout)
         self._set_dropdowns_(options)
-        self._set_btns_()
+        self._set_btn_(button_text)
 
         maximum_width = 300
         self.setMinimumWidth(maximum_width)
@@ -39,7 +37,7 @@ class DifferenceDialog(QDialog):
         self.dropwdown_b = DropdownList(self, options)
         layout.addWidget(self.dropwdown_b)
 
-    def _apply_(self, map_of_changes: bool = False):
+    def _apply_(self):
         image_a = self.dropwdown_a.currentText()
         image_b = self.dropwdown_b.currentText()
 
@@ -47,18 +45,13 @@ class DifferenceDialog(QDialog):
             Notification(self, "You have to choose the images you want to use")
             return
 
-        signal = self.map_of_changes if map_of_changes else self.applied
-        signal.emit(image_a, image_b)
+        self.applied.emit(image_a, image_b)
 
-    def _set_btns_(self):
+    def _set_btn_(self, button_text: str):
         layout = QHBoxLayout()
         self.layout().addLayout(layout)
 
-        apply_btn = QPushButton("View Difference", self)
+        apply_btn = QPushButton(button_text, self)
         layout.addWidget(apply_btn)
         apply_btn.pressed.connect(self._apply_)
 
-        map_of_changes_btn = QPushButton("Map of changes", self)
-        layout.addWidget(map_of_changes_btn)
-        map_of_changes_btn.pressed.connect(
-            lambda: self._apply_(map_of_changes=True))
