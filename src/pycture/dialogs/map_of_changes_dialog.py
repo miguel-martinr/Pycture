@@ -71,9 +71,9 @@ class MapOfChangesDialog(QDialog):
             lambda index: self.rgb_plane_changed.emit(index))
         self.rgb_dropdown.setCurrentIndex(3)
 
-        # self.rgb_dropdown.activated.connect(
-        #     lambda: self.map_changed())
-        # self.rgb_dropdown.setCurrentIndex(3)
+        self.rgb_dropdown.activated.connect(
+            lambda: self._map_changed_())
+        self.rgb_dropdown.setCurrentIndex(3)
         
     def _map_changed_(self):
         treshold = self.treshold_input.get_value()
