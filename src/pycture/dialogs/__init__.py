@@ -4,7 +4,7 @@ from .segments_input import SegmentsInput
 from .information_window import InformationWindow
 from .histogram_specification_dialog import HistogramSpecificationDialog
 from .plot_window import PlotWindow
-from .edit_brightness_and_contrast import EditBrightnessAndContrastDialog
+from .edit_brightness_and_contrast_dialog import EditBrightnessAndContrastDialog
 from .gamma_correction_dialog import GammaCorrectionDialog
 from .difference_dialog import DifferenceDialog
 from .map_of_changes_dialog import MapOfChangesDialog
