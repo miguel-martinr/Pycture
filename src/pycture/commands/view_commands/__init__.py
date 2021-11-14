@@ -5,3 +5,4 @@ from .view_cumulative_histogram import (ViewCumulativeRedHistogram, ViewCumulati
 from .view_image_info import (ViewImageBrightness, ViewImageSize, ViewImageContrast,
                               ViewImageEntropy, ViewImageRanges)
 from .view_difference import (ViewDifference)
+from .view_map_of_changes import (ViewMapOfChanges)
