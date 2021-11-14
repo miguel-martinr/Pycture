@@ -9,6 +9,9 @@ from .notification import Notification
 
 class EditBrightnessAndContrastDialog(QDialog):
     # The name of the editor and the values of the brightness and contrast
+    # to apply. The brightness varies between 0 and 255 and the contrast
+    # between 1 and 128. 128 shouldn't be used, it is allowed to
+    # represent 127.5 in the slider which is a valid contrast value
     applied = Signal(str, tuple, tuple)
 
     def __init__(self, parent: QMainWindow, editors: List[str]):
@@ -44,7 +47,7 @@ class EditBrightnessAndContrastDialog(QDialog):
         self.brightness_sliders.set_disabled(True)
         self.brightness_sliders.set_values(self.current_brightness[:-1])
         layout.addWidget(self.brightness_sliders, 1, 0)
-        self.contrast_sliders = RGBSliders(self, 0, 127)
+        self.contrast_sliders = RGBSliders(self, 0, 128)
         self.contrast_sliders.set_disabled(True)
         self.contrast_sliders.set_values(self.current_contrast[:-1])
         layout.addWidget(self.contrast_sliders, 1, 1)
@@ -61,17 +64,17 @@ class EditBrightnessAndContrastDialog(QDialog):
             brightness_values = [self.current_brightness[-1]] * 3
             contrast_values = [self.current_contrast[-1]] * 3
         else:
-            brightness_values = self.current_brightness
-            contrast_values = self.current_contrast
+            brightness_values = self.current_brightness[:-1]
+            contrast_values = self.current_contrast[:-1]
         self.brightness_sliders.set_values(brightness_values)
         self.contrast_sliders.set_values(contrast_values)
         
     def update_selected_editor(self, editor: str):
         self.brightness_sliders.set_disabled(False)
         self.contrast_sliders.set_disabled(False)
-        image  = self.parent().get_editor(editor).get_image()
-        self.brightness_values = image.get_brightness()
-        self.contrast_values = image.get_contrast()
+        image = self.parent().get_editor(editor).get_image()
+        self.current_brightness = list(map(lambda x: int(x), image.get_brightness()))
+        self.current_contrast = list(map(lambda x: int(x), image.get_contrast()))
         self.update_sliders()
         
     def emit_aplied(self):
@@ -83,6 +86,13 @@ class EditBrightnessAndContrastDialog(QDialog):
         self.applied.emit(editor, brightness, contrast)
 
     def get_values(self):
-        brightness_values = self.brightness_sliders.get_values()
-        contrast_values = self.contrast_sliders.get_values()
+        brightness_values = tuple(map(
+            lambda x: float(x), self.brightness_sliders.get_values()
+        ))
+        # Contrast values allow 128 as a value for the slider but 128 isn't
+        # a valid value for a contrast. It is only allowed to let the user
+        # specify 127.5
+        contrast_values = tuple(map(
+            lambda x: min(float(x), 127.5), self.contrast_sliders.get_values()
+        ))
         return brightness_values, contrast_values
