@@ -1,5 +1,11 @@
 from os import path
 
+# This import isn't strictly necessary here, but it was added to make sure
+# we use a Qt version compatible with matplotlib. If we try to import certain
+# Qt parts before importing matplotlib there can be import errors.
+# For more information: https://github.com/computationalpathologygroup/ASAP/issues/34
+from matplotlib import pyplot
+
 from PyQt5.QtWidgets import QMainWindow, QWidget, QGridLayout
 from PyQt5.QtGui import QImage, QGuiApplication
 from PyQt5.QtCore import QEvent

@@ -1,10 +1,12 @@
 from PyQt5.QtWidgets import QVBoxLayout, QGridLayout, QWidget, QLabel
 from PyQt5.QtGui import QValidator
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, Signal
 
 from .point_input import PointInput
 
 class PointsInput(QWidget):
+    points_changed = Signal()
+
     def __init__(self, parent: QWidget, validator: QValidator):
         super().__init__(parent)
         self.validator = validator
@@ -26,12 +28,14 @@ class PointsInput(QWidget):
                 self.remove_point()
 
     def remove_point(self):
-        point =  self.points.pop()
+        point = self.points.pop()
         self.layout.removeWidget(point)
+        point.deleteLater()
     
     def add_point(self):
         name = f"Point {len(self.points) + 1}: "
         new_point = PointInput(self, name, self.validator)
+        new_point.point_changed.connect(lambda: self.points_changed.emit())
         self.points.append(new_point)
         self.layout.addWidget(new_point)
         

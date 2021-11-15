@@ -1,10 +1,8 @@
 from PyQt5.QtWidgets import QWidget, QMainWindow
 
 from typing import List, Tuple
-from matplotlib import pyplot as plt
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 
-from pycture.dialogs import SegmentsInput, PlotWindow
+from pycture.dialogs import SegmentsInput
 from ..command import Command
 
 
@@ -14,44 +12,12 @@ class TransformByLinearSegments(Command):
 
     def execute(self, main_window: QMainWindow):
         dialog = SegmentsInput(main_window, main_window.get_editor_list())
-        dialog.previewed.connect(lambda points:
-            self.preview_transformation(main_window, points)
-        )
         dialog.applied.connect(lambda editor, points, options:
             self.apply_transformation(main_window, editor, points, options)
         )
         editor = main_window.get_active_editor_name()
         if editor is not None:
             dialog.set_dropdown_image(editor)
-
-    def preview_transformation(self, main_window: QMainWindow, points: List):
-        plt.style.use('dark_background')
-        title = "Linear transformation"
-        figure = plt.figure()
-        self.plot_changes(points)
-        self.plot_unchanged_areas(points)
-
-        plt.xlabel("Vin")
-        plt.ylabel("Vout")
-        plt.title(title)
-        plt.xlim(0, 255)
-        plt.ylim(0, 255)
-        PlotWindow(main_window, FigureCanvasQTAgg(figure), title)
-    
-    def plot_changes(self, points: List):
-        x = list(map(lambda point: point[0], points))
-        y = list(map(lambda point: point[1], points))
-        plt.plot(x, y)
-    
-    def plot_unchanged_areas(self, points: List):
-        if points[0][0] > 1:
-            x = [0, points[0][0] - 1]
-            y = x
-            plt.plot(x, y)
-        if points[-1][0] < 254:
-            x = [points[-1][0] + 1, 255]
-            y = x
-            plt.plot(x, y)
 
     def apply_transformation(self, main_window: QMainWindow,
         editor: str, segments: List, options: tuple
