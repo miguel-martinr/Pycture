@@ -13,13 +13,16 @@ class GammaCorrection(Command):
         super().__init__(parent, "Gamma correction")
 
     def execute(self, main_window: QMainWindow):
-        dialog = GammaCorrectionDialog(main_window)
+        dialog = GammaCorrectionDialog(main_window, main_window.get_editor_list())
         dialog.plot.connect(
             lambda gamma_value: self.plot(main_window, gamma_value)
         )
-        dialog.applied.connect(lambda gamma_value, color_options:
-            self.apply(main_window, gamma_value, color_options)
+        dialog.applied.connect(lambda editor, gamma_value, color_options:
+            self.apply(main_window, editor, gamma_value, color_options)
         )
+        editor = main_window.get_active_editor_name()
+        if editor is not None:
+            dialog.set_dropdown_image(editor)
 
     def plot(self, main_window: QMainWindow, gamma_value: int):
         # put 256 values in the x axis between 0 and 1
@@ -35,8 +38,10 @@ class GammaCorrection(Command):
         plt.ylabel("Vout")
         PlotWindow(main_window, FigureCanvasQTAgg(figure), title)
 
-    def apply(self, main_window: QMainWindow, gamma_value: int, color_options: (int, int, int)):
-        image, title = self.get_active_image_and_title(main_window)
+    def apply(self, main_window: QMainWindow, editor: str,
+            gamma_value: int, color_options: (int, int, int)
+        ):
+        image = main_window.get_editor(editor).get_image()
         if image is None:
             return
 
@@ -48,7 +53,7 @@ class GammaCorrection(Command):
             lut_or_none(color_options[2])
         ))
         main_window.add_editor(
-            new_image, title + f" (Gamma corrected - {gamma_value})"
+            new_image, editor + f" (Gamma corrected - {gamma_value})"
         )
 
     def get_LUT(self, gamma_value: int):

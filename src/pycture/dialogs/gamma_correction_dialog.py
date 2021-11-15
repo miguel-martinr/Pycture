@@ -1,4 +1,4 @@
-import re
+from typing import List
 
 from PyQt5.QtCore import Qt, Signal
 from PyQt5.QtWidgets import (
@@ -6,20 +6,24 @@ from PyQt5.QtWidgets import (
     QSlider, QLayout, QLabel
 )
 
-from .widgets import CustomDoubleValidator, RGBCheckboxes
+from .widgets import CustomDoubleValidator, RGBCheckboxes, DropdownList
+from .notification import Notification
 
 
 class GammaCorrectionDialog(QDialog):
-    applied = Signal(float, tuple) # Gamma value and color options
+    applied = Signal(str, float, tuple) # Editor, gamma value and color options
     plot = Signal(float)
 
     # Slider limit should never be less than or equal to 0
-    def __init__(self, parent: QMainWindow, slider_limit: int = 30) -> None:
+    def __init__(self, parent: QMainWindow, editors: List[str], slider_limit: int = 30) -> None:
         super().__init__(parent, Qt.WindowType.Window)
         self.setWindowTitle("Gamma correction")
         self.layout = QVBoxLayout()
         self.layout.setSizeConstraint(QLayout.SetFixedSize)
         self.setLayout(self.layout)
+        
+        self.dropdown = DropdownList(self, editors)
+        self.layout.addWidget(self.dropdown)
 
         self.checkboxes = RGBCheckboxes(self)
         self.layout.addWidget(self.checkboxes)
@@ -70,17 +74,25 @@ class GammaCorrectionDialog(QDialog):
         self.layout.addLayout(layout)
 
         accept_button = QPushButton("Apply", self)
-        accept_button.clicked.connect(
-            lambda: self.applied.emit(self.get_gamma(), self.checkboxes.get_checked())
-        )
+        accept_button.clicked.connect(self.emit_applied)
         layout.addWidget(accept_button)
 
         plot_button = QPushButton("Plot", self)
         plot_button.clicked.connect(lambda: self.plot.emit(self.get_gamma()))
         layout.addWidget(plot_button)
 
+    def emit_applied(self):
+        editor = self.dropdown.currentText()
+        if self.parent().get_editor(editor) is None:
+            Notification(self, "An active image must be chosen")
+            return
+        self.applied.emit(editor, self.get_gamma(), self.checkboxes.get_checked())
+
     def get_gamma(self):
         return max(self.text_to_double(self.numeric_input.text()), 1 / self.slider_limit)
 
     def text_to_double(self, text):
         return 0.0 if text == "" else float(text)
+
+    def set_dropdown_image(self, editor: str):
+        self.dropdown.set_selected(editor)
