@@ -7,6 +7,11 @@ class DropdownList(QComboBox):
         super().__init__(parent)
         self.options = options
 
+    
+    def set_selected(self, option: str):
+        self.clear()
+        self.addItem(option)
+        
     # Update the options so they are consistent with new values
     # in the options list (remember the list is a reference)
     def mousePressEvent(self, event: QMouseEvent):

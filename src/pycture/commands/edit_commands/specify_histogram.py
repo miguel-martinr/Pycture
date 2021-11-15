@@ -17,6 +17,9 @@ class SpecifyHistogram(Command):
         dialog = HistogramSpecificationDialog(
             main_window, main_window.get_editor_list())
         dialog.editors_selected.connect(self.specify_histogram)
+        editor = main_window.get_active_editor_name()
+        if editor is not None:
+            dialog.set_base_image(editor)
         dialog.show()
 
     def specify_histogram(self, base: str, sample: str,

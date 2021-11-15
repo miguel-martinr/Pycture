@@ -31,8 +31,6 @@ class MainWindow(QMainWindow):
         x = (screen_width - width) / 2
         y = height / 2
         self.setGeometry(x, y, width, height)
-        
-        
 
     def customEvent(self, event: QEvent):
         if isinstance(event, ExecuteCommandEvent):
@@ -67,6 +65,9 @@ class MainWindow(QMainWindow):
 
     def get_active_editor(self) -> Editor:
         return self.editors.get(self.active_editor)
+
+    def get_active_editor_name(self) -> str:
+        return self.active_editor
 
     def get_editor(self, editor: str) -> Editor:
         return self.editors.get(editor)
