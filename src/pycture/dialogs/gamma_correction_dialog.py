@@ -115,9 +115,8 @@ class GammaCorrectionDialog(QDialog):
         new_graph = self.plot_gamma()
         new_graph.setFixedSize(new_graph.size())
         old_graph = self.layout.itemAt(1).widget()
-        self.layout.removeWidget(old_graph)
+        self.layout.replaceWidget(old_graph, new_graph)
         old_graph.deleteLater()
-        self.layout.addWidget(new_graph)
 
     def plot_gamma(self) -> FigureCanvasQTAgg:
         gamma_value = self.get_gamma()
@@ -131,7 +130,7 @@ class GammaCorrectionDialog(QDialog):
         if self.graph_figure is not None:
             plt.close(self.graph_figure)
         self.graph_figure = plt.figure()
-        plt.plot([0, 255], [0, 255])
+        plt.plot(x_values, y_values)
         plt.xlabel("Vin")
         plt.ylabel("Vout")
         return FigureCanvasQTAgg(self.graph_figure)

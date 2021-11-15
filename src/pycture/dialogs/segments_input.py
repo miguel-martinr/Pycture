@@ -102,9 +102,8 @@ class SegmentsInput(QDialog):
         new_graph = self.preview_transformation()
         new_graph.setFixedSize(new_graph.size())
         old_graph = self.layout.itemAt(1).widget()
-        self.layout.removeWidget(old_graph)
+        self.layout.replaceWidget(old_graph, new_graph)
         old_graph.deleteLater()
-        self.layout.addWidget(new_graph)
 
     def preview_transformation(self) -> FigureCanvasQTAgg:
         plt.style.use('dark_background')
