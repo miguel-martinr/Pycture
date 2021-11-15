@@ -4,7 +4,6 @@ from PyQt5.QtWidgets import QWidget, QMainWindow
 
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 
 from ..command import Command
 from pycture.editor.image import Color, Image
@@ -25,7 +24,7 @@ class ViewHistogram(Command):
 
         new_title = self.get_title(title)
         figure = self.get_histogram_figure(histogram, mean, new_title)
-        PlotWindow(main_window, FigureCanvasQTAgg(figure), new_title)
+        PlotWindow(main_window, figure, new_title)
 
     def get_histogram_figure(
             self, histogram: List[int], mean: float, title: str) -> Figure:
