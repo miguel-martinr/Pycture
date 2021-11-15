@@ -45,6 +45,7 @@ class Container(QWidget):
         self.progress_bar.setValue(value)
         if value == 100:
             self.layout.removeWidget(self.progress_bar)
+            self.progress_bar.deleteLater()
             self.progress_bar = None
 
     def setup_progress_bar(self):
