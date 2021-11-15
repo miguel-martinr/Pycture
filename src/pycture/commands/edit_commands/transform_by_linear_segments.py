@@ -13,17 +13,16 @@ class TransformByLinearSegments(Command):
         super().__init__(parent, "By linear segments")
 
     def execute(self, main_window: QMainWindow):
-        image, _ = self.get_active_image_and_title(main_window)
-        if image is None:
-            return
-
-        dialog = SegmentsInput(main_window)
+        dialog = SegmentsInput(main_window, main_window.get_editor_list())
         dialog.previewed.connect(lambda points:
             self.preview_transformation(main_window, points)
         )
-        dialog.applied.connect(lambda points, options:
-            self.apply_transformation(main_window, points, options)
+        dialog.applied.connect(lambda editor, points, options:
+            self.apply_transformation(main_window, editor, points, options)
         )
+        editor = main_window.get_active_editor_name()
+        if editor is not None:
+            dialog.set_dropdown_image(editor)
 
     def preview_transformation(self, main_window: QMainWindow, points: List):
         plt.style.use('dark_background')
@@ -54,9 +53,10 @@ class TransformByLinearSegments(Command):
             y = x
             plt.plot(x, y)
 
-    def apply_transformation(
-            self, main_window: QMainWindow, segments: List, options: tuple):
-        image, title = self.get_active_image_and_title(main_window)
+    def apply_transformation(self, main_window: QMainWindow,
+        editor: str, segments: List, options: tuple
+    ):
+        image = main_window.get_editor(editor).get_image()
         if image is None:
             return
 
@@ -68,7 +68,7 @@ class TransformByLinearSegments(Command):
             lut_or_none(options[1]),
             lut_or_none(options[2])
         ))
-        main_window.add_editor(transformed_image, title + "-LT")
+        main_window.add_editor(transformed_image, editor + "-LT")
 
     def get_LUT(self, points: List):
         lut = list(range(256))

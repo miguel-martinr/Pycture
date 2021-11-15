@@ -6,20 +6,23 @@ from PyQt5.QtCore import Qt, Signal
 
 from pycture.editor.image.color import Color
 from .notification import Notification
-from .widgets import RGBCheckboxes, PointsInput, CustomIntValidator
+from .widgets import RGBCheckboxes, PointsInput, CustomIntValidator, DropdownList
 
 
 class SegmentsInput(QDialog):
     previewed = Signal(list) # list of points
-    applied = Signal(list, tuple) # list of points and color options
+    applied = Signal(str, list, tuple) # Editor, list of points and color options
     # It is guaranteed that there will be at least two points
 
-    def __init__(self, parent: QMainWindow):
+    def __init__(self, parent: QMainWindow, editors: List[str]):
         super().__init__(parent, Qt.WindowType.Window)
         self.setWindowTitle("Linear transformation by segments")
         self.points = []
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
+
+        self.dropdown = DropdownList(self, editors)
+        self.layout.addWidget(self.dropdown)
 
         self.checkboxes = RGBCheckboxes(self)
         self.layout.addWidget(self.checkboxes)
@@ -65,9 +68,14 @@ class SegmentsInput(QDialog):
 
     def emit_applied(self):
         points = self.get_points()
-        if points is not None:
-            color_options = self.checkboxes.get_checked()
-            self.applied.emit(points, color_options)
+        if points is None:
+            return
+        editor = self.dropdown.currentText()
+        if self.parent().get_editor(editor) is None:
+            Notification(self, "An active image must be chosen")
+            return
+        color_options = self.checkboxes.get_checked()
+        self.applied.emit(editor, points, color_options)
 
     def get_points(self):
         points = self.points_input.get_points() 
@@ -81,3 +89,6 @@ class SegmentsInput(QDialog):
             if points_x[i] >= points_x[i + 1]:
                 return False
         return True
+
+    def set_dropdown_image(self, editor: str):
+        self.dropdown.set_selected(editor)
