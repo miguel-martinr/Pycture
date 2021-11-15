@@ -21,6 +21,9 @@ class EditBrightnessAndContrast(Command):
         dialog.applied.connect(lambda editor, brightness, contrast: 
             self.apply(main_window, editor, brightness, contrast)
         )
+        editor = main_window.get_active_editor_name()
+        if editor is not None:
+            dialog.set_dropdown_image(editor)
 
     def apply(self, main_window: QMainWindow, editor: str,
         brightness: (float, float, float), contrast: (float, float, float)

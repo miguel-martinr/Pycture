@@ -96,3 +96,6 @@ class EditBrightnessAndContrastDialog(QDialog):
             lambda x: min(float(x), 127.5), self.contrast_sliders.get_values()
         ))
         return brightness_values, contrast_values
+    
+    def set_dropdown_image(self, editor: str):
+        self.dropdown.set_selected(editor)

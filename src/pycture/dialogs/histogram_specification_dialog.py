@@ -41,3 +41,6 @@ class HistogramSpecificationDialog(QDialog):
             Notification(self, "Can't use the same image as sample and base")
             return
         self.editors_selected.emit(base, sample, self.checkboxes.get_checked())
+        
+    def set_base_image(self, editor: str):
+        self.base_dropdown.set_selected(editor)
