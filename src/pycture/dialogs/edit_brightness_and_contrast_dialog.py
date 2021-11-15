@@ -99,3 +99,4 @@ class EditBrightnessAndContrastDialog(QDialog):
     
     def set_dropdown_image(self, editor: str):
         self.dropdown.set_selected(editor)
+        self.update_selected_editor(editor)
