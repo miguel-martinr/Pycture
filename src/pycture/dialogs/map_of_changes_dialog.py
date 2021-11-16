@@ -1,10 +1,12 @@
-import typing
 from PyQt5 import QtGui
-from PyQt5.QtCore import QObject, Qt, Signal
-from PyQt5.QtGui import QColor, QImage, QPixmap, QValidator
-from PyQt5.QtWidgets import QColorDialog, QDialog, QGridLayout, QLabel, QLayoutItem, QLineEdit, QMainWindow, QPushButton, QSlider, QVBoxLayout, QWidget
+from PyQt5.QtCore import  Qt, Signal
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QColorDialog, QDialog, QGridLayout, QLabel, QLayout, QLineEdit, QMainWindow, QPushButton, QVBoxLayout, QWidget
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from pycture.dialogs.plot_window import PlotWindow
 
 from pycture.dialogs.widgets import DropdownList
+from pycture.editor.image.color import Color
 from .widgets import CustomIntValidator
 
 
@@ -73,7 +75,7 @@ class MapOfChangesDialog(QDialog):
         
         self.rgb_dropdown.activated.connect(
             lambda index: self.rgb_plane_changed.emit(index))
-        self.rgb_dropdown.setCurrentIndex(3)
+        
 
         self.rgb_dropdown.activated.connect(
             lambda: self._map_changed_())
@@ -91,6 +93,32 @@ class MapOfChangesDialog(QDialog):
         save_current_button = QPushButton("Save current", self)
         save_current_button.pressed.connect(lambda: self.save_current.emit())
         self.layout().addWidget(save_current_button)
+
+    def update_plot(self, new_plot: PlotWindow):
+        layout: QVBoxLayout = self.layout()
+        layout.setSizeConstraint(QLayout.SetFixedSize)
+        
+        try:
+            old_plot = self.old_plot
+        except AttributeError:
+            layout.addWidget(new_plot)
+            self.old_plot = new_plot
+            return 
+    
+        layout.replaceWidget(old_plot, new_plot)
+        old_plot.destroy(True, True)
+        old_plot.deleteLater()
+        self.old_plot = new_plot
+            
+    def set_rgb_plane(self, color: Color):
+        option = self.rgb_dropdown.options[color.value]
+        self.rgb_dropdown.set_selected(option)     
+        self.rgb_plane_changed.emit(color.value)
+            
+        
+            
+            
+        
 class ColorPicker(QLabel):
     color_changed = Signal(QColor)
     def __init__(self, parent: QWidget, initial_color: QColor) -> None:

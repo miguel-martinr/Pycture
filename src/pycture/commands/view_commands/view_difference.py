@@ -53,5 +53,5 @@ class ViewDifference(Command):
         self.main_window = main_window
 
         self.dialog = SelectTwoImagesDialog(
-            main_window, main_window.get_editor_list(), "View Difference")
+            main_window, main_window.get_editor_list(), main_window.get_active_editor_name(), "View Difference")
         self.dialog.applied.connect(self._show_difference_)
