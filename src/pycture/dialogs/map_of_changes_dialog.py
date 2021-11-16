@@ -25,7 +25,7 @@ class MapOfChangesDialog(QDialog):
         layout = QVBoxLayout()
         self.setLayout(layout)
         self._set_inputs_()
-        self._set_btn_()
+        self._set_button_()
 
         maximum_width = 300
         self.setMinimumWidth(maximum_width)
@@ -89,7 +89,7 @@ class MapOfChangesDialog(QDialog):
 
         self.map_changed.emit(treshold, rgb_plane, marker_color)
 
-    def _set_btn_(self):
+    def _set_button_(self):
         save_current_button = QPushButton("Save current", self)
         save_current_button.pressed.connect(lambda: self.save_current.emit())
         self.layout().addWidget(save_current_button)

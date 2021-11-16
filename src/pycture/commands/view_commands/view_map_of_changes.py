@@ -1,25 +1,19 @@
 from PyQt5.QtCore import Qt, Signal
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from pycture.commands.view_commands.view_histogram import ViewBlueHistogram, ViewGrayScaleHistogram, ViewGreenHistogram, ViewHistogram, ViewRedHistogram
-from pycture.dialogs import Notification
-
-from pycture.dialogs.map_of_changes_dialog import MapOfChangesDialog
-from pycture.dialogs.plot_window import PlotWindow
-from pycture.dialogs.select_two_images_dialog import SelectTwoImagesDialog
-from pycture.editor import Editor, image_holder
-from pycture.editor import image
-from pycture.editor.image import Image
-from pycture.editor.image.color import Color, RGBColor
-from ..command import Command
-from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QWidget, QMainWindow, QLabel
 from PyQt5.QtGui import QColor, QImage, QPixmap
+
+from pycture.commands.view_commands.view_histogram import ViewBlueHistogram, ViewGrayScaleHistogram, ViewGreenHistogram, ViewHistogram, ViewRedHistogram
+from pycture.dialogs import Notification, MapOfChangesDialog, PlotWindow, SelectTwoImagesDialog
+from pycture.editor import Editor
+from pycture.editor.image import Image, Color, RGBColor
+from ..command import Command
 
 
 class ViewMapOfChanges(Command):
     map_changed = Signal(QImage)
     images_selected = Signal(Image, Image)
 
-    def __init__(self, parent: QtWidgets):
+    def __init__(self, parent: QWidget):
         super().__init__(parent, "Map of Changes")
         self.is_setted = False
         self.images_selected.connect(lambda: self._trigger_map_())
@@ -36,8 +30,9 @@ class ViewMapOfChanges(Command):
         try:
             image_holder = self.image_holder
         except AttributeError:
-            image_holder = self.image_holder = QtWidgets.QLabel(
-                self.main_window, Qt.WindowType.Window)
+            image_holder = self.image_holder = QLabel(
+                self.main_window, Qt.WindowType.Window
+            )
             image_holder.setWindowTitle(self.map_title)
 
         image_holder.setPixmap(QPixmap.fromImage(map_image))
@@ -114,7 +109,7 @@ class ViewMapOfChanges(Command):
         self.map_dialog.update_plot(PlotWindow(self.map_dialog, figure, title, Qt.WindowType.SubWindow))
         
 
-    def execute(self, main_window: QtWidgets.QMainWindow):
+    def execute(self, main_window: QMainWindow):
         self.main_window = main_window
 
         self.map_dialog = self.map_dialog = MapOfChangesDialog(

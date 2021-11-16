@@ -1,17 +1,13 @@
-from PyQt5 import QtWidgets
-from PyQt5.QtGui import QColor, QImage
-from pycture.commands.view_commands.view_map_of_changes import ViewMapOfChanges
+from PyQt5.QtWidgets import QWidget, QMainWindow
 
-from pycture.dialogs import Notification, SelectTwoImagesDialog, MapOfChangesDialog
-from pycture.editor.image import Image
-from pycture.editor.image.color import Color, RGBColor
-from ..command import Command
+from pycture.dialogs import Notification, SelectTwoImagesDialog 
 from pycture.editor import Editor
-from .view_histogram import ViewHistogram, ViewRedHistogram, ViewGreenHistogram, ViewBlueHistogram, ViewGrayScaleHistogram
+from pycture.editor.image import Image
+from ..command import Command
 
 
 class ViewDifference(Command):
-    def __init__(self, parent: QtWidgets):
+    def __init__(self, parent: QWidget):
         self.active_histogram = None
         self.map_dialog = None
         self.difference_editor = None
@@ -49,7 +45,7 @@ class ViewDifference(Command):
         self.difference_editor = self.main_window.get_editor(title)
         
 
-    def execute(self, main_window: QtWidgets.QMainWindow):
+    def execute(self, main_window: QMainWindow):
         self.main_window = main_window
 
         self.dialog = SelectTwoImagesDialog(

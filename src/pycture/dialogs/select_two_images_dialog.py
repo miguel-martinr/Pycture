@@ -24,7 +24,7 @@ class SelectTwoImagesDialog(QDialog):
         self.setWindowTitle("Select two images")
         self.setLayout(layout)
         self._set_dropdowns_(options, default_option)
-        self._set_btn_(button_text)
+        self._set_button_(button_text)
 
         maximum_width = 300
         self.setMinimumWidth(maximum_width)
@@ -55,11 +55,11 @@ class SelectTwoImagesDialog(QDialog):
 
         self.applied.emit(image_a, image_b)
 
-    def _set_btn_(self, button_text: str):
+    def _set_button_(self, button_text: str):
         layout = QHBoxLayout()
         self.layout().addLayout(layout)
 
-        apply_btn = QPushButton(button_text, self)
-        layout.addWidget(apply_btn)
-        apply_btn.pressed.connect(self._apply_)
+        apply_button = QPushButton(button_text, self)
+        layout.addWidget(apply_button)
+        apply_button.pressed.connect(self._apply_)
 
