@@ -95,7 +95,7 @@ class ViewMapOfChanges(Command):
         
 
         select_images_dialog = SelectTwoImagesDialog(
-            main_window, main_window.get_editor_list(), button_text="Create map")
+            main_window, main_window.get_editor_list(), main_window.get_active_editor_name(), button_text="Create map")
         select_images_dialog.applied.connect(lambda base_title, sample_title: self._images_selected_(
             base_title, sample_title, select_images_dialog))
 
