@@ -9,6 +9,7 @@ from pycture.css import PLOT_TOOLBAR_CSS
 class PlotWindow(QWidget):
     def __init__(self, parent: QWidget, figure: Figure, title: str, window_type: Qt.WindowType = Qt.WindowType.Window):
         super().__init__(parent)
+        self.figure = figure
         self.setWindowTitle(title)
         self.layout = QVBoxLayout(self)
         plot = FigureCanvasQTAgg(figure)
@@ -22,5 +23,5 @@ class PlotWindow(QWidget):
         self.show()
 
     def destroy(self, a, b):
-        plt.close(figure)
+        plt.close(self.figure)
         super().destroy(a, b)

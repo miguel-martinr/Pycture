@@ -6,7 +6,7 @@ class DropdownList(QComboBox):
     def __init__(self, parent: QWidget, options: [str]):
         super().__init__(parent)
         self.options = options
-
+    
     
     def set_selected(self, option: str):
         self.clear()

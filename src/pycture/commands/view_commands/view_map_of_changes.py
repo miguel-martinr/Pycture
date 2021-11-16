@@ -80,6 +80,10 @@ class ViewMapOfChanges(Command):
         base_image = base_editor.get_image()
         sample_image = sample_editor.get_image()
         diff_image = Image(base_image.get_difference(sample_image))
+        
+        # Shows difference image gray scale histogram by default 
+        diff_image.loader.finished.connect(lambda: self.map_dialog.set_rgb_plane(Color.Gray))
+        
         diff_image.start_load()
 
         self.setup(base_image, diff_image,
@@ -90,12 +94,12 @@ class ViewMapOfChanges(Command):
     def _trigger_map_(self):
         self.map_dialog.show()
         self.map_dialog._map_changed_()
+        
 
-        # RGB Gray
-
+        
     def _rgb_plane_changed_(self, color_index: int):
         if not self.diff_image.load_finished:
-            Notification("Image's still loading. Please wait a bit.")
+            Notification(self.main_window, "Image's still loading. Please wait a bit.")
             return
         
         histogram_commands: [ViewHistogram] = [
@@ -119,6 +123,7 @@ class ViewMapOfChanges(Command):
         self.map_dialog.save_current.connect(self._save_current_map_)
         self.map_dialog.rgb_plane_changed.connect(self._rgb_plane_changed_)
 
+        
         select_images_dialog = SelectTwoImagesDialog(
             main_window, main_window.get_editor_list(), main_window.get_active_editor_name(), button_text="Create map")
         select_images_dialog.applied.connect(lambda base_title, sample_title: self._images_selected_(

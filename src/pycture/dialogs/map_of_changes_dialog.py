@@ -6,6 +6,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from pycture.dialogs.plot_window import PlotWindow
 
 from pycture.dialogs.widgets import DropdownList
+from pycture.editor.image.color import Color
 from .widgets import CustomIntValidator
 
 
@@ -74,7 +75,7 @@ class MapOfChangesDialog(QDialog):
         
         self.rgb_dropdown.activated.connect(
             lambda index: self.rgb_plane_changed.emit(index))
-        self.rgb_dropdown.setCurrentIndex(3)
+        
 
         self.rgb_dropdown.activated.connect(
             lambda: self._map_changed_())
@@ -105,10 +106,14 @@ class MapOfChangesDialog(QDialog):
             return 
     
         layout.replaceWidget(old_plot, new_plot)
+        old_plot.destroy(True, True)
         old_plot.deleteLater()
         self.old_plot = new_plot
             
-            
+    def set_rgb_plane(self, color: Color):
+        option = self.rgb_dropdown.options[color.value]
+        self.rgb_dropdown.set_selected(option)     
+        self.rgb_plane_changed.emit(color.value)
             
         
             
