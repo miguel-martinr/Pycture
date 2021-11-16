@@ -3,6 +3,7 @@ from PyQt5 import QtGui
 from PyQt5.QtCore import QObject, Qt, Signal
 from PyQt5.QtGui import QColor, QImage, QPixmap, QValidator
 from PyQt5.QtWidgets import QColorDialog, QDialog, QGridLayout, QLabel, QLayoutItem, QLineEdit, QMainWindow, QPushButton, QSlider, QVBoxLayout, QWidget
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 
 from pycture.dialogs.widgets import DropdownList
 from .widgets import CustomIntValidator
@@ -91,6 +92,9 @@ class MapOfChangesDialog(QDialog):
         save_current_button = QPushButton("Save current", self)
         save_current_button.pressed.connect(lambda: self.save_current.emit())
         self.layout().addWidget(save_current_button)
+
+    def update_plot(figure: FigureCanvasQTAgg):
+        print("updating plot")
 class ColorPicker(QLabel):
     color_changed = Signal(QColor)
     def __init__(self, parent: QWidget, initial_color: QColor) -> None:
