@@ -1,9 +1,9 @@
-import typing
 from PyQt5 import QtGui
-from PyQt5.QtCore import QObject, Qt, Signal
-from PyQt5.QtGui import QColor, QImage, QPixmap, QValidator
-from PyQt5.QtWidgets import QColorDialog, QDialog, QGridLayout, QLabel, QLayoutItem, QLineEdit, QMainWindow, QPushButton, QSlider, QVBoxLayout, QWidget
+from PyQt5.QtCore import  Qt, Signal
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QColorDialog, QDialog, QGridLayout, QLabel, QLayout, QLineEdit, QMainWindow, QPushButton, QVBoxLayout, QWidget
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from pycture.dialogs.plot_window import PlotWindow
 
 from pycture.dialogs.widgets import DropdownList
 from .widgets import CustomIntValidator
@@ -93,8 +93,27 @@ class MapOfChangesDialog(QDialog):
         save_current_button.pressed.connect(lambda: self.save_current.emit())
         self.layout().addWidget(save_current_button)
 
-    def update_plot(figure: FigureCanvasQTAgg):
-        print("updating plot")
+    def update_plot(self, new_plot: PlotWindow):
+        layout: QVBoxLayout = self.layout()
+        layout.setSizeConstraint(QLayout.SetFixedSize)
+        
+        try:
+            old_plot = self.old_plot
+        except AttributeError:
+            layout.addWidget(new_plot)
+            self.old_plot = new_plot
+            return 
+    
+        layout.replaceWidget(old_plot, new_plot)
+        old_plot.deleteLater()
+        self.old_plot = new_plot
+            
+            
+            
+        
+            
+            
+        
 class ColorPicker(QLabel):
     color_changed = Signal(QColor)
     def __init__(self, parent: QWidget, initial_color: QColor) -> None:

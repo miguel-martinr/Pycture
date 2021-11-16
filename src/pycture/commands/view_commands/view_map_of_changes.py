@@ -1,4 +1,5 @@
 from PyQt5.QtCore import Qt, Signal
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from pycture.commands.view_commands.view_histogram import ViewBlueHistogram, ViewGrayScaleHistogram, ViewGreenHistogram, ViewHistogram, ViewRedHistogram
 from pycture.dialogs import Notification
 
@@ -106,7 +107,8 @@ class ViewMapOfChanges(Command):
         mean = self.diff_image.get_mean(color)
         title = histogram_command.get_title(self.map_title)
         figure = histogram_command.get_histogram_figure(histogram, mean, title)
-        PlotWindow(self.main_window, figure, "Diff hist")
+        self.map_dialog.update_plot(PlotWindow(self.map_dialog, figure, title, Qt.WindowType.SubWindow))
+        
 
     def execute(self, main_window: QtWidgets.QMainWindow):
         self.main_window = main_window
