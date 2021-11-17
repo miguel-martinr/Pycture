@@ -5,3 +5,4 @@ from .custom_double_validator import CustomDoubleValidator
 from .points_input import PointsInput
 from .point_input import PointInput
 from .rgb_sliders import RGBSliders
+from .color_picker import ColorPicker
