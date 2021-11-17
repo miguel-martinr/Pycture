@@ -26,9 +26,7 @@ class SelectTwoImagesDialog(QDialog):
         self._set_dropdowns_(options, default_option)
         self._set_button_(button_text)
 
-        maximum_width = 300
-        self.setMinimumWidth(maximum_width)
-        self.setMaximumWidth(maximum_width)
+        self.setFixedWidth(300)
 
     def _set_dropdowns_(self, options: [str], default_option: str):
         label_a = QLabel("Image A:", self)
