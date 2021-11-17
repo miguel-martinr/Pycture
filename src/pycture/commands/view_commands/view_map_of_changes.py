@@ -18,6 +18,19 @@ class ViewMapOfChanges(Command):
         self.is_setted = False
         self.images_selected.connect(lambda: self._trigger_map_())
 
+    def execute(self, main_window: QMainWindow):
+        self.main_window = main_window
+
+        self.map_dialog = self.map_dialog = MapOfChangesDialog(self.main_window)
+        self.map_dialog.map_changed.connect(self._update_map_)
+        self.map_dialog.save_current.connect(self._save_current_map_)
+        self.map_dialog.rgb_plane_changed.connect(self._rgb_plane_changed_)
+
+        select_images_dialog = SelectTwoImagesDialog(
+            main_window, main_window.get_editor_list(), main_window.get_active_editor_name(), button_text="Create map")
+        select_images_dialog.applied.connect(lambda base_title, sample_title: self._images_selected_(
+            base_title, sample_title, select_images_dialog))
+
     def setup(self, base_image: Image, diff_image: Image, map_title: str):
         self.map_title = map_title
         self.base_image = Image(base_image)
@@ -109,17 +122,3 @@ class ViewMapOfChanges(Command):
         self.map_dialog.update_plot(PlotWindow(self.map_dialog, figure, title, Qt.WindowType.SubWindow))
         
 
-    def execute(self, main_window: QMainWindow):
-        self.main_window = main_window
-
-        self.map_dialog = self.map_dialog = MapOfChangesDialog(
-            self.main_window)
-        self.map_dialog.map_changed.connect(self._update_map_)
-        self.map_dialog.save_current.connect(self._save_current_map_)
-        self.map_dialog.rgb_plane_changed.connect(self._rgb_plane_changed_)
-
-        
-        select_images_dialog = SelectTwoImagesDialog(
-            main_window, main_window.get_editor_list(), main_window.get_active_editor_name(), button_text="Create map")
-        select_images_dialog.applied.connect(lambda base_title, sample_title: self._images_selected_(
-            base_title, sample_title, select_images_dialog))

@@ -1,17 +1,14 @@
-from pycture.commands.edit_commands.edit_brightness_and_contrast import EditBrightnessAndContrast
-from pycture.commands.edit_commands.gamma_correction import GammaCorrection
-from pycture.commands.view_commands.view_map_of_changes import ViewMapOfChanges
 from .edit_commands import (EditBrightnessAndContrast, ConvertToGrayScale,
                             TransformByLinearSegments, EqualizeRed,
                             EqualizeGreen, EqualizeBlue, EqualizeRGB,
-                            SpecifyHistogram)
+                            SpecifyHistogram, EditBrightnessAndContrast, GammaCorrection)
 from .file_commands import OpenFile, SaveFile
 from .view_commands import (ViewRedHistogram, ViewGreenHistogram, ViewBlueHistogram,
                             ViewGrayScaleHistogram, ViewCumulativeRedHistogram,
                             ViewCumulativeGreenHistogram, ViewCumulativeBlueHistogram,
                             ViewCumulativeGrayScaleHistogram, ViewImageBrightness,
                             ViewImageSize, ViewImageContrast, ViewImageEntropy,
-                            ViewImageRanges, ViewDifference)
+                            ViewImageRanges, ViewDifference, ViewMapOfChanges)
 
 from .help_commands import ShowHelp
 from .command import Command
