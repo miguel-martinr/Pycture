@@ -16,11 +16,6 @@ class Rotate(Command):
             "Nearest Neighbour": nearest_neighbor_interpolation,
         }
 
-    def rotation_matrix(self, angle_rad: float):
-        return np.array(
-            ((cos(angle_rad), -sin(angle_rad)),
-             (sin(angle_rad), cos(angle_rad)))
-        )
 
     def rotate(self, image: Image, angle_deg: float, interpolation_technique):
         angle_rad = angle_deg * (pi / 180)
