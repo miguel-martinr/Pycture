@@ -212,9 +212,9 @@ class Image(QImage):
                     coordinates.append((x, y))
         return coordinates
 
-    def rotate(self, image: QImage, angle_deg: float, interpolation_technique):
+    def rotate(self, angle_deg: float, interpolation_technique):
       
-        def rotation_matrix(self, angle_rad: float):
+        def rotation_matrix(angle_rad: float):
             return np.array(
               ((cos(angle_rad), -sin(angle_rad)),
               (sin(angle_rad), cos(angle_rad)))
@@ -222,9 +222,9 @@ class Image(QImage):
             
         angle_rad = angle_deg * (pi / 180)
         old_top_left = (0, 0)
-        old_top_right = (image.width() - 1, 0)
-        old_bottom_left = (0, image.height() - 1)
-        old_bottom_right = (image.width() - 1, image.height() - 1)
+        old_top_right = (self.width() - 1, 0)
+        old_bottom_left = (0, self.height() - 1)
+        old_bottom_right = (self.width() - 1, self.height() - 1)
 
         dt_rotation_matrix = rotation_matrix(angle_rad)
         it_rotation_matrix = rotation_matrix(-angle_rad)
@@ -248,15 +248,15 @@ class Image(QImage):
         new_width = floor(abs(max_x - min_x))
         new_height = floor(abs(max_y - min_y))
 
-        new_image = QImage(new_width, new_height, image.format())
+        new_image = QImage(new_width, new_height, self.format())
         for indexXp in range(new_width):
             for indexYp in range(new_height):
                 xp, yp = (indexXp + min_x, indexYp + min_y)
                 x, y = np.dot(it_rotation_matrix, (xp, yp))
 
-                if (0 <= x < image.width() and 0 <= y < image.height()):
+                if (0 <= x < self.width() and 0 <= y < self.height()):
                     new_image.setPixel(
-                        indexXp, indexYp, interpolation_technique(image, (x, y)))
+                        indexXp, indexYp, interpolation_technique(self, (x, y)))
                 else:
                     new_image.setPixel(indexXp, indexYp, 0xffffff)
         return new_image
