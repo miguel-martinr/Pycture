@@ -3,6 +3,7 @@ from PyQt5.QtGui import QDoubleValidator, QValidator
 from PyQt5.QtWidgets import QDialog, QGridLayout, QLineEdit, QMainWindow, QPushButton, QSlider
 import re
 
+
 class CustomDoubleValidator(QDoubleValidator):
     def __init__(self, lower_limit: int, upper_limit: int, decimals: int):
         super().__init__()
@@ -15,11 +16,15 @@ class CustomDoubleValidator(QDoubleValidator):
 
         if (input == ""):
             return State.Intermediate, input, pos
+          
+        if (input == '-'):
+            return State.Intermediate, input, pos
 
         if (input[-1] == ','):
             return State.Invalid, input, pos
 
-        matched_float = re.match('^\\d+(\\.)?(\\d{1,2})?$', input)
+
+        matched_float = re.match('^(-)?\\d+(\\.)?(\\d{1,2})?$', input)
         if (not matched_float):
             return State.Invalid, input, pos
 

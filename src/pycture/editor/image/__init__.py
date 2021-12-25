@@ -1,6 +1,7 @@
-from math import log2, sqrt
+from math import log2, sqrt, pi, sin, cos, floor
 from typing import List, Tuple
 from functools import reduce
+import numpy as np
 
 from PyQt5.QtGui import QColor, QImage, QPixmap
 from PyQt5.QtCore import QPoint, QThread, QSize, Signal
@@ -33,7 +34,7 @@ class Image(QImage):
         self.thread.finished.connect(self.thread.deleteLater)
 
         self.then = datetime.now()
-        
+
     # This function needs to be separated to allow other elements
     # to connect signals to ImageLoader's slots. Trying to connect
     # the signal after the thread has started is unsafe
@@ -144,7 +145,8 @@ class Image(QImage):
         get_qpoint = lambda i: QPoint(i % self.width(), i // self.width())
         for i in range(size):
             color_bytes = pixels[i * 4:i * 4 + 3]
-            color_ints = [int.from_bytes(color_bytes[j:j + 1], 'big') for j in range(3)]
+            color_ints = [int.from_bytes(
+                color_bytes[j:j + 1], 'big') for j in range(3)]
             rgb_values = get_rgb(color_ints)
 
             new_pixel = int.from_bytes([255, *rgb_values], 'big')
@@ -156,7 +158,7 @@ class Image(QImage):
                 rgb_values[color.value] = lut[color_value]
                 new_pixel = int.from_bytes([255, *rgb_values], 'big')
             image.setPixel(get_qpoint(i), new_pixel)
-              
+
         return image
 
     def get_difference(self, image_b: QImage):
@@ -196,7 +198,7 @@ class Image(QImage):
             if (not (0 <= y < self.height())):
                 print("Mark pixels: y out of range")
                 return
-        
+
             marked_image.setPixel(x, y, marker_color)
 
         return marked_image
@@ -209,3 +211,52 @@ class Image(QImage):
                 if pixel.get_color(rgb_plane) > treshold:
                     coordinates.append((x, y))
         return coordinates
+
+    def rotate(self, angle_deg: float, interpolation_technique):
+      
+        def rotation_matrix(angle_rad: float):
+            return np.array(
+              ((cos(angle_rad), -sin(angle_rad)),
+              (sin(angle_rad), cos(angle_rad)))
+            )
+            
+        angle_rad = angle_deg * (pi / 180)
+        old_top_left = (0, 0)
+        old_top_right = (self.width() - 1, 0)
+        old_bottom_left = (0, self.height() - 1)
+        old_bottom_right = (self.width() - 1, self.height() - 1)
+
+        dt_rotation_matrix = rotation_matrix(angle_rad)
+        it_rotation_matrix = rotation_matrix(-angle_rad)
+
+        new_top_left = np.array(
+            [floor(value) for value in np.dot(dt_rotation_matrix, old_top_left)])
+        new_top_right = np.dot(dt_rotation_matrix, old_top_right)
+        new_bottom_left = np.dot(dt_rotation_matrix, old_bottom_left)
+        new_bottom_right = np.dot(dt_rotation_matrix, old_bottom_right)
+
+        xs = [new_top_left[0], new_top_right[0],
+              new_bottom_left[0], new_bottom_right[0]]
+        ys = [new_top_left[1], new_top_right[1],
+              new_bottom_left[1], new_bottom_right[1]]
+
+        max_x = max(xs)
+        max_y = max(ys)
+        min_x = min(xs)
+        min_y = min(ys)
+
+        new_width = floor(abs(max_x - min_x))
+        new_height = floor(abs(max_y - min_y))
+
+        new_image = QImage(new_width, new_height, self.format())
+        for indexXp in range(new_width):
+            for indexYp in range(new_height):
+                xp, yp = (indexXp + min_x, indexYp + min_y)
+                x, y = np.dot(it_rotation_matrix, (xp, yp))
+
+                if (0 <= x < self.width() and 0 <= y < self.height()):
+                    new_image.setPixel(
+                        indexXp, indexYp, interpolation_technique(self, (x, y)))
+                else:
+                    new_image.setPixel(indexXp, indexYp, 0xffffff)
+        return new_image
