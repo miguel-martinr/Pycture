@@ -3,23 +3,20 @@ from PyQt5.QtWidgets import QDialog, QLabel, QLayout, QLineEdit, QMainWindow, QP
 from PyQt5.QtCore import Qt, Signal
 from . import Notification
 
-from .widgets import CustomDoubleValidator, DropdownList
+from .widgets import CustomIntValidator, DropdownList
 
 
-class RotateDialog(QDialog):
+class ScaleDialog(QDialog):
     #                img  interpolation  size(int, int)
     applied = Signal(str, str, tuple)
     
-    def __init__(self, parent: QMainWindow, editors: List[str], angle_limit = 180):
+    def __init__(self, parent: QMainWindow, editors: List[str]):
         super().__init__(parent, Qt.WindowType.Window)
         self.setWindowTitle("Scale")
         self.layout = QVBoxLayout()
         self.layout.setSizeConstraint(QLayout.SetFixedSize)
         self.setLayout(self.layout)
-        self.angle_limit = angle_limit
-        
         self.setup(editors)
-        
         self.show()
         
     def setup(self, editors: List[str]):
@@ -32,20 +29,22 @@ class RotateDialog(QDialog):
         self.interpolation_dropdown = DropdownList(self, ["Nearest neighbour"])
         layout.addWidget(self.interpolation_dropdown)
 
+        self.width = QLineEdit("1", self)
+        validator = CustomIntValidator(0, 10000)
+        self.width.setValidator(validator)
+        layout.addWidget(self.width)
 
-        label = QLabel("Angle:", self)
-        layout.addWidget(label)
-
-        self.numeric_input = QLineEdit("1", self)
-        self.numeric_input.setValidator(CustomDoubleValidator(-self.angle_limit, self.angle_limit, 2))
-        layout.addWidget(self.numeric_input)
+        self.height = QLineEdit("1", self)
+        validator = CustomIntValidator(0, 10000)
+        self.height.setValidator(validator)
+        layout.addWidget(self.height)
         
         separator = QWidget()
         separator.setMinimumSize(0, 0)
         separator.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         layout.addWidget(separator)
 
-        apply_button = QPushButton("Rotate", self)
+        apply_button = QPushButton("Scale", self)
         apply_button.clicked.connect(self.emit_applied)
         layout.addWidget(apply_button)
         
@@ -54,9 +53,10 @@ class RotateDialog(QDialog):
         if self.parent().get_editor(editor) is None:
             Notification(self, "An active image must be chosen")
             return
+        size = (int(self.width.text()), int(self.height.text()))
         self.applied.emit(self.editors_dropdown.currentText(), 
                           self.interpolation_dropdown.currentText(), 
-                          float(self.numeric_input.text()))
+                          size)
         
     def set_editor(self, editor: str):
         self.editors_dropdown.set_selected(editor)

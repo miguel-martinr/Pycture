@@ -259,3 +259,6 @@ class Image(QImage):
                 else:
                     new_image.setPixel(indexXp, indexYp, 0xffffff)
         return new_image
+
+    def scale(self, size: (int, int), interpolation_technique):
+        return self

@@ -1,15 +1,12 @@
-from PyQt5 import QtWidgets
-from PyQt5.QtGui import QImage
-from pycture.commands.command import Command
-from pycture.commands.edit_commands.interpolation import nearest_neighbor_interpolation
-from pycture.dialogs.rotate_dialog import RotateDialog
+from PyQt5.QtWidgets import QWidget, QMainWindow
+from ..command import Command
+from .interpolation import nearest_neighbor_interpolation
+from pycture.dialogs import RotateDialog
 from pycture.editor import Editor
-from pycture.editor.image import Image
-from math import ceil, cos, floor, sin, pi, sqrt
 
 
 class Rotate(Command):
-    def __init__(self, parent: QtWidgets):
+    def __init__(self, parent: QWidget):
         super().__init__(parent, "Rotate")
         self.interpolation_techniques = {
             "Nearest neighbour": nearest_neighbor_interpolation,
@@ -22,7 +19,7 @@ class Rotate(Command):
         self.main_window.add_editor(editor=Editor(
             self.main_window, rotated_image, title + f' rotated {angle}º'))
 
-    def execute(self, main_window: QtWidgets.QMainWindow):
+    def execute(self, main_window: QMainWindow):
         # Open dialog
         # Connect dialog button to rotate function
         self.main_window = main_window

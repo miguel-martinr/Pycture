@@ -8,3 +8,5 @@ from .edit_brightness_and_contrast_dialog import EditBrightnessAndContrastDialog
 from .gamma_correction_dialog import GammaCorrectionDialog
 from .select_two_images_dialog import SelectTwoImagesDialog
 from .map_of_changes_dialog import MapOfChangesDialog
+from .rotate_dialog import RotateDialog
+from .scale_dialog import ScaleDialog

@@ -1,15 +1,6 @@
-from .edit_commands import (EditBrightnessAndContrast, ConvertToGrayScale,
-                            TransformByLinearSegments, EqualizeRed,
-                            EqualizeGreen, EqualizeBlue, EqualizeRGB,
-                            SpecifyHistogram, EditBrightnessAndContrast, GammaCorrection,
-                            Rotate)
+from .edit_commands import *
 from .file_commands import OpenFile, SaveFile
-from .view_commands import (ViewRedHistogram, ViewGreenHistogram, ViewBlueHistogram,
-                            ViewGrayScaleHistogram, ViewCumulativeRedHistogram,
-                            ViewCumulativeGreenHistogram, ViewCumulativeBlueHistogram,
-                            ViewCumulativeGrayScaleHistogram, ViewImageBrightness,
-                            ViewImageSize, ViewImageContrast, ViewImageEntropy,
-                            ViewImageRanges, ViewDifference, ViewMapOfChanges)
+from .view_commands import *
 
 from .help_commands import ShowHelp
 from .command import Command
@@ -23,7 +14,8 @@ edit_command_list = [
     EditBrightnessAndContrast,
     SpecifyHistogram,
     GammaCorrection,
-    Rotate]
+    Rotate,
+    Scale]
 equalize_command_list = [EqualizeRed, EqualizeGreen, EqualizeBlue, EqualizeRGB]
 histogram_command_list = [
     ViewRedHistogram,
