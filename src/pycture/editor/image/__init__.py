@@ -1,6 +1,5 @@
 from math import log2, sqrt, pi, sin, cos, floor
-from typing import List, Tuple
-from functools import reduce
+from typing import List 
 import numpy as np
 
 from PyQt5.QtGui import QColor, QImage, QPixmap

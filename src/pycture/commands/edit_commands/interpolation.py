@@ -2,7 +2,7 @@
 from PyQt5.QtGui import QImage
 from math import floor, sqrt
 
-def nearest_neighbor_interpolation(image: QImage, point: tuple):
+def nearest_neighbor_interpolation(image: QImage, point: (float, float)):
     _x, _y = point
 
     X = floor(_x)

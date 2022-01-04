@@ -6,14 +6,13 @@ from pycture.dialogs.rotate_dialog import RotateDialog
 from pycture.editor import Editor
 from pycture.editor.image import Image
 from math import ceil, cos, floor, sin, pi, sqrt
-import numpy as np
 
 
 class Rotate(Command):
     def __init__(self, parent: QtWidgets):
         super().__init__(parent, "Rotate")
         self.interpolation_techniques = {
-            "Nearest Neighbour": nearest_neighbor_interpolation,
+            "Nearest neighbour": nearest_neighbor_interpolation,
         }
 
     def apply_rotation(self, editor_title, interpolation_technique, angle):

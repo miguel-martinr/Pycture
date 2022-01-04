@@ -31,7 +31,7 @@ class RotateDialog(QDialog):
         self.editors_dropdown = DropdownList(self, editors)
         layout.addWidget(self.editors_dropdown)
         
-        self.interpolation_dropdown = DropdownList(self, ["Nearest neighbor"])
+        self.interpolation_dropdown = DropdownList(self, ["Nearest neighbour"])
         layout.addWidget(self.interpolation_dropdown)
 
 
