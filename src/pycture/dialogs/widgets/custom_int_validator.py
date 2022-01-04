@@ -3,7 +3,7 @@ from PyQt5.QtGui import QValidator
 
 # This custom validator was needed because Qt's default IntValidator
 # is more permisive with the input that can be introduced than it was
-# wanted here. This way you can't write 256 or -1.
+# wanted here. This way you can't write 256 or -1 if the limits are 0-257.
 # For more information: https://doc.qt.io/qt-5/qvalidator.html#validate
 class CustomIntValidator(QValidator):
     def __init__(self, lower_limit: int, upper_limit: int):
