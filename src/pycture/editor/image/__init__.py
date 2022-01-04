@@ -260,5 +260,16 @@ class Image(QImage):
                     new_image.setPixel(indexXp, indexYp, 0xffffff)
         return new_image
 
-    def scale(self, size: (int, int), interpolation_technique):
-        return self
+    def scale(self, new_size: (int, int), interpolation_technique):
+        (new_width, new_height) = new_size
+        new_image = QImage(new_width, new_height, self.format())
+        actual_width = self.width()
+        actual_height = self.height()
+        width_ratio = new_width / actual_width
+        height_ratio = new_height / actual_height
+        for x in range(new_width):
+            actual_x = x / width_ratio
+            for y in range(new_height):
+                actual_y = y / height_ratio
+                new_image.setPixel(x, y, interpolation_technique(self, (actual_x, actual_y)))
+        return new_image
