@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QMainWindow
 from ..command import Command
-from .interpolation import nearest_neighbor_interpolation
+from .interpolation import bilinear_interpolation, nearest_neighbor_interpolation
 from pycture.dialogs import RotateDialog
 from pycture.editor import Editor
 
@@ -10,6 +10,7 @@ class Rotate(Command):
         super().__init__(parent, "Rotate")
         self.interpolation_techniques = {
             "Nearest neighbour": nearest_neighbor_interpolation,
+            "Bilinear": bilinear_interpolation,
         }
 
     def apply_rotation(self, editor_title, interpolation_technique, angle):
@@ -23,7 +24,7 @@ class Rotate(Command):
         # Open dialog
         # Connect dialog button to rotate function
         self.main_window = main_window
-        dialog = RotateDialog(main_window, main_window.get_editor_list())
+        dialog = RotateDialog(main_window, main_window.get_editor_list(), list(self.interpolation_techniques.keys()))
         dialog.set_editor(main_window.get_active_editor_name())
         dialog.set_interpolation_technique(
             list(self.interpolation_techniques.keys())[0])

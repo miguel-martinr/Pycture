@@ -42,5 +42,5 @@ def bilinear_interpolation(image: QImage, point: (float, float)):
     
     P = R + (Q - R) * q
     
-    return P
+    return round(P)
     
