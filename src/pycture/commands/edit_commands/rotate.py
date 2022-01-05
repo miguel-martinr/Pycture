@@ -14,11 +14,16 @@ class Rotate(Command):
         }
 
     def apply_rotation(self, editor_title, interpolation_technique, angle):
-        image, title = self.get_active_image_and_title(self.main_window)
+        editor = self.main_window.editors.get(editor_title)
+        image = editor.get_image()
+        title = editor.windowTitle()
+        
         rotated_image = image.rotate(
             angle, self.interpolation_techniques[interpolation_technique])
+        
+        str_angle = str(angle).replace(".", "'")
         self.main_window.add_editor(editor=Editor(
-            self.main_window, rotated_image, title + f' rotated {angle}º'))
+            self.main_window, rotated_image, title + f' rotated {str_angle}º'))
 
     def execute(self, main_window: QMainWindow):
         # Open dialog

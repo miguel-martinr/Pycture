@@ -63,6 +63,7 @@ class MainWindow(QMainWindow):
             name = name + "+" + extension
             
         if editor:
+            editor.setWindowTitle(name)
             self.editors[name] = editor
         else:
             self.editors[name] = Editor(self, image, name)
