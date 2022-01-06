@@ -1,6 +1,7 @@
 
 from PyQt5.QtGui import QImage
 from math import floor, sqrt
+import numpy as np
 
 def nearest_neighbor_interpolation(image: QImage, point: (float, float)):
     _x, _y = point
@@ -11,8 +12,9 @@ def nearest_neighbor_interpolation(image: QImage, point: (float, float)):
     Y = floor(_y)
     Y_one = min(Y + 1, image.height() - 1)
 
+
     #           top left     top right       bottom left     bottom right
-    corners = ((X, Y_one),   (X_one, Y_one),  (X, Y),         (X_one, Y))
+    corners = ((X,  Y),     (X_one, Y),     (X, Y_one),     (X_one, Y_one))
 
     distances = [sqrt((x - _x)**2 + (y - _y)**2)
                  for x, y in corners]
@@ -23,16 +25,19 @@ def nearest_neighbor_interpolation(image: QImage, point: (float, float)):
 def bilinear_interpolation(image: QImage, point: (float, float)):
     _x, _y = point
 
+    def get_rgb(pixel):
+        return pixel & 0x00ffffff
+      
     X = floor(_x)
     X_one = min(X + 1, image.width() - 1)
 
     Y = floor(_y)
     Y_one = min(Y + 1, image.height() - 1)
     
-    A = image.pixel(X, Y_one)      # top left
-    B = image.pixel(X_one, Y_one)  # top right
-    C = image.pixel(X, Y)          # bottom left
-    D = image.pixel(X_one, Y)      # bottom right
+    A = get_rgb(image.pixel(X,  Y))      # top left
+    B = get_rgb(image.pixel(X_one, Y))  # top right
+    C = get_rgb(image.pixel(X, Y_one))          # bottom left
+    D = get_rgb(image.pixel(X_one, Y_one))      # bottom right
     
     p = _x - X
     q = _y - Y
@@ -40,7 +45,11 @@ def bilinear_interpolation(image: QImage, point: (float, float)):
     Q = A + (B - A) * p
     R = C + (D - C) * p
     
-    P = R + (Q - R) * q
+    P = round(R + (Q - R) * q)
     
-    return round(P)
+    P_bytes = bytearray(P.to_bytes(4, 'big')) # 0x00aabbcc
+    P_bytes[0] = 0xff # 0xffaabbcc
+    
+    return int.from_bytes(P_bytes, 'big')
+    
     

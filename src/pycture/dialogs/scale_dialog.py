@@ -10,23 +10,23 @@ class ScaleDialog(QDialog):
     #                img  interpolation  size(int, int)
     applied = Signal(str, str, tuple)
     
-    def __init__(self, parent: QMainWindow, editors: List[str]):
+    def __init__(self, parent: QMainWindow, editors: List[str], interpolation_techniques: List[str]):
         super().__init__(parent, Qt.WindowType.Window)
         self.setWindowTitle("Scale")
         self.layout = QVBoxLayout()
         self.layout.setSizeConstraint(QLayout.SetFixedSize)
         self.setLayout(self.layout)
-        self.setup(editors)
+        self.setup(editors, interpolation_techniques)
         self.show()
         
-    def setup(self, editors: List[str]):
+    def setup(self, editors: List[str], interpolation_techniques: List[str]):
         layout = QVBoxLayout()
         self.layout.addLayout(layout)
 
         self.editors_dropdown = DropdownList(self, editors)
         layout.addWidget(self.editors_dropdown)
         
-        self.interpolation_dropdown = DropdownList(self, ["Nearest neighbour"])
+        self.interpolation_dropdown = DropdownList(self, interpolation_techniques)
         layout.addWidget(self.interpolation_dropdown)
 
         self.width = QLineEdit("1", self)
