@@ -7,10 +7,10 @@ from .widgets import CustomDoubleValidator, DropdownList
 
 
 class RotateDialog(QDialog):
-    #                img  interpolation  size(int, int)
-    applied = Signal(str, str, tuple)
+    #                img  interpolation  angle
+    applied = Signal(str, str, float)
     
-    def __init__(self, parent: QMainWindow, editors: List[str], angle_limit = 180):
+    def __init__(self, parent: QMainWindow, editors: List[str], interpolation_techniques: List[str], angle_limit = 180):
         super().__init__(parent, Qt.WindowType.Window)
         self.setWindowTitle("Scale")
         self.layout = QVBoxLayout()
@@ -18,18 +18,18 @@ class RotateDialog(QDialog):
         self.setLayout(self.layout)
         self.angle_limit = angle_limit
         
-        self.setup(editors)
+        self.setup(editors, interpolation_techniques)
         
         self.show()
         
-    def setup(self, editors: List[str]):
+    def setup(self, editors: List[str], interpolation_techniques: List[str]):
         layout = QVBoxLayout()
         self.layout.addLayout(layout)
 
         self.editors_dropdown = DropdownList(self, editors)
         layout.addWidget(self.editors_dropdown)
         
-        self.interpolation_dropdown = DropdownList(self, ["Nearest neighbour"])
+        self.interpolation_dropdown = DropdownList(self, interpolation_techniques)
         layout.addWidget(self.interpolation_dropdown)
 
 
