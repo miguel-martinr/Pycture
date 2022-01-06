@@ -3,6 +3,8 @@ from PyQt5.QtGui import QImage
 from math import floor, sqrt
 import numpy as np
 
+from pycture.editor.image.pixel import Pixel
+
 def nearest_neighbor_interpolation(image: QImage, point: (float, float)):
     _x, _y = point
 
@@ -25,19 +27,17 @@ def nearest_neighbor_interpolation(image: QImage, point: (float, float)):
 def bilinear_interpolation(image: QImage, point: (float, float)):
     _x, _y = point
 
-    def get_rgb(pixel):
-        return pixel & 0x00ffffff
-      
     X = floor(_x)
     X_one = min(X + 1, image.width() - 1)
 
     Y = floor(_y)
     Y_one = min(Y + 1, image.height() - 1)
     
-    A = get_rgb(image.pixel(X,  Y))      # top left
-    B = get_rgb(image.pixel(X_one, Y))  # top right
-    C = get_rgb(image.pixel(X, Y_one))          # bottom left
-    D = get_rgb(image.pixel(X_one, Y_one))      # bottom right
+    # Get (R, G, B) values from pixels
+    A = np.array(tuple(image.pixel(X, Y).to_bytes(4, 'big')[1:]))          # top left
+    B = np.array(tuple(image.pixel(X_one, Y).to_bytes(4, 'big')[1:]))      # top right
+    C = np.array(tuple(image.pixel(X, Y_one).to_bytes(4, 'big')[1:]))      # bottom left
+    D = np.array(tuple(image.pixel(X_one, Y_one).to_bytes(4, 'big')[1:]))  # bottom right
     
     p = _x - X
     q = _y - Y
@@ -45,11 +45,8 @@ def bilinear_interpolation(image: QImage, point: (float, float)):
     Q = A + (B - A) * p
     R = C + (D - C) * p
     
-    P = round(R + (Q - R) * q)
-    
-    P_bytes = bytearray(P.to_bytes(4, 'big')) # 0x00aabbcc
-    P_bytes[0] = 0xff # 0xffaabbcc
-    
-    return int.from_bytes(P_bytes, 'big')
+    P = [round(val) for val in (Q + (R - Q) * q)]
+    P_bytes = bytes([0xff, *P]) # \ff\rr\gg\bb
+    return int.from_bytes(P_bytes, 'big')  # 0xffrrggbb
     
     
