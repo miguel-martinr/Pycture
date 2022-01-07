@@ -19,7 +19,7 @@ class ImageLoader(QObject):
         image.ranges = [[255, 0], [255, 0], [255, 0], [255, 0]]
 
         size = image.width() * image.height()
-
+        non_transparent_size = size
         pixels = image.constBits().asstring(size * 4)
   
         for i in range(size):
@@ -34,7 +34,7 @@ class ImageLoader(QObject):
             gray_value = 0
             argb_values = get_argb(color_ints)
             if argb_values[0] == 0:
-                size -= 1
+                non_transparent_size -= 1
                 continue # Don't count transparent pixels
             rgb_values = argb_values[1:]
 
@@ -46,9 +46,9 @@ class ImageLoader(QObject):
             image.histograms[Color.Gray.value][gray_value] += 1
 
         image.histograms = list(map(lambda histogram:
-                                    list(map(lambda x: x / size, histogram)),
-                                    image.histograms
-                                    ))
+            list(map(lambda x: x / non_transparent_size, histogram)),
+            image.histograms
+        ))
         self.load_means()
         image.load_finished = True
 
