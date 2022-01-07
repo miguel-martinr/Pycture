@@ -6,3 +6,5 @@ from .gamma_correction import GammaCorrection
 from .specify_histogram import SpecifyHistogram
 from .rotate import Rotate
 from .scale import Scale
+from .vertical_mirror import VerticalMirror
+from .horizontal_mirror import HorizontalMirror
