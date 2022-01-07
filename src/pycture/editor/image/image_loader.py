@@ -1,7 +1,7 @@
 from PyQt5.QtCore import QObject, Signal
 from PyQt5.QtGui import QImage
 from .color import Color, GrayScaleLUT
-from .get_rgb import get_rgb
+from .get_argb import get_argb
 
 
 class ImageLoader(QObject):
@@ -27,12 +27,16 @@ class ImageLoader(QObject):
             if progress_percentage > self.current_progress:
                 self.current_progress = round(progress_percentage)
                 self.progress.emit(self.current_progress)
-            color_bytes = pixels[i * 4:i * 4 + 3]
+            color_bytes = pixels[i * 4:i * 4 + 4]
             color_ints = [int.from_bytes(
-                color_bytes[j:j + 1], 'big') for j in range(3)
+                color_bytes[j:j + 1], 'big') for j in range(4)
             ]
             gray_value = 0
-            rgb_values = get_rgb(color_ints)
+            argb_values = get_argb(color_ints)
+            if argb_values[0] == 0:
+                size -= 1
+                continue # Don't count transparent pixels
+            rgb_values = argb_values[1:]
 
             for i, value in enumerate(rgb_values):
                 image.histograms[i][value] += 1

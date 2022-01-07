@@ -2,7 +2,7 @@ from math import log2, sqrt, pi, sin, cos, floor
 from typing import List 
 import numpy as np
 
-from PyQt5.QtGui import QColor, QImage, QPixmap
+from PyQt5.QtGui import QColor, QImage, QPixmap 
 from PyQt5.QtCore import QPoint, QThread, QSize, Signal
 
 from .image_loader import ImageLoader
@@ -10,12 +10,13 @@ from .color import Color, RGBColor, GrayScaleLUT
 from .pixel import Pixel
 
 from datetime import datetime
-from .get_rgb import get_rgb
+from .get_argb import get_argb
 
 
 class Image(QImage):
 
     def __init__(self, image: QImage):
+        image = image.convertToFormat(QImage.Format_ARGB32)
         super().__init__(image)
         self.then = None
         self.setup_image_data()
@@ -143,19 +144,20 @@ class Image(QImage):
         pixels = image.constBits().asstring(size * 4)
         get_qpoint = lambda i: QPoint(i % self.width(), i // self.width())
         for i in range(size):
-            color_bytes = pixels[i * 4:i * 4 + 3]
+            color_bytes = pixels[i * 4:i * 4 + 4]
             color_ints = [int.from_bytes(
-                color_bytes[j:j + 1], 'big') for j in range(3)]
-            rgb_values = get_rgb(color_ints)
+                color_bytes[j:j + 1], 'big') for j in range(4)]
+            argb_values = get_argb(color_ints)
 
-            new_pixel = int.from_bytes([255, *rgb_values], 'big')
+            new_pixel = int.from_bytes(argb_values, 'big')
             for color in RGBColor:
                 lut = luts[color.value]
                 if lut is None:
                     continue
-                color_value = rgb_values[color.value]
-                rgb_values[color.value] = lut[color_value]
-                new_pixel = int.from_bytes([255, *rgb_values], 'big')
+                # we add one to the index to account for the alpha channel
+                color_value = argb_values[color.value + 1]
+                argb_values[color.value + 1] = lut[color_value]
+                new_pixel = int.from_bytes(argb_values, 'big')
             image.setPixel(get_qpoint(i), new_pixel)
 
         return image
@@ -257,7 +259,8 @@ class Image(QImage):
                     new_image.setPixel(
                         indexXp, indexYp, interpolation_technique(self, (x, y)))
                 else:
-                    new_image.setPixel(indexXp, indexYp, 0xffffff)
+                    # Background pixels are transparent
+                    new_image.setPixel(indexXp, indexYp, 0x00000000)
         return new_image
 
     def scale(self, new_size: (int, int), interpolation_technique):

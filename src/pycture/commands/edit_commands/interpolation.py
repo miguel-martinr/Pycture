@@ -34,10 +34,10 @@ def bilinear_interpolation(image: QImage, point: (float, float)):
     Y_one = min(Y + 1, image.height() - 1)
     
     # Get (R, G, B) values from pixels
-    A = np.array(tuple(image.pixel(X, Y).to_bytes(4, 'big')[1:]))          # top left
-    B = np.array(tuple(image.pixel(X_one, Y).to_bytes(4, 'big')[1:]))      # top right
-    C = np.array(tuple(image.pixel(X, Y_one).to_bytes(4, 'big')[1:]))      # bottom left
-    D = np.array(tuple(image.pixel(X_one, Y_one).to_bytes(4, 'big')[1:]))  # bottom right
+    A = np.array(tuple(image.pixel(X, Y).to_bytes(4, 'big')))          # top left
+    B = np.array(tuple(image.pixel(X_one, Y).to_bytes(4, 'big')))      # top right
+    C = np.array(tuple(image.pixel(X, Y_one).to_bytes(4, 'big')))      # bottom left
+    D = np.array(tuple(image.pixel(X_one, Y_one).to_bytes(4, 'big')))  # bottom right
     
     p = _x - X
     q = _y - Y
@@ -46,7 +46,7 @@ def bilinear_interpolation(image: QImage, point: (float, float)):
     R = C + (D - C) * p
     
     P = [round(val) for val in (Q + (R - Q) * q)]
-    P_bytes = bytes([0xff, *P]) # \ff\rr\gg\bb
-    return int.from_bytes(P_bytes, 'big')  # 0xffrrggbb
+    P_bytes = bytes([*P]) # \aa\rr\gg\bb
+    return int.from_bytes(P_bytes, 'big')  # 0xaarrggbb
     
     
