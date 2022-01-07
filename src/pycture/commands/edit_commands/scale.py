@@ -14,8 +14,6 @@ class Scale(Command):
         }
 
     def execute(self, main_window: QMainWindow):
-        # Open dialog
-        # Connect dialog button to rotate function
         self.main_window = main_window
         dialog = ScaleDialog(main_window, main_window.get_editor_list(), list(self.interpolation_techniques.keys()))
         dialog.set_editor(main_window.get_active_editor_name())
@@ -30,7 +28,6 @@ class Scale(Command):
         editor = self.main_window.get_editor(editor_title)
         image = editor.get_image()
         title = editor.windowTitle()
-        
         
         interpolation_technique = self.interpolation_techniques[interpolation_name]
         scaled_image = image.scale(new_size, interpolation_technique)
