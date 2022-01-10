@@ -276,3 +276,21 @@ class Image(QImage):
                 actual_y = y / height_ratio
                 new_image.setPixel(x, y, interpolation_technique(self, (actual_x, actual_y)))
         return new_image
+
+    def rotate90_clockwise(self):
+        new_image = QImage(self.height(), self.width(), self.format())
+        for new_x in range(self.height()):
+            for new_y in range(self.width()):
+                old_x = new_y
+                old_y = self.height() - new_x - 1
+                new_image.setPixel(new_x, new_y, self.pixel(old_x, old_y))
+        return new_image
+
+    def transpose(self):
+        new_image = QImage(self.height(), self.width(), self.format())
+        for new_x in range(self.height()):
+            for new_y in range(self.width()):
+                old_x = new_y
+                old_y = new_x
+                new_image.setPixel(new_x, new_y, self.pixel(old_x, old_y))
+        return new_image
