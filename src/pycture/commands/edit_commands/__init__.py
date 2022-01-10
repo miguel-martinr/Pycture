@@ -8,3 +8,5 @@ from .rotate import Rotate
 from .scale import Scale
 from .vertical_mirror import VerticalMirror
 from .horizontal_mirror import HorizontalMirror
+from .transpose import Transpose
+from .rotate_clockwise import RotateClockwise
