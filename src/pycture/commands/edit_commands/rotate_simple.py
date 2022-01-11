@@ -1,4 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QMainWindow
+
+from pycture.dialogs.rotate_simple_dialog import RotateSimpleDialog
 from ..command import Command
 from .interpolation import bilinear_interpolation, nearest_neighbor_interpolation
 from pycture.dialogs import RotateDialog
