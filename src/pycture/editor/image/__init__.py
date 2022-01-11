@@ -1,5 +1,7 @@
 from math import ceil, log2, sqrt, floor, trunc, sin, cos, pi
 from typing import List
+from PyQt5 import QtCore
+from PyQt5 import QtGui
 import numpy as np
 
 from PyQt5.QtGui import QColor, QImage, QPixmap
@@ -330,6 +332,7 @@ class Image(QImage):
         new_height = ceil(abs(max_y - min_y))
 
         new_image = QImage(new_width, new_height, self.format())
+        new_image.fill(QtGui.QColorConstants.Transparent)
         
         for X in range(self.width()):
             for Y in range(self.height()):
