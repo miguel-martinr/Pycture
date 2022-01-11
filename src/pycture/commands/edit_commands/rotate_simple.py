@@ -27,7 +27,5 @@ class RotateSimple(Command):
         self.main_window = main_window
         dialog = RotateSimpleDialog(main_window, main_window.get_editor_list())
         dialog.set_editor(main_window.get_active_editor_name())
-        dialog.set_interpolation_technique(
-            list(self.interpolation_techniques.keys())[0])
 
         dialog.applied.connect(self.apply_rotation)

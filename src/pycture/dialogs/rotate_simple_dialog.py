@@ -16,6 +16,7 @@ class RotateSimpleDialog(QDialog):
         self.layout = QVBoxLayout()
         self.layout.setSizeConstraint(QLayout.SetFixedSize)
         self.setLayout(self.layout)
+        self.angle_limit = angle_limit
 
         self.setup(editors)
 

@@ -19,7 +19,8 @@ edit_command_list = [
     VerticalMirror,
     HorizontalMirror,
     Transpose,
-    RotateClockwise]
+    RotateClockwise,
+    RotateSimple]
 equalize_command_list = [EqualizeRed, EqualizeGreen, EqualizeBlue, EqualizeRGB]
 histogram_command_list = [
     ViewRedHistogram,
