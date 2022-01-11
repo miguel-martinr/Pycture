@@ -12,22 +12,26 @@ class RotateSimpleDialog(QDialog):
 
     def __init__(self, parent: QMainWindow, editors: List[str], angle_limit = 180):
         super().__init__(parent, Qt.WindowType.Window)
-        self.setWindowTitle("Scale")
+        self.setWindowTitle("Rotate and Paint")
         self.layout = QVBoxLayout()
         self.layout.setSizeConstraint(QLayout.SetFixedSize)
         self.setLayout(self.layout)
         self.angle_limit = angle_limit
 
         self.setup(editors)
-
+        
         self.show()
+        
+        
 
     def setup(self, editors: List[str]):
         layout = QVBoxLayout()
         self.layout.addLayout(layout)
 
         self.editors_dropdown = DropdownList(self, editors)
+        self.editors_dropdown.setMinimumWidth(250)
         layout.addWidget(self.editors_dropdown)
+        
 
         label = QLabel("Angle:", self)
         layout.addWidget(label)
