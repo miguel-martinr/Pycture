@@ -10,3 +10,4 @@ from .vertical_mirror import VerticalMirror
 from .horizontal_mirror import HorizontalMirror
 from .transpose import Transpose
 from .rotate_clockwise import RotateClockwise
+from .rotate_simple import RotateSimple

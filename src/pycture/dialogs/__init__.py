@@ -10,3 +10,4 @@ from .select_two_images_dialog import SelectTwoImagesDialog
 from .map_of_changes_dialog import MapOfChangesDialog
 from .rotate_dialog import RotateDialog
 from .scale_dialog import ScaleDialog
+from .rotate_simple_dialog import RotateSimpleDialog

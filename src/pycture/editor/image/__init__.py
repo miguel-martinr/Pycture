@@ -1,8 +1,10 @@
-from math import log2, sqrt, pi, sin, cos, floor
-from typing import List 
+from math import ceil, log2, sqrt, floor, trunc, sin, cos, pi
+from typing import List
+from PyQt5 import QtCore
+from PyQt5 import QtGui
 import numpy as np
 
-from PyQt5.QtGui import QColor, QImage, QPixmap 
+from PyQt5.QtGui import QColor, QImage, QPixmap
 from PyQt5.QtCore import QPoint, QThread, QSize, Signal
 
 from .image_loader import ImageLoader
@@ -142,7 +144,7 @@ class Image(QImage):
 
         size = image.width() * image.height()
         pixels = image.constBits().asstring(size * 4)
-        get_qpoint = lambda i: QPoint(i % self.width(), i // self.width())
+        def get_qpoint(i): return QPoint(i % self.width(), i // self.width())
         for i in range(size):
             color_bytes = pixels[i * 4:i * 4 + 4]
             color_ints = [int.from_bytes(
@@ -214,13 +216,13 @@ class Image(QImage):
         return coordinates
 
     def rotate(self, angle_deg: float, interpolation_technique):
-      
+
         def rotation_matrix(angle_rad: float):
             return np.array(
-              ((cos(angle_rad), -sin(angle_rad)),
-              (sin(angle_rad), cos(angle_rad)))
+                ((cos(angle_rad), -sin(angle_rad)),
+                 (sin(angle_rad), cos(angle_rad)))
             )
-            
+
         angle_rad = angle_deg * (pi / 180)
         old_top_left = (0, 0)
         old_top_right = (self.width() - 1, 0)
@@ -274,7 +276,8 @@ class Image(QImage):
             actual_x = x / width_ratio
             for y in range(new_height):
                 actual_y = y / height_ratio
-                new_image.setPixel(x, y, interpolation_technique(self, (actual_x, actual_y)))
+                new_image.setPixel(x, y, interpolation_technique(
+                    self, (actual_x, actual_y)))
         return new_image
 
     def rotate90_clockwise(self):
@@ -293,4 +296,48 @@ class Image(QImage):
                 old_x = new_y
                 old_y = new_x
                 new_image.setPixel(new_x, new_y, self.pixel(old_x, old_y))
+        return new_image
+
+    def rotate_simple(self, angle_deg: float):
+        def rotation_matrix(angle_rad: float):
+            return np.array(
+                ((cos(angle_rad), -sin(angle_rad)),
+                 (sin(angle_rad), cos(angle_rad)))
+            )
+
+        angle_rad = angle_deg * (pi / 180)
+        old_top_left = (0, 0)
+        old_top_right = (self.width(), 0)
+        old_bottom_left = (0, self.height())
+        old_bottom_right = (self.width(), self.height())
+
+        dt_rotation_matrix = rotation_matrix(angle_rad)
+        
+        new_top_left = np.array(np.dot(dt_rotation_matrix, old_top_left))
+        new_top_right = np.dot(dt_rotation_matrix, old_top_right)
+        new_bottom_left = np.dot(dt_rotation_matrix, old_bottom_left)
+        new_bottom_right = np.dot(dt_rotation_matrix, old_bottom_right)
+
+        xs = [new_top_left[0], new_top_right[0],
+              new_bottom_left[0], new_bottom_right[0]]
+        ys = [new_top_left[1], new_top_right[1],
+              new_bottom_left[1], new_bottom_right[1]]
+
+        max_x = max(xs)
+        max_y = max(ys)
+        min_x = min(xs)
+        min_y = min(ys)
+
+        new_width = ceil(abs(max_x - min_x)) + 1
+        new_height = ceil(abs(max_y - min_y)) + 1
+
+        new_image = QImage(new_width, new_height, self.format())
+        new_image.fill(QtGui.QColorConstants.Transparent)
+        
+        for X in range(self.width()):
+            for Y in range(self.height()):
+                xp, yp = np.dot(dt_rotation_matrix, (X, Y)) - np.array([min_x, min_y])
+                Xp, Yp = [trunc(round(val, 8)) for val in [xp, yp]]
+                new_image.setPixel(Xp, Yp, self.pixel(X, Y))
+
         return new_image
