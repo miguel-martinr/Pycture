@@ -20,6 +20,7 @@ class Rotate(Command):
         
         rotated_image = image.rotate(
             angle, self.interpolation_techniques[interpolation_technique])
+        # rotated_image = image.rotate_simple(angle)
         
         str_angle = str(angle).replace(".", "'")
         self.main_window.add_editor(editor=Editor(

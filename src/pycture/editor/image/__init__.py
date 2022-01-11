@@ -1,4 +1,5 @@
-from math import log2, sqrt, pi, sin, cos, floor, trunc
+from math import log2, sqrt, floor, trunc
+from sympy import pi, sin, cos
 from typing import List
 import numpy as np
 
@@ -333,7 +334,20 @@ class Image(QImage):
         
         for X in range(self.width()):
             for Y in range(self.height()):
-                Xp, Yp = [trunc(val) for val in np.dot(dt_rotation_matrix, (X, Y))]
+                xp, yp = np.dot(dt_rotation_matrix, (X, Y)) - np.array([min_x, min_y])
+                Xp, Yp = [trunc(val) for val in [xp, yp]]
                 new_image.setPixel(Xp, Yp, self.pixel(X, Y))
 
+        # new_image = QImage(new_width, new_height, self.format())
+        # for indexXp in range(new_width):
+        #     for indexYp in range(new_height):
+        #         xp, yp = (indexXp + min_x, indexYp + min_y)
+        #         x, y = np.dot(it_rotation_matrix, (xp, yp))
+
+        #         if (0 <= x < self.width() and 0 <= y < self.height()):
+        #             new_image.setPixel(
+        #                 indexXp, indexYp, interpolation_technique(self, (x, y)))
+        #         else:
+        #             # Background pixels are transparent
+        #             new_image.setPixel(indexXp, indexYp, 0x00000000)
         return new_image
