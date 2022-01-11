@@ -307,9 +307,9 @@ class Image(QImage):
 
         angle_rad = angle_deg * (pi / 180)
         old_top_left = (0, 0)
-        old_top_right = (self.width() - 1, 0)
-        old_bottom_left = (0, self.height() - 1)
-        old_bottom_right = (self.width() - 1, self.height() - 1)
+        old_top_right = (self.width(), 0)
+        old_bottom_left = (0, self.height())
+        old_bottom_right = (self.width(), self.height())
 
         dt_rotation_matrix = rotation_matrix(angle_rad)
         
