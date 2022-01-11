@@ -340,16 +340,4 @@ class Image(QImage):
                 Xp, Yp = [trunc(xp), trunc(yp)]
                 new_image.setPixel(Xp, Yp, self.pixel(X, Y))
 
-        # new_image = QImage(new_width, new_height, self.format())
-        # for indexXp in range(new_width):
-        #     for indexYp in range(new_height):
-        #         xp, yp = (indexXp + min_x, indexYp + min_y)
-        #         x, y = np.dot(it_rotation_matrix, (xp, yp))
-
-        #         if (0 <= x < self.width() and 0 <= y < self.height()):
-        #             new_image.setPixel(
-        #                 indexXp, indexYp, interpolation_technique(self, (x, y)))
-        #         else:
-        #             # Background pixels are transparent
-        #             new_image.setPixel(indexXp, indexYp, 0x00000000)
         return new_image
