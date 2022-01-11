@@ -1,5 +1,4 @@
-from math import log2, sqrt, floor, trunc
-from sympy import pi, sin, cos
+from math import ceil, log2, sqrt, floor, trunc, sin, cos, pi
 from typing import List
 import numpy as np
 
@@ -327,15 +326,15 @@ class Image(QImage):
         min_x = min(xs)
         min_y = min(ys)
 
-        new_width = floor(abs(max_x - min_x))
-        new_height = floor(abs(max_y - min_y))
+        new_width = ceil(abs(max_x - min_x))
+        new_height = ceil(abs(max_y - min_y))
 
         new_image = QImage(new_width, new_height, self.format())
         
         for X in range(self.width()):
             for Y in range(self.height()):
                 xp, yp = np.dot(dt_rotation_matrix, (X, Y)) - np.array([min_x, min_y])
-                Xp, Yp = [trunc(val) for val in [xp, yp]]
+                Xp, Yp = [trunc(xp), trunc(yp)]
                 new_image.setPixel(Xp, Yp, self.pixel(X, Y))
 
         # new_image = QImage(new_width, new_height, self.format())
