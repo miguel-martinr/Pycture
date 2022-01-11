@@ -328,8 +328,8 @@ class Image(QImage):
         min_x = min(xs)
         min_y = min(ys)
 
-        new_width = ceil(abs(max_x - min_x))
-        new_height = ceil(abs(max_y - min_y))
+        new_width = ceil(abs(max_x - min_x)) + 1
+        new_height = ceil(abs(max_y - min_y)) + 1
 
         new_image = QImage(new_width, new_height, self.format())
         new_image.fill(QtGui.QColorConstants.Transparent)
@@ -337,7 +337,7 @@ class Image(QImage):
         for X in range(self.width()):
             for Y in range(self.height()):
                 xp, yp = np.dot(dt_rotation_matrix, (X, Y)) - np.array([min_x, min_y])
-                Xp, Yp = [trunc(xp), trunc(yp)]
+                Xp, Yp = [trunc(round(val, 8)) for val in [xp, yp]]
                 new_image.setPixel(Xp, Yp, self.pixel(X, Y))
 
         return new_image
