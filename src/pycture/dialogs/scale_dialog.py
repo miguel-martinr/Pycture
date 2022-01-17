@@ -29,6 +29,9 @@ class ScaleDialog(QDialog):
         self.interpolation_dropdown = DropdownList(self, interpolation_techniques)
         layout.addWidget(self.interpolation_dropdown)
 
+        label = QLabel("Desired size:", self)
+        layout.addWidget(label)
+
         self.width = QLineEdit("1", self)
         validator = CustomIntValidator(0, 10000)
         self.width.setValidator(validator)

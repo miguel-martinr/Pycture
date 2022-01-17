@@ -12,7 +12,7 @@ class RotateDialog(QDialog):
     
     def __init__(self, parent: QMainWindow, editors: List[str], interpolation_techniques: List[str], angle_limit = 180):
         super().__init__(parent, Qt.WindowType.Window)
-        self.setWindowTitle("Scale")
+        self.setWindowTitle("Rotate")
         self.layout = QVBoxLayout()
         self.layout.setSizeConstraint(QLayout.SetFixedSize)
         self.setLayout(self.layout)
@@ -31,7 +31,6 @@ class RotateDialog(QDialog):
         
         self.interpolation_dropdown = DropdownList(self, interpolation_techniques)
         layout.addWidget(self.interpolation_dropdown)
-
 
         label = QLabel("Angle:", self)
         layout.addWidget(label)
